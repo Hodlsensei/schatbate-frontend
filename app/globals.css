@@ -1,0 +1,44 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --red: #EF3B47;
+  --red2: #EF3B47;
+  --bg: #F7F7F9;
+  --sidebar: #EFF0F2;
+  --sidebar-secondary: #DBDDDC;
+  --card: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --text: #242424;
+  --muted: #666;
+  --font-display: 'Oswald', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { text-decoration: none; color: inherit; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.6); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
