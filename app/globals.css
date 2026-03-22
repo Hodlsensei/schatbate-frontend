@@ -12,15 +12,25 @@
   --muted: #666;
   --font-display: 'Oswald', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --sidebar-width: 220px;
+  --topbar-height: 50px;
+  --tabs-height: 40px;
+  --header-height: 90px; /* topbar + tabs */
 }
 
 body {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -33,12 +43,26 @@ a { text-decoration: none; color: inherit; }
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.4; transform: scale(0.6); }
 }
-
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── Mobile breakpoints ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+    --header-height: 50px; /* on mobile, no tabs row — tabs go under topbar inline */
+  }
+
+  body, html {
+    overflow: hidden;
+  }
 }
