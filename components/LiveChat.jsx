@@ -36,7 +36,7 @@ export default function LiveChat({ username, viewers, onTipClick }) {
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior:"smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = () => {
@@ -55,46 +55,49 @@ export default function LiveChat({ username, viewers, onTipClick }) {
 
   return (
     <div style={{
-      width:320, flexShrink:0,
-      background:"#0f0f0f",
-      borderLeft:"1px solid rgba(255,255,255,0.07)",
-      display:"flex", flexDirection:"column",
-      height:"100%",
+      width: "100%",
+      height: "100%",          // fills locked parent height
+      background: "#0f0f0f",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",      // hard cap — nothing escapes
     }}>
 
-      {/* ── CHAT HEADER — Public / Private tabs + viewer count ── */}
+      {/* ── HEADER ── */}
       <div style={{
-        display:"flex", alignItems:"center",
-        borderBottom:"1px solid rgba(255,255,255,0.08)",
-        padding:"0 14px", height:44, flexShrink:0,
-        gap:4,
+        display: "flex", alignItems: "center",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        padding: "0 14px", height: 44, flexShrink: 0, gap: 4,
       }}>
-        {["Public","Private"].map(tab=>(
+        {["Public","Private"].map(tab => (
           <button key={tab} onClick={()=>setChatTab(tab)} style={{
-            background:"none", border:"none", cursor:"pointer",
-            padding:"0 12px", height:"100%", fontSize:13,
+            background: "none", border: "none", cursor: "pointer",
+            padding: "0 12px", height: "100%", fontSize: 13,
             color: chatTab===tab ? "#fff" : "#666",
             borderBottom: chatTab===tab ? "2px solid #e53935" : "2px solid transparent",
-            fontFamily:"inherit", fontWeight: chatTab===tab ? 600 : 400,
-            transition:"color .15s",
+            fontFamily: "inherit", fontWeight: chatTab===tab ? 600 : 400,
+            transition: "color .15s",
           }}>{tab}</button>
         ))}
 
-        {/* Viewer count */}
         <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#888"}}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="#888"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
           {viewers?.toLocaleString() || "0"}
         </div>
-
-        {/* Options dots */}
         <button style={{background:"none",border:"none",color:"#555",cursor:"pointer",padding:"4px 6px",fontSize:18,lineHeight:1}}>⋮</button>
       </div>
 
-      {/* ── MESSAGES ── */}
+      {/* ── MESSAGES — flex:1 + minHeight:0 is the magic combo ── */}
       <div style={{
-        flex:1, overflowY:"auto", padding:"10px 12px",
-        display:"flex", flexDirection:"column", gap:6,
-        scrollbarWidth:"thin", scrollbarColor:"#333 transparent",
+        flex: 1,
+        minHeight: 0,            // allows this div to shrink below content size
+        overflowY: "auto",
+        padding: "10px 12px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        scrollbarWidth: "thin",
+        scrollbarColor: "#333 transparent",
       }}>
         {chatTab === "Private" ? (
           <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#555",fontSize:13,textAlign:"center",padding:20}}>
@@ -102,7 +105,7 @@ export default function LiveChat({ username, viewers, onTipClick }) {
           </div>
         ) : (
           messages.map((msg) => (
-            <div key={msg.id} style={{animation:"fadeUp .2s ease both"}}>
+            <div key={msg.id} style={{animation:"fadeUp .2s ease both", flexShrink: 0}}>
               {msg.isTip ? (
                 <div style={{
                   background:"rgba(240,165,0,0.08)", border:"1px solid rgba(240,165,0,0.2)",
@@ -117,7 +120,6 @@ export default function LiveChat({ username, viewers, onTipClick }) {
                 </div>
               ) : (
                 <div style={{display:"flex",gap:6,alignItems:"flex-start"}}>
-                  {/* Colored username badge like reference site */}
                   <div style={{
                     background:msg.color, borderRadius:3, padding:"1px 6px",
                     fontSize:11, fontWeight:700, color:"#fff", flexShrink:0,
@@ -136,10 +138,10 @@ export default function LiveChat({ username, viewers, onTipClick }) {
         <div ref={bottomRef}/>
       </div>
 
-      {/* ── TIP GOAL PROGRESS in chat ── */}
+      {/* ── TIP GOAL PROGRESS ── */}
       <div style={{
-        padding:"8px 12px", borderTop:"1px solid rgba(255,255,255,0.05)",
-        display:"flex", alignItems:"center", gap:8, flexShrink:0,
+        padding: "8px 12px", borderTop: "1px solid rgba(255,255,255,0.05)",
+        display: "flex", alignItems: "center", gap: 8, flexShrink: 0,
       }}>
         <div style={{width:20,height:20,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#4caf50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
@@ -155,20 +157,18 @@ export default function LiveChat({ username, viewers, onTipClick }) {
           fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:4,
           cursor:"pointer", fontFamily:"inherit", flexShrink:0,
           display:"flex", alignItems:"center", gap:4,
-        }}>
-          Tip ›
-        </button>
+        }}>Tip ›</button>
       </div>
 
       {/* ── INPUT ── */}
       <div style={{
-        padding:"10px 12px", borderTop:"1px solid rgba(255,255,255,0.07)",
-        display:"flex", gap:8, flexShrink:0,
+        padding: "10px 12px", borderTop: "1px solid rgba(255,255,255,0.07)",
+        display: "flex", gap: 8, flexShrink: 0,
       }}>
         <input
           value={input}
-          onChange={e=>setInput(e.target.value)}
-          onKeyDown={e=>e.key==="Enter"&&sendMessage()}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && sendMessage()}
           placeholder="Public message..."
           maxLength={200}
           style={{
@@ -177,22 +177,21 @@ export default function LiveChat({ username, viewers, onTipClick }) {
             padding:"8px 14px", color:"#fff", fontSize:12,
             fontFamily:"inherit", outline:"none", transition:"border-color .15s",
           }}
-          onFocus={e=>e.target.style.borderColor="rgba(229,57,53,0.4)"}
-          onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.1)"}
+          onFocus={e => e.target.style.borderColor="rgba(229,57,53,0.4)"}
+          onBlur={e  => e.target.style.borderColor="rgba(255,255,255,0.1)"}
         />
-        {/* Emoji button */}
         <button style={{background:"none",border:"none",color:"#666",cursor:"pointer",padding:4,fontSize:18,lineHeight:1,flexShrink:0}}>😊</button>
-        {/* Send button */}
         <button onClick={sendMessage} style={{
           background:"#e53935", border:"none", color:"#fff",
           width:34, height:34, borderRadius:"50%", cursor:"pointer",
           display:"flex", alignItems:"center", justifyContent:"center",
           fontSize:14, flexShrink:0, transition:"opacity .15s",
         }}
-          onMouseEnter={e=>e.currentTarget.style.opacity=".85"}
-          onMouseLeave={e=>e.currentTarget.style.opacity="1"}
+          onMouseEnter={e => e.currentTarget.style.opacity=".85"}
+          onMouseLeave={e => e.currentTarget.style.opacity="1"}
         >➤</button>
       </div>
+
     </div>
   );
 }

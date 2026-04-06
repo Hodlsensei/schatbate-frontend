@@ -25,11 +25,11 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
   const hlsRef          = useRef(null);
   const containerRef    = useRef(null);
   const controlTimer    = useRef(null);
-  const [status, setStatus]           = useState("connecting");
-  const [muted, setMuted]             = useState(true);
-  const [volume, setVolume]           = useState(0.8);
-  const [quality, setQuality]         = useState("auto");
-  const [fullscreen, setFullscreen]   = useState(false);
+  const [status, setStatus]             = useState("connecting");
+  const [muted, setMuted]               = useState(true);
+  const [volume, setVolume]             = useState(0.8);
+  const [quality, setQuality]           = useState("auto");
+  const [fullscreen, setFullscreen]     = useState(false);
   const [showControls, setShowControls] = useState(true);
 
   const streamUrl = `${HLS_BASE}/${username}/index.m3u8`;
@@ -112,8 +112,11 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setShowControls(false)}
       style={{
-        position: "relative", background: "#000",
-        aspectRatio: "16/9", width: "100%", overflow: "hidden",
+        position: "relative",
+        background: "#000",
+        width: "100%",
+        height: "100%",      // fills the explicit calc() height set by parent
+        overflow: "hidden",
         cursor: showControls ? "default" : "none",
       }}
     >

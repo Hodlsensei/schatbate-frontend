@@ -1,153 +1,168 @@
 "use client";
 import { useState } from "react";
 
-const PRESETS = [10, 25, 50, 100, 200, 500];
+const PRESETS = [20, 50, 100, 200, 300, 500];
 
-export default function TipModal({ username, tokens, onClose, onTip }) {
-  const [amount, setAmount]   = useState(25);
-  const [message, setMessage] = useState("");
-  const [sent, setSent]       = useState(false);
+const TIP_MENU = [
+  { label: "SPANK ASS", tokens: 40 },
+  { label: "PUT PANTY INSIDE MY ASSHOLE", tokens: 100 },
+  { label: "FUCK ASSHOLE", tokens: 100 },
+  { label: "SPREAD ASS", tokens: 40 },
+  { label: "ANAL FART", tokens: 40 },
+  { label: "ASS TO MOUTH", tokens: 50 },
+  { label: "DIRTY SHOW EXCLUSIVE PVT", tokens: 350 },
+  { label: "SPREAD ASSHOLE", tokens: 40 },
+  { label: "OIL SHOW", tokens: 40 },
+  { label: "SQUIRT", tokens: 200 },
+];
 
-  const handleTip = () => {
-    if (amount > tokens) return;
-    setSent(true);
-    setTimeout(() => {
-      onTip(amount);
-    }, 1200);
-  };
+export default function TipModal({ username, tokens, onClose, onTip, onBuyTokens }) {
+  const [amount, setAmount] = useState(20);
+  const notEnough = tokens < amount;
 
   return (
-    /* Backdrop */
     <div
       onClick={onClose}
       style={{
         position: "fixed", inset: 0, zIndex: 2000,
-        background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: 20,
+        background: "rgba(0,0,0,0.4)",
       }}
     >
-      {/* Modal */}
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: 14, padding: 28, width: "100%", maxWidth: 380,
-          animation: "fadeUp .2s ease both",
+          position: "absolute",
+          top: 0, right: 0, bottom: 0,
+          width: 460,
+          background: "#1e1e1e",
+          display: "flex", flexDirection: "column",
+          borderLeft: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        {sent ? (
-          /* Success state */
-          <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <div style={{ fontSize: 48, marginBottom: 14 }}>🎉</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
-              Tip Sent!
-            </div>
-            <div style={{ fontSize: 14, color: "var(--muted)" }}>
-              You sent <strong style={{ color: "#f0a500" }}>🪙 {amount} tokens</strong> to {username}
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-              <div>
-                <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginBottom: 2 }}>Send a Tip</div>
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>to {username}</div>
-              </div>
-              <button onClick={onClose} style={{
-                background: "rgba(255,255,255,0.07)", border: "none", color: "#fff",
-                width: 32, height: 32, borderRadius: "50%", cursor: "pointer",
-                fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
-              }}>✕</button>
-            </div>
+        {/* Header */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "16px 20px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          flexShrink: 0,
+        }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Send Tip</span>
+          <button onClick={onClose} style={{
+            background: "none", border: "none", color: "#aaa",
+            fontSize: 20, cursor: "pointer", lineHeight: 1,
+          }}>✕</button>
+        </div>
 
-            {/* Token balance */}
-            <div style={{
-              background: "rgba(240,165,0,0.08)", border: "1px solid rgba(240,165,0,0.2)",
-              borderRadius: 8, padding: "10px 14px", marginBottom: 18,
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
-              <span style={{ fontSize: 13, color: "var(--muted)" }}>Your balance</span>
-              <span style={{ fontSize: 15, fontWeight: 700, color: "#f0a500" }}>🪙 {tokens} tokens</span>
-            </div>
+        {/* Tab */}
+        <div style={{
+          padding: "10px 20px 0",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          flexShrink: 0,
+        }}>
+          <div style={{
+            display: "inline-block",
+            fontSize: 13, fontWeight: 700, color: "#fff",
+            paddingBottom: 10,
+            borderBottom: "2px solid #fff",
+          }}>Tip Menu</div>
+        </div>
 
-            {/* Preset amounts */}
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 8 }}>Choose amount</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-                {PRESETS.map(p => (
-                  <button key={p} onClick={() => setAmount(p)} style={{
-                    padding: "10px 0", borderRadius: 8, cursor: "pointer",
-                    border: `1px solid ${amount === p ? "#f0a500" : "rgba(255,255,255,0.1)"}`,
-                    background: amount === p ? "rgba(240,165,0,0.15)" : "rgba(255,255,255,0.04)",
-                    color: amount === p ? "#f0a500" : "#ccc",
-                    fontSize: 13, fontWeight: 600, fontFamily: "inherit",
-                    transition: "all .15s",
-                  }}>
-                    🪙 {p}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Custom amount */}
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>Or enter custom amount</div>
-              <input
-                type="number" min={1} max={tokens}
-                value={amount}
-                onChange={e => setAmount(Number(e.target.value))}
-                style={{
-                  width: "100%", background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8,
-                  padding: "9px 14px", color: "#fff", fontSize: 14,
-                  fontFamily: "inherit", outline: "none",
-                }}
-              />
-            </div>
-
-            {/* Message */}
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>Add a message (optional)</div>
-              <input
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                placeholder="Say something nice..."
-                maxLength={100}
-                style={{
-                  width: "100%", background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8,
-                  padding: "9px 14px", color: "#fff", fontSize: 13,
-                  fontFamily: "inherit", outline: "none",
-                }}
-              />
-            </div>
-
-            {/* Send button */}
-            <button
-              onClick={handleTip}
-              disabled={amount <= 0 || amount > tokens}
+        {/* Tip Menu List */}
+        <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "#333 transparent" }}>
+          {TIP_MENU.map((item, i) => (
+            <div
+              key={i}
+              onClick={() => setAmount(item.tokens)}
               style={{
-                width: "100%", background: amount > tokens ? "#333" : "#e53935",
-                border: "none", color: amount > tokens ? "#666" : "#fff",
-                fontSize: 15, fontWeight: 700, padding: "13px 0", borderRadius: 8,
-                cursor: amount > tokens ? "not-allowed" : "pointer",
-                fontFamily: "inherit", transition: "opacity .15s",
-                boxShadow: amount > tokens ? "none" : "0 2px 16px rgba(229,57,53,0.35)",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "13px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.05)",
+                cursor: "pointer",
+                background: amount === item.tokens ? "rgba(255,255,255,0.05)" : "transparent",
               }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+              onMouseLeave={e => e.currentTarget.style.background = amount === item.tokens ? "rgba(255,255,255,0.05)" : "transparent"}
             >
-              {amount > tokens ? "Not enough tokens" : `Send 🪙 ${amount} Tokens`}
-            </button>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#ccc", letterSpacing: "0.03em" }}>
+                {item.label}
+              </span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#ccc", flexShrink: 0, marginLeft: 12 }}>
+                {item.tokens}
+              </span>
+            </div>
+          ))}
+        </div>
 
-            {amount > tokens && (
-              <div style={{ textAlign: "center", marginTop: 10, fontSize: 12, color: "var(--muted)" }}>
-                You need {amount - tokens} more tokens.{" "}
-                <span style={{ color: "#f0a500", cursor: "pointer" }}>Get tokens →</span>
-              </div>
+        {/* Bottom controls */}
+        <div style={{
+          padding: "14px 20px 20px",
+          borderTop: "1px solid rgba(255,255,255,0.08)",
+          flexShrink: 0,
+        }}>
+          {/* Preset buttons */}
+          <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+            {PRESETS.map(p => (
+              <button
+                key={p}
+                onClick={() => setAmount(p)}
+                style={{
+                  flex: 1, padding: "10px 0",
+                  borderRadius: 6, cursor: "pointer",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  background: amount === p ? "#4caf50" : "#2a2a2a",
+                  color: "#fff",
+                  fontSize: 13, fontWeight: amount === p ? 700 : 400,
+                  fontFamily: "inherit",
+                }}
+              >{p}</button>
+            ))}
+            <button style={{
+              padding: "10px 8px", borderRadius: 6,
+              border: "1px solid rgba(255,255,255,0.15)",
+              background: "#2a2a2a", color: "#888", cursor: "pointer", fontSize: 16,
+            }}>›</button>
+          </div>
+
+          {/* Custom amount */}
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>Custom amount:</div>
+          <input
+            type="number" min={1}
+            value={amount}
+            onChange={e => setAmount(Number(e.target.value))}
+            style={{
+              width: "100%", background: "#111",
+              border: "none", borderRadius: 4,
+              padding: "10px 14px", color: "#fff", fontSize: 14,
+              fontFamily: "inherit", outline: "none",
+              boxSizing: "border-box", marginBottom: 14,
+            }}
+          />
+
+          {/* Buy Tokens row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <button
+              onClick={onBuyTokens}
+              style={{
+                background: "#4caf50", border: "none", color: "#fff",
+                fontSize: 13, fontWeight: 700, padding: "10px 18px",
+                borderRadius: 6, cursor: "pointer", fontFamily: "inherit", flexShrink: 0,
+              }}
+            >Buy Tokens</button>
+            {notEnough && (
+              <span style={{ fontSize: 13, color: "#aaa" }}>
+                You need{" "}
+                <span
+                  onClick={onBuyTokens}
+                  style={{ color: "#4caf50", fontWeight: 700, cursor: "pointer" }}
+                >more tokens</span>
+              </span>
             )}
-          </>
-        )}
+          </div>
+
+          <div style={{ marginTop: 12, fontSize: 11, color: "#555" }}>
+            Get 50 free tokens in the hourly draw
+          </div>
+        </div>
       </div>
     </div>
   );

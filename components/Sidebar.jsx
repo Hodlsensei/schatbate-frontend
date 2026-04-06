@@ -48,15 +48,29 @@ const NAV_ICONS = {
       <polyline points="12 7 12 12 15 15" />
     </SvgIcon>
   ),
+  shop: (
+    <SvgIcon>
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <path d="M16 10a4 4 0 01-8 0" />
+    </SvgIcon>
+  ),
+  vip: (
+    <SvgIcon>
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </SvgIcon>
+  ),
 };
 
 const NAV = [
-  { label: "Home",              href: "/",            icon: "home" },
-  { label: "Gallery",           href: "/gallery",     icon: "gallery" },
-  { label: "Recommended",       href: "/recommended", icon: "recommend" },
-  { label: "My Favorites",      href: "/favorites",   icon: "favorites" },
-  { label: "Best for Privates", href: "/privates",    icon: "privates" },
-  { label: "Watch History",     href: "/history",     icon: "history" },
+  { label: "Home",              href: "/",                  icon: "home" },
+  { label: "Gallery",           href: "/gallery",           icon: "gallery" },
+  { label: "Recommended",       href: "/recommended",       icon: "recommend" },
+  { label: "My Favorites",      href: "/favorites",         icon: "favorites" },
+  { label: "Shop",              href: "/shop",              icon: "shop" },   // NEW
+  { label: "Best for Privates", href: "/privates",          icon: "privates" },
+  { label: "Watch History",     href: "/history",           icon: "history" },
+  { label: "VIP Membership",    href: "/dashboard/vip",     icon: "vip" },    // NEW
 ];
 
 const SPECIALS = [
@@ -235,29 +249,51 @@ function IconRow({ label, count, flagCode, vr, specialIcon, hot, href = "#" }) {
 
 function NavItem({ item, active, collapsed }) {
   const [hov, setHov] = useState(false);
+
+  // VIP item gets a special gold accent
+  const isVip = item.icon === "vip";
+  const activeColor = isVip ? "#b8860b" : "#e5192b";
+  const activeBg = isVip ? "#fffbeb" : "#fff0f0";
+  const hoverColor = isVip ? "#b8860b" : "#374151";
+
   return (
     <Link href={item.href} style={{
       display: "flex", alignItems: "center",
       gap: collapsed ? 0 : 12,
       justifyContent: collapsed ? "center" : "flex-start",
       padding: collapsed ? "10px 0" : "9px 16px",
-      color: active ? "#e5192b" : "#374151",
+      color: active ? activeColor : hov && isVip ? hoverColor : "#374151",
       fontWeight: active ? 600 : 400, fontSize: 13.5,
       textDecoration: "none", whiteSpace: "nowrap",
-      background: active ? "#fff0f0" : hov ? "#f3f4f6" : "transparent",
+      background: active ? activeBg : hov ? "#f3f4f6" : "transparent",
       position: "relative", transition: "background .1s, color .1s",
     }}
     onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
       {active && !collapsed && (
         <span style={{
           position: "absolute", left: 0, top: 0, bottom: 0,
-          width: 3, background: "#e5192b", borderRadius: "0 2px 2px 0",
+          width: 3, background: activeColor, borderRadius: "0 2px 2px 0",
         }} />
       )}
-      <span style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+      <span style={{
+        flexShrink: 0, display: "flex", alignItems: "center",
+        justifyContent: "center", width: 18,
+        color: active ? activeColor : isVip ? "#b8860b" : "inherit",
+      }}>
         {NAV_ICONS[item.icon]}
       </span>
-      {!collapsed && <span>{item.label}</span>}
+      {!collapsed && (
+        <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {item.label}
+          {isVip && (
+            <span style={{
+              fontSize: 9, fontWeight: 800, padding: "1px 5px",
+              borderRadius: 3, background: "linear-gradient(135deg,#b8860b,#ffd700)",
+              color: "#fff", letterSpacing: ".05em",
+            }}>GOLD</span>
+          )}
+        </span>
+      )}
     </Link>
   );
 }

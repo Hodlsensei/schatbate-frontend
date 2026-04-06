@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 
-// ── Icons ─────────────────────────────────────────────────────────────────
 const IcoClose = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="#aaa">
     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -15,16 +14,9 @@ const IcoWand = () => (
 const IcoEye = ({ show }) => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     {show ? (
-      <>
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </>
+      <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>
     ) : (
-      <>
-        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
-        <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
-        <line x1="1" y1="1" x2="23" y2="23"/>
-      </>
+      <><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></>
     )}
   </svg>
 );
@@ -47,7 +39,6 @@ const XIcon = () => (
   </svg>
 );
 
-// ── Slideshow images ──────────────────────────────────────────────────────
 const SLIDE_IMAGES = [
   { url: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&q=80", name: "lianh_benet" },
   { url: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80", name: "aurora_x" },
@@ -57,7 +48,14 @@ const SLIDE_IMAGES = [
   { url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80", name: "scarlet_vr" },
 ];
 
-// ── Cloudflare widget ─────────────────────────────────────────────────────
+const PERKS = [
+  { icon: "💬", text: "Chat with ",     bold: "models" },
+  { icon: "🎮", text: "Play with ",     bold: "interactive sex toys" },
+  { icon: "❤️", text: "Have fun in ",   bold: "Private shows" },
+  { icon: "🎁", text: "Take part in ",  bold: "giveaways" },
+  { icon: "🔖", text: "Save favorite ", bold: "models & content" },
+];
+
 function CloudflareVerify({ verified, onToggle }) {
   return (
     <div onClick={onToggle} style={{
@@ -94,7 +92,6 @@ function CloudflareVerify({ verified, onToggle }) {
   );
 }
 
-// ── Social buttons ────────────────────────────────────────────────────────
 function SocialButtons() {
   return (
     <div style={{ width: "100%", display: "flex", gap: 10 }}>
@@ -112,23 +109,10 @@ function SocialButtons() {
   );
 }
 
-// ── Perks list ────────────────────────────────────────────────────────────
-const PERKS = [
-  { icon: "💬", text: "Chat with ",     bold: "models" },
-  { icon: "🎮", text: "Play with ",     bold: "interactive sex toys" },
-  { icon: "❤️", text: "Have fun in ",   bold: "Private shows" },
-  { icon: "🎁", text: "Take part in ",  bold: "giveaways" },
-  { icon: "🔖", text: "Save favorite ", bold: "models & content" },
-];
-
-// ── Right panel with auto-rotating slideshow ──────────────────────────────
 function RightPanel() {
   const [current, setCurrent] = useState(0);
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent(prev => (prev + 1) % SLIDE_IMAGES.length);
-    }, 3000);
+    const timer = setInterval(() => setCurrent(prev => (prev + 1) % SLIDE_IMAGES.length), 3000);
     return () => clearInterval(timer);
   }, []);
 
@@ -137,29 +121,20 @@ function RightPanel() {
       position: "relative", overflow: "hidden",
       background: "#0d0d0d",
       display: "flex", flexDirection: "column", justifyContent: "flex-end",
+      minHeight: 300,
     }}>
-      {/* All images stacked, fade between them */}
       {SLIDE_IMAGES.map((img, i) => (
-        <img
-          key={img.url}
-          src={img.url}
-          alt=""
-          style={{
-            position: "absolute", inset: 0, width: "100%", height: "100%",
-            objectFit: "cover", objectPosition: "top center",
-            opacity: i === current ? 1 : 0,
-            transition: "opacity 0.8s ease-in-out",
-          }}
-        />
+        <img key={img.url} src={img.url} alt="" style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%",
+          objectFit: "cover", objectPosition: "top center",
+          opacity: i === current ? 1 : 0,
+          transition: "opacity 0.8s ease-in-out",
+        }}/>
       ))}
-
-      {/* Dark gradient over image */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 1,
         background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.93) 100%)",
       }}/>
-
-      {/* Dot indicators */}
       <div style={{
         position: "absolute", top: 12, left: 0, right: 0, zIndex: 2,
         display: "flex", justifyContent: "center", gap: 5,
@@ -172,24 +147,11 @@ function RightPanel() {
           }}/>
         ))}
       </div>
-
-      {/* Perks — centered */}
-      <div style={{
-        position: "relative", zIndex: 2,
-        padding: "0 20px 28px",
-        display: "flex", flexDirection: "column", alignItems: "center",
-      }}>
+      <div style={{ position: "relative", zIndex: 2, padding: "0 20px 28px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {PERKS.map(p => (
-          <div key={p.bold} style={{
-            display: "flex", alignItems: "center", gap: 10,
-            marginBottom: 9, width: "100%", justifyContent: "center",
-          }}>
+          <div key={p.bold} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 9, width: "100%", justifyContent: "center" }}>
             <span style={{ fontSize: 16, flexShrink: 0, width: 22, textAlign: "center" }}>{p.icon}</span>
-            <span style={{
-              fontSize: 13, color: "rgba(255,255,255,0.85)",
-              fontFamily: "Inter, -apple-system, sans-serif",
-              letterSpacing: "0.01em", minWidth: 0,
-            }}>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", fontFamily: "Inter, -apple-system, sans-serif", minWidth: 0 }}>
               {p.text}<strong style={{ color: "#fff", fontWeight: 700 }}>{p.bold}</strong>
             </span>
           </div>
@@ -202,7 +164,6 @@ function RightPanel() {
   );
 }
 
-// ── DarkInput ─────────────────────────────────────────────────────────────
 function DarkInput({ placeholder, type = "text", value, onChange, rightIcon }) {
   return (
     <div style={{ position: "relative", width: "100%" }}>
@@ -218,10 +179,8 @@ function DarkInput({ placeholder, type = "text", value, onChange, rightIcon }) {
         onBlur={e => e.target.style.borderColor = "#3a2a2a"}
       />
       {rightIcon && (
-        <span style={{
-          position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)",
-          cursor: rightIcon.onClick ? "pointer" : "default",
-        }} onClick={rightIcon.onClick}>
+        <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", cursor: rightIcon.onClick ? "pointer" : "default" }}
+          onClick={rightIcon.onClick}>
           {rightIcon.node}
         </span>
       )}
@@ -229,8 +188,7 @@ function DarkInput({ placeholder, type = "text", value, onChange, rightIcon }) {
   );
 }
 
-// ── LOGIN view ────────────────────────────────────────────────────────────
-function LoginView({ onSwitch, onClose }) {
+function LoginView({ onSwitch, onClose, isMobile }) {
   const [identifier, setIdentifier] = useState("");
   const [password,   setPassword]   = useState("");
   const [showPw,     setShowPw]     = useState(false);
@@ -239,95 +197,70 @@ function LoginView({ onSwitch, onClose }) {
 
   return (
     <div style={{
-      width: "min(480px,94vw)", background: "#1a0a0a", borderRadius: 14,
-      padding: "52px 40px 36px", position: "relative",
+      width: isMobile ? "94vw" : "min(480px,94vw)",
+      background: "#1a0a0a", borderRadius: 14,
+      padding: isMobile ? "40px 20px 28px" : "52px 40px 36px",
+      position: "relative",
       fontFamily: "Inter, -apple-system, 'Segoe UI', sans-serif",
+      maxHeight: "90vh", overflowY: "auto",
     }} onClick={e => e.stopPropagation()}>
-
       <button onClick={onClose} style={{
         position: "absolute", top: 14, right: 14,
         background: "rgba(255,255,255,0.1)", border: "none", cursor: "pointer",
         width: 32, height: 32, borderRadius: "50%",
         display: "flex", alignItems: "center", justifyContent: "center",
-      }}
-        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
-        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
-      ><IcoClose/></button>
+      }}><IcoClose/></button>
 
-      <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, textAlign: "center", marginBottom: 24, marginTop: 0 }}>
-        Log In
-      </h2>
+      <h2 style={{ color: "#fff", fontSize: isMobile ? 18 : 22, fontWeight: 800, textAlign: "center", marginBottom: 20, marginTop: 0 }}>Log In</h2>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <DarkInput placeholder="Username or Email" value={identifier} onChange={e => setIdentifier(e.target.value)}/>
-        <DarkInput
-          placeholder="Password"
-          type={showPw ? "text" : "password"}
-          value={password} onChange={e => setPassword(e.target.value)}
-          rightIcon={{ node: <IcoEye show={showPw}/>, onClick: () => setShowPw(p => !p) }}
-        />
+        <DarkInput placeholder="Password" type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+          rightIcon={{ node: <IcoEye show={showPw}/>, onClick: () => setShowPw(p => !p) }}/>
         <CloudflareVerify verified={verified} onToggle={() => setVerified(v => !v)} />
-
         <button style={{
           width: "100%", padding: "14px 0", borderRadius: 8,
           background: ready ? "linear-gradient(135deg,#4caf50,#2e7d32)" : "#2a1a1a",
           border: "none", color: ready ? "#fff" : "#555",
           fontSize: 15, fontWeight: 700, cursor: ready ? "pointer" : "not-allowed",
-          fontFamily: "inherit", transition: "all .2s",
+          fontFamily: "inherit",
         }}>Log In</button>
-
         <div style={{ textAlign: "center" }}>
-          <span style={{ fontSize: 13, color: "#4caf50", cursor: "pointer", fontWeight: 500 }}
-            onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-            onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
-          >Forgot password?</span>
+          <span style={{ fontSize: 13, color: "#4caf50", cursor: "pointer", fontWeight: 500 }}>Forgot password?</span>
         </div>
-
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ flex: 1, height: 1, background: "#333" }}/>
-          <span style={{ fontSize: 12, color: "#666" }}>or log in with</span>
-          <div style={{ flex: 1, height: 1, background: "#333" }}/>
+          <div style={{ flex: 1, height: 1, background: "#333" }}/><span style={{ fontSize: 12, color: "#666" }}>or log in with</span><div style={{ flex: 1, height: 1, background: "#333" }}/>
         </div>
-
         <SocialButtons/>
-
         <button style={{
           width: "100%", padding: "11px 0", borderRadius: 8,
           background: "#2a1a1a", border: "1px solid #3a2a2a",
           color: "#bbb", fontSize: 13, cursor: "pointer", fontFamily: "inherit",
           display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-        }}
-          onMouseEnter={e => e.currentTarget.style.borderColor = "#555"}
-          onMouseLeave={e => e.currentTarget.style.borderColor = "#3a2a2a"}
-        >
-          <IcoStar/>
-          Log In without Password
-        </button>
-
+        }}><IcoStar/>Log In without Password</button>
         <div style={{ fontSize: 13, color: "#888", textAlign: "center", marginTop: 4 }}>
           Don&apos;t have an account?{" "}
-          <span style={{ color: "#4caf50", cursor: "pointer", fontWeight: 600 }}
-            onClick={onSwitch}
-            onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-            onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
-          >Sign Up</span>
+          <span style={{ color: "#4caf50", cursor: "pointer", fontWeight: 600 }} onClick={onSwitch}>Sign Up</span>
         </div>
       </div>
     </div>
   );
 }
 
-// ── REGISTER view ─────────────────────────────────────────────────────────
-function RegisterView({ onSwitch, onClose }) {
+function RegisterView({ onSwitch, onClose, isMobile }) {
   const [username, setUsername] = useState("");
   const [verified, setVerified] = useState(false);
 
   return (
     <div style={{
-      width: "min(860px,96vw)", background: "#1a0a0a", borderRadius: 14,
-      overflow: "hidden", display: "grid", gridTemplateColumns: "1fr 1fr",
-      position: "relative", fontFamily: "Inter, -apple-system, 'Segoe UI', sans-serif",
-      minHeight: 520,
+      width: isMobile ? "94vw" : "min(860px,96vw)",
+      background: "#1a0a0a", borderRadius: 14,
+      overflow: "hidden",
+      display: "grid",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+      position: "relative",
+      fontFamily: "Inter, -apple-system, 'Segoe UI', sans-serif",
+      maxHeight: "90vh", overflowY: "auto",
     }} onClick={e => e.stopPropagation()}>
 
       <button onClick={onClose} style={{
@@ -335,78 +268,67 @@ function RegisterView({ onSwitch, onClose }) {
         background: "rgba(255,255,255,0.1)", border: "none", cursor: "pointer",
         width: 32, height: 32, borderRadius: "50%",
         display: "flex", alignItems: "center", justifyContent: "center",
-      }}
-        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
-        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
-      ><IcoClose/></button>
+      }}><IcoClose/></button>
 
-      {/* Left: form */}
-      <div style={{ padding: "48px 40px 40px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 800, marginBottom: 24, marginTop: 0, textAlign: "center" }}>
+      {/* Form */}
+      <div style={{ padding: isMobile ? "40px 20px 28px" : "48px 40px 40px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <h2 style={{ color: "#fff", fontSize: isMobile ? 18 : 22, fontWeight: 800, marginBottom: 20, marginTop: 0, textAlign: "center" }}>
           Create Free Account
         </h2>
         <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
-          <DarkInput
-            placeholder="Username"
-            value={username} onChange={e => setUsername(e.target.value)}
-            rightIcon={{ node: <IcoWand/> }}
-          />
+          <DarkInput placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} rightIcon={{ node: <IcoWand/> }}/>
           <CloudflareVerify verified={verified} onToggle={() => setVerified(v => !v)} />
           <button style={{
             width: "100%", padding: "14px 0", borderRadius: 8,
             background: verified ? "linear-gradient(135deg,#4caf50,#2e7d32)" : "#2a1a1a",
             border: "none", color: verified ? "#fff" : "#555",
             fontSize: 15, fontWeight: 700, cursor: verified ? "pointer" : "not-allowed",
-            fontFamily: "inherit", transition: "all .2s",
+            fontFamily: "inherit",
           }}>Create Account</button>
-
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ flex: 1, height: 1, background: "#333" }}/>
-            <span style={{ fontSize: 12, color: "#666" }}>or continue with</span>
-            <div style={{ flex: 1, height: 1, background: "#333" }}/>
+            <div style={{ flex: 1, height: 1, background: "#333" }}/><span style={{ fontSize: 12, color: "#666" }}>or continue with</span><div style={{ flex: 1, height: 1, background: "#333" }}/>
           </div>
-
           <SocialButtons/>
-
           <button style={{
             width: "100%", padding: "11px 0", borderRadius: 8,
             background: "#2a1a1a", border: "1px solid #3a2a2a",
             color: "#bbb", fontSize: 13, cursor: "pointer", fontFamily: "inherit",
-          }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#555"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "#3a2a2a"}
-          >Continue Without Email</button>
-
+          }}>Continue Without Email</button>
           <div style={{ fontSize: 13, color: "#888", textAlign: "center" }}>
             Already have an account?{" "}
-            <span style={{ color: "#4caf50", cursor: "pointer", fontWeight: 600 }}
-              onClick={onSwitch}
-              onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-              onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
-            >Log In</span>
+            <span style={{ color: "#4caf50", cursor: "pointer", fontWeight: 600 }} onClick={onSwitch}>Log In</span>
           </div>
         </div>
       </div>
 
-      {/* Right: slideshow */}
-      <RightPanel/>
+      {/* Right panel — hidden on mobile */}
+      {!isMobile && <RightPanel/>}
     </div>
   );
 }
 
-// ── Main export ───────────────────────────────────────────────────────────
 export default function AuthModal({ onClose, defaultTab = "register" }) {
   const [view, setView] = useState(defaultTab);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 99999,
       background: "rgba(0,0,0,0.82)",
-      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: isMobile ? 8 : 16,
+      overflowY: "auto",
     }} onClick={onClose}>
       {view === "login"
-        ? <LoginView  onSwitch={() => setView("register")} onClose={onClose}/>
-        : <RegisterView onSwitch={() => setView("login")}  onClose={onClose}/>
+        ? <LoginView onSwitch={() => setView("register")} onClose={onClose} isMobile={isMobile}/>
+        : <RegisterView onSwitch={() => setView("login")} onClose={onClose} isMobile={isMobile}/>
       }
     </div>
   );

@@ -1,8 +1,12 @@
 "use client";
+import { usePathname } from "next/navigation";
 import Topbar from "./Topbar";
 import SidebarWrapper from "./SidebarWrapper";
 
 export default function MainLayoutClient({ children }) {
+  const pathname = usePathname();
+  const hideSidebar = ["/shop", "/dashboard/vip"].includes(pathname);
+
   return (
     <div style={{
       display: "flex",
@@ -12,16 +16,18 @@ export default function MainLayoutClient({ children }) {
     }}>
       <Topbar />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <div style={{
-          width: 220,
-          flexShrink: 0,
-          overflowY: "auto",
-          overflowX: "hidden",
-          borderRight: "1px solid #e5e7eb",
-          height: "100%",
-        }}>
-          <SidebarWrapper />
-        </div>
+        {!hideSidebar && (
+          <div style={{
+            width: 220,
+            flexShrink: 0,
+            overflowY: "auto",
+            overflowX: "hidden",
+            borderRight: "1px solid #e5e7eb",
+            height: "100%",
+          }}>
+            <SidebarWrapper />
+          </div>
+        )}
         <div style={{
           flex: 1,
           minWidth: 0,
