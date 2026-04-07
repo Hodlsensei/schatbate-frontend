@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Topbar from "./Topbar";
 import SidebarWrapper from "./SidebarWrapper";
@@ -6,6 +7,7 @@ import SidebarWrapper from "./SidebarWrapper";
 export default function MainLayoutClient({ children }) {
   const pathname = usePathname();
   const hideSidebar = ["/shop", "/dashboard/vip"].includes(pathname);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // ← open by default
 
   return (
     <div style={{
@@ -14,9 +16,9 @@ export default function MainLayoutClient({ children }) {
       height: "100vh",
       overflow: "hidden",
     }}>
-      <Topbar />
+      <Topbar onMenuClick={() => setSidebarOpen(prev => !prev)} />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {!hideSidebar && (
+        {!hideSidebar && sidebarOpen && (
           <div style={{
             width: 220,
             flexShrink: 0,

@@ -9,7 +9,7 @@ const COUNTRIES = [
 
 const ORDER_ITEMS = [{ name: "Used Lingerie Set", price: 3000, currency: "tk" }];
 
-export default function CheckoutPage({ orderItems = ORDER_ITEMS }) {
+export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
   const router = useRouter();
   const [paymentMethod, setPaymentMethod] = useState("credit");
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", address: "", city: "", country: "" });
@@ -45,7 +45,12 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS }) {
         <div style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(229,57,53,0.08)", border: "2px solid #e53935", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36 }}>✓</div>
         <h2 style={{ fontSize: 28, fontWeight: 700, letterSpacing: 4, color: "#fff", margin: 0 }}>ORDER PLACED</h2>
         <p style={{ color: "#555", fontSize: 14, maxWidth: 320, margin: 0, lineHeight: 1.6 }}>Thank you for your purchase. You'll receive a confirmation email shortly.</p>
-        <button onClick={() => router.push("/shop")} style={{ background: "#e53935", color: "#fff", border: "none", borderRadius: 8, padding: "13px 32px", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, letterSpacing: 0.5, fontFamily: "inherit" }}>Continue Shopping</button>
+        <button
+          onClick={() => onBack ? onBack() : router.push("/shop")}
+          style={{ background: "#e53935", color: "#fff", border: "none", borderRadius: 8, padding: "13px 32px", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, letterSpacing: 0.5, fontFamily: "inherit" }}
+        >
+          Continue Shopping
+        </button>
       </div>
     );
   }
@@ -93,7 +98,12 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS }) {
         </div>
 
         <button onClick={handleSubmit} style={{ background: "#e53935", color: "#fff", border: "none", borderRadius: 10, padding: "16px", fontSize: 15, fontWeight: 800, cursor: "pointer", letterSpacing: 1, width: "100%", fontFamily: "inherit", boxShadow: "0 4px 20px rgba(229,57,53,0.3)" }} onMouseEnter={e => e.currentTarget.style.background="#c62828"} onMouseLeave={e => e.currentTarget.style.background="#e53935"}>PLACE ORDER</button>
-        <button onClick={() => router.push("/shop")} style={{ background: "transparent", color: "#333", border: "none", width: "100%", padding: "14px", fontSize: 13, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}>← Back to Shop</button>
+        <button
+          onClick={() => onBack ? onBack() : router.push("/shop")}
+          style={{ background: "transparent", color: "#333", border: "none", width: "100%", padding: "14px", fontSize: 13, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}
+        >
+          ← Back to Shop
+        </button>
       </div>
 
       {/* ── RIGHT: Order Summary ── */}
@@ -103,11 +113,14 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS }) {
           {orderItems.map((item, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid #141414" }}>
               <div style={{ width: 52, height: 52, borderRadius: 8, background: "#111", overflow: "hidden", flexShrink: 0, border: "1px solid #1e1e1e" }}>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThraG_zasU3rWm-JApmnIzbmVCpDdGS26DXQ&s" alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+                <img src={item.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThraG_zasU3rWm-JApmnIzbmVCpDdGS26DXQ&s"} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, color: "#ddd", fontWeight: 600, marginBottom: 3 }}>{item.name}</div>
-                <div style={{ fontSize: 12, color: "#444" }}>Qty: 1</div>
+                <div style={{ fontSize: 12, color: "#444" }}>
+                  Qty: {item.qty || 1}
+                  {item.selectedSize && <span style={{ marginLeft: 8 }}>Size: {item.selectedSize}</span>}
+                </div>
               </div>
               <div style={{ fontSize: 14, color: "#fff", fontWeight: 700 }}>{item.price.toLocaleString()}{item.currency}</div>
             </div>

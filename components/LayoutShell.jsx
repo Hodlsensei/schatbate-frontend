@@ -2,29 +2,32 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Topbar from "./Topbar";
-import { CategoryProvider, useCategory } from "./CategoryContext";
-
-const CATEGORIES = ["girls", "couples", "guys", "trans"];
-const NO_SIDEBAR_ROUTES = ["/top-models"];
+import { CategoryProvider } from "./CategoryContext";
 
 export default function LayoutShell({ children, sidebar }) {
   const pathname = usePathname();
   const isTopModels = pathname?.startsWith("/top-models");
+  const isHome = pathname === "/";
 
-  const [liveCount,   setLiveCount]   = useState(11284);
+  const [liveCount, setLiveCount] = useState(11284);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isMobile,    setIsMobile]    = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const check = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      setSidebarOpen(!mobile && !isTopModels);
+      // Auto-open sidebar only on homepage (desktop), closed everywhere else
+      if (!mobile) {
+        setSidebarOpen(isHome && !isTopModels);
+      } else {
+        setSidebarOpen(false);
+      }
     };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
-  }, [isTopModels]);
+  }, [isHome, isTopModels]);
 
   useEffect(() => {
     if (isTopModels) setSidebarOpen(false);
@@ -55,14 +58,15 @@ export default function LayoutShell({ children, sidebar }) {
           onMenuToggle={() => !isTopModels && setSidebarOpen(o => !o)}
         />
 
-        {/* ← REMOVED the duplicate <CategoryTabs /> line that was here */}
-
         <div style={{ display: "flex", flex: 1, overflow: "hidden", position: "relative" }}>
 
           {isMobile && showSidebar && (
             <div
               onClick={() => setSidebarOpen(false)}
-              style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 150 }}
+              style={{
+                position: "absolute", inset: 0,
+                background: "rgba(0,0,0,0.6)", zIndex: 150,
+              }}
             />
           )}
 
