@@ -56,24 +56,24 @@ export default function LiveChat({ username, viewers, onTipClick }) {
   return (
     <div style={{
       width: "100%",
-      height: "100%",          // fills locked parent height
-      background: "#0f0f0f",
+      height: "100%",
+      background: "#ffffff",
       display: "flex",
       flexDirection: "column",
-      overflow: "hidden",      // hard cap — nothing escapes
+      overflow: "hidden",
     }}>
 
       {/* ── HEADER ── */}
       <div style={{
         display: "flex", alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        borderBottom: "1px solid #e8e8e8",
         padding: "0 14px", height: 44, flexShrink: 0, gap: 4,
       }}>
         {["Public","Private"].map(tab => (
           <button key={tab} onClick={()=>setChatTab(tab)} style={{
             background: "none", border: "none", cursor: "pointer",
             padding: "0 12px", height: "100%", fontSize: 13,
-            color: chatTab===tab ? "#fff" : "#666",
+            color: chatTab===tab ? "#1a1a1a" : "#aaa",
             borderBottom: chatTab===tab ? "2px solid #e53935" : "2px solid transparent",
             fontFamily: "inherit", fontWeight: chatTab===tab ? 600 : 400,
             transition: "color .15s",
@@ -81,26 +81,26 @@ export default function LiveChat({ username, viewers, onTipClick }) {
         ))}
 
         <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#888"}}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#888"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#aaa"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
           {viewers?.toLocaleString() || "0"}
         </div>
-        <button style={{background:"none",border:"none",color:"#555",cursor:"pointer",padding:"4px 6px",fontSize:18,lineHeight:1}}>⋮</button>
+        <button style={{background:"none",border:"none",color:"#bbb",cursor:"pointer",padding:"4px 6px",fontSize:18,lineHeight:1}}>⋮</button>
       </div>
 
-      {/* ── MESSAGES — flex:1 + minHeight:0 is the magic combo ── */}
+      {/* ── MESSAGES ── */}
       <div style={{
         flex: 1,
-        minHeight: 0,            // allows this div to shrink below content size
+        minHeight: 0,
         overflowY: "auto",
         padding: "10px 12px",
         display: "flex",
         flexDirection: "column",
         gap: 6,
         scrollbarWidth: "thin",
-        scrollbarColor: "#333 transparent",
+        scrollbarColor: "#ddd transparent",
       }}>
         {chatTab === "Private" ? (
-          <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#555",fontSize:13,textAlign:"center",padding:20}}>
+          <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#aaa",fontSize:13,textAlign:"center",padding:20}}>
             Private messages are only available during a private show
           </div>
         ) : (
@@ -108,14 +108,14 @@ export default function LiveChat({ username, viewers, onTipClick }) {
             <div key={msg.id} style={{animation:"fadeUp .2s ease both", flexShrink: 0}}>
               {msg.isTip ? (
                 <div style={{
-                  background:"rgba(240,165,0,0.08)", border:"1px solid rgba(240,165,0,0.2)",
+                  background:"rgba(240,165,0,0.06)", border:"1px solid rgba(240,165,0,0.25)",
                   borderRadius:6, padding:"6px 10px", display:"flex", alignItems:"center", gap:8,
                 }}>
                   <span style={{fontSize:14}}>🪙</span>
                   <div>
-                    <span style={{fontSize:11,fontWeight:700,color:"#f0a500"}}>{msg.username}</span>
-                    <span style={{fontSize:11,color:"#aaa"}}> tipped </span>
-                    <span style={{fontSize:11,fontWeight:700,color:"#f0a500"}}>{msg.tipAmount} tokens!</span>
+                    <span style={{fontSize:11,fontWeight:700,color:"#d4820a"}}>{msg.username}</span>
+                    <span style={{fontSize:11,color:"#888"}}> tipped </span>
+                    <span style={{fontSize:11,fontWeight:700,color:"#d4820a"}}>{msg.tipAmount} tokens!</span>
                   </div>
                 </div>
               ) : (
@@ -127,7 +127,7 @@ export default function LiveChat({ username, viewers, onTipClick }) {
                   }}>
                     {msg.username}
                   </div>
-                  <div style={{flex:1,minWidth:0,fontSize:12,color:msg.isMe?"#fff":"rgba(255,255,255,0.8)",lineHeight:1.5,wordBreak:"break-word"}}>
+                  <div style={{flex:1,minWidth:0,fontSize:12,color:msg.isMe?"#1a1a1a":"#333",lineHeight:1.5,wordBreak:"break-word"}}>
                     {msg.message}
                   </div>
                 </div>
@@ -140,15 +140,16 @@ export default function LiveChat({ username, viewers, onTipClick }) {
 
       {/* ── TIP GOAL PROGRESS ── */}
       <div style={{
-        padding: "8px 12px", borderTop: "1px solid rgba(255,255,255,0.05)",
+        padding: "8px 12px", borderTop: "1px solid #e8e8e8",
         display: "flex", alignItems: "center", gap: 8, flexShrink: 0,
+        background: "#fafafa",
       }}>
         <div style={{width:20,height:20,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#4caf50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
         </div>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:10,color:"#888",marginBottom:3}}>New goal – <span style={{color:"#f0a500",fontWeight:700}}>222 tk</span></div>
-          <div style={{height:3,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}>
+          <div style={{fontSize:10,color:"#888",marginBottom:3}}>New goal – <span style={{color:"#d4820a",fontWeight:700}}>222 tk</span></div>
+          <div style={{height:3,background:"#e8e8e8",borderRadius:3,overflow:"hidden"}}>
             <div style={{width:"45%",height:"100%",background:"#4caf50",borderRadius:3}}/>
           </div>
         </div>
@@ -162,8 +163,9 @@ export default function LiveChat({ username, viewers, onTipClick }) {
 
       {/* ── INPUT ── */}
       <div style={{
-        padding: "10px 12px", borderTop: "1px solid rgba(255,255,255,0.07)",
+        padding: "10px 12px", borderTop: "1px solid #e8e8e8",
         display: "flex", gap: 8, flexShrink: 0,
+        background: "#fff",
       }}>
         <input
           value={input}
@@ -172,15 +174,15 @@ export default function LiveChat({ username, viewers, onTipClick }) {
           placeholder="Public message..."
           maxLength={200}
           style={{
-            flex:1, background:"rgba(255,255,255,0.06)",
-            border:"1px solid rgba(255,255,255,0.1)", borderRadius:20,
-            padding:"8px 14px", color:"#fff", fontSize:12,
+            flex:1, background:"#f5f5f5",
+            border:"1px solid #e0e0e0", borderRadius:20,
+            padding:"8px 14px", color:"#1a1a1a", fontSize:12,
             fontFamily:"inherit", outline:"none", transition:"border-color .15s",
           }}
-          onFocus={e => e.target.style.borderColor="rgba(229,57,53,0.4)"}
-          onBlur={e  => e.target.style.borderColor="rgba(255,255,255,0.1)"}
+          onFocus={e => e.target.style.borderColor="#e53935"}
+          onBlur={e  => e.target.style.borderColor="#e0e0e0"}
         />
-        <button style={{background:"none",border:"none",color:"#666",cursor:"pointer",padding:4,fontSize:18,lineHeight:1,flexShrink:0}}>😊</button>
+        <button style={{background:"none",border:"none",color:"#bbb",cursor:"pointer",padding:4,fontSize:18,lineHeight:1,flexShrink:0}}>😊</button>
         <button onClick={sendMessage} style={{
           background:"#e53935", border:"none", color:"#fff",
           width:34, height:34, borderRadius:"50%", cursor:"pointer",

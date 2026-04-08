@@ -14,7 +14,7 @@ function loadScript(src) {
 }
 
 const ctrlBtn = {
-  background: "rgba(255,255,255,0.15)", border: "none", color: "#fff",
+  background: "rgba(0,0,0,0.45)", border: "none", color: "#fff",
   width: 34, height: 34, borderRadius: "50%", cursor: "pointer",
   display: "flex", alignItems: "center", justifyContent: "center",
   fontSize: 15, flexShrink: 0, transition: "background .15s",
@@ -115,7 +115,7 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
         position: "relative",
         background: "#000",
         width: "100%",
-        height: "100%",      // fills the explicit calc() height set by parent
+        height: "100%",
         overflow: "hidden",
         cursor: showControls ? "default" : "none",
       }}
@@ -127,11 +127,11 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
         style={{ width: "100%", height: "100%", display: "block", objectFit: "cover" }}
       />
 
-      {/* Offline / connecting overlay */}
+      {/* Offline / connecting overlay — kept dark since it's the video area */}
       {status !== "live" && (
         <div style={{
           position: "absolute", inset: 0,
-          background: `radial-gradient(ellipse at 60% 40%, ${color}33 0%, #000 70%)`,
+          background: `radial-gradient(ellipse at 60% 40%, ${color}33 0%, #111 70%)`,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 16,
         }}>
@@ -203,7 +203,7 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
       {/* Viewer count */}
       <div style={{
         position: "absolute", top: 12, right: 12,
-        background: "rgba(0,0,0,0.65)", color: "#fff",
+        background: "rgba(0,0,0,0.55)", color: "#fff",
         fontSize: 12, padding: "4px 10px", borderRadius: 4,
         display: "flex", alignItems: "center", gap: 5,
         opacity: showControls ? 1 : 0, transition: "opacity .3s",
@@ -215,7 +215,7 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
       {/* Controls */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
-        background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)",
+        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",
         padding: "28px 16px 12px",
         display: "flex", alignItems: "center", gap: 10,
         opacity: showControls ? 1 : 0, transition: "opacity .3s",
@@ -244,7 +244,7 @@ export default function StreamPlayer({ username, color, emoji, viewers }) {
         <select
           value={quality} onChange={e => setQuality(e.target.value)}
           style={{
-            background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.2)",
+            background: "rgba(0,0,0,0.55)", border: "1px solid rgba(255,255,255,0.2)",
             color: "#fff", fontSize: 11, padding: "4px 8px", borderRadius: 5,
             cursor: "pointer", outline: "none",
           }}

@@ -86,22 +86,22 @@ export default function WatchPage({ username }) {
   const VIDEO_H = `calc(100vh - ${TOPBAR_H + NAVBAR_H + BANNER_H + ACTION_H}px)`;
 
   return (
-    <div style={{ height: "100%", background: "#111", display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
+    <div style={{ height: "100%", background: "#f5f5f5", display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
 
       {/* ── INNER NAVBAR ── */}
       <div style={{
-        height: NAVBAR_H, background: "#1a1a1a",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        height: NAVBAR_H, background: "#ffffff",
+        borderBottom: "1px solid #e0e0e0",
         display: "flex", alignItems: "center", padding: "0 16px", gap: 12, flexShrink: 0,
       }}>
-        <button onClick={()=>router.back()} style={{background:"none",border:"none",color:"#aaa",cursor:"pointer",padding:"4px 8px",fontSize:20,lineHeight:1}}>‹</button>
+        <button onClick={()=>router.back()} style={{background:"none",border:"none",color:"#555",cursor:"pointer",padding:"4px 8px",fontSize:20,lineHeight:1}}>‹</button>
 
         <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-          <div style={{width:32,height:32,borderRadius:"50%",background:color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"#fff",border:"2px solid rgba(255,255,255,0.15)"}}>
+          <div style={{width:32,height:32,borderRadius:"50%",background:color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"#fff",border:"2px solid rgba(0,0,0,0.08)"}}>
             {username?.[0]?.toUpperCase()}
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6}}>
-            <span style={{fontSize:14,fontWeight:700,color:"#fff"}}>{username}</span>
+            <span style={{fontSize:14,fontWeight:700,color:"#1a1a1a"}}>{username}</span>
             <span style={{fontSize:12}}>{flag}</span>
             <span style={{background:"#e53935",color:"#fff",fontSize:9,fontWeight:700,padding:"1px 6px",borderRadius:3,letterSpacing:".05em"}}>LIVE</span>
           </div>
@@ -112,11 +112,10 @@ export default function WatchPage({ username }) {
             <button key={tab} onClick={()=>setActiveTab(tab)} style={{
               background:"none", border:"none", cursor:"pointer",
               padding:"0 14px", height:"100%", fontSize:13,
-              color: activeTab===tab || (tab==="Store" && STORE_TABS.includes(activeTab)) ? "#fff" : "#888",
+              color: activeTab===tab || (tab==="Store" && STORE_TABS.includes(activeTab)) ? "#1a1a1a" : "#888",
               borderBottom: activeTab===tab || (tab==="Store" && STORE_TABS.includes(activeTab)) ? "2px solid #e53935" : "2px solid transparent",
               fontFamily:"inherit", fontWeight: activeTab===tab ? 600 : 400,
               transition:"color .15s",
-              ...(tab === "Store" && !STORE_TABS.includes(activeTab) ? { color: "#e08080" } : {}),
             }}>
               {tab === "Store" ? "🛍 Store" : tab}
             </button>
@@ -129,27 +128,27 @@ export default function WatchPage({ username }) {
           borderRadius:20, cursor:"pointer", fontFamily:"inherit",
           display:"flex", alignItems:"center", gap:6, flexShrink:0,
         }}
-          onMouseEnter={e=>e.currentTarget.style.background="rgba(229,57,53,0.1)"}
+          onMouseEnter={e=>e.currentTarget.style.background="rgba(229,57,53,0.08)"}
           onMouseLeave={e=>e.currentTarget.style.background="transparent"}
         >🤍 Join Fan Club</button>
 
         <div style={{flex:1}}/>
 
         <button onClick={()=>setFollowing(f=>!f)} style={{
-          background: following?"rgba(229,57,53,0.15)":"transparent",
-          border:`1px solid ${following?"#e53935":"rgba(255,255,255,0.2)"}`,
-          color: following?"#e53935":"#aaa",
+          background: following?"rgba(229,57,53,0.08)":"transparent",
+          border:`1px solid ${following?"#e53935":"#d0d0d0"}`,
+          color: following?"#e53935":"#555",
           fontSize:12, padding:"6px 14px", borderRadius:6,
           cursor:"pointer", fontFamily:"inherit", flexShrink:0,
         }}>
           {following ? "❤️ Following" : "🤍 Follow"}
         </button>
 
-        <button onClick={()=>router.back()} style={{background:"none",border:"none",color:"#888",fontSize:13,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:4,flexShrink:0}}>
+        <button onClick={()=>router.back()} style={{background:"none",border:"none",color:"#555",fontSize:13,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:4,flexShrink:0}}>
           Next Model <span style={{fontSize:16}}>›</span>
         </button>
 
-        <button style={{background:"none",border:"none",color:"#888",fontSize:13,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
+        <button style={{background:"none",border:"none",color:"#555",fontSize:13,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#888"><path d="M4 6h16v2H4zm3 5h10v2H7zm3 5h4v2h-4z"/></svg>
           Categories
         </button>
@@ -165,7 +164,7 @@ export default function WatchPage({ username }) {
           bottom: BANNER_H,
           zIndex: 300,
           overflowY: "auto",
-          background: "#0d0d0d",
+          background: "#ffffff",
         }}>
           {activeTab === "Store" && (
             <ModelStorefront
@@ -203,7 +202,7 @@ export default function WatchPage({ username }) {
         </div>
       )}
 
-      {/* ── SCROLLABLE LEFT CONTENT ── hidden when Store tabs are active */}
+      {/* ── SCROLLABLE LEFT CONTENT ── */}
       <div
         ref={scrollRef}
         style={{
@@ -213,8 +212,8 @@ export default function WatchPage({ username }) {
           paddingRight: CHAT_WIDTH,
           paddingBottom: BANNER_H,
           scrollbarWidth: "thin",
-          scrollbarColor: "#333 transparent",
-          background: "#111",
+          scrollbarColor: "#ccc transparent",
+          background: "#f5f5f5",
           display: STORE_TABS.includes(activeTab) ? "none" : "block",
         }}
       >
@@ -226,13 +225,14 @@ export default function WatchPage({ username }) {
 
           {/* Action bar */}
           <div style={{
-            background: "#1a1a1a",
-            borderTop: "1px solid rgba(255,255,255,0.08)",
+            background: "#ffffff",
+            borderTop: "1px solid #e0e0e0",
+            borderBottom: "1px solid #e0e0e0",
             display: "flex", alignItems: "center",
             padding: "0 16px", gap: 12,
             height: ACTION_H,
           }}>
-            <button onClick={()=>setFollowing(f=>!f)} style={{background:"none",border:"none",cursor:"pointer",padding:6,color:following?"#e53935":"#888",fontSize:20,lineHeight:1,flexShrink:0}}>
+            <button onClick={()=>setFollowing(f=>!f)} style={{background:"none",border:"none",cursor:"pointer",padding:6,color:following?"#e53935":"#aaa",fontSize:20,lineHeight:1,flexShrink:0}}>
               {following ? "❤️" : "🤍"}
             </button>
 
@@ -240,12 +240,12 @@ export default function WatchPage({ username }) {
 
             <div style={{flex:1,minWidth:0}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3}}>
-                <span style={{fontSize:11,color:"#888",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+                <span style={{fontSize:11,color:"#666",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
                   Goal: <span style={{color:"#f0a500",fontWeight:600}}>{goalCurrent} tk</span> {goalText}
                 </span>
                 <span style={{fontSize:11,color:"#888",flexShrink:0}}>{goalPct}%</span>
               </div>
-              <div style={{width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:4,overflow:"hidden"}}>
+              <div style={{width:"100%",height:4,background:"#e8e8e8",borderRadius:4,overflow:"hidden"}}>
                 <div style={{width:`${goalPct}%`,height:"100%",background:"#4caf50",borderRadius:4,transition:"width .5s"}}/>
               </div>
             </div>
@@ -256,16 +256,16 @@ export default function WatchPage({ username }) {
             </div>
 
             <button onClick={()=>setShowPrivate(true)} style={{
-              background:"transparent", border:"1px solid rgba(255,255,255,0.25)",
-              color:"#fff", fontSize:13, fontWeight:600, padding:"8px 16px",
+              background:"transparent", border:"1px solid #d0d0d0",
+              color:"#333", fontSize:13, fontWeight:600, padding:"8px 16px",
               borderRadius:6, cursor:"pointer", fontFamily:"inherit", flexShrink:0,
               display:"flex", alignItems:"center", gap:6,
             }}
-              onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.5)"}
-              onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.25)"}
+              onMouseEnter={e=>e.currentTarget.style.borderColor="#999"}
+              onMouseLeave={e=>e.currentTarget.style.borderColor="#d0d0d0"}
             >
               Private Show <span style={{color:"#f0a500",fontWeight:700}}>{privatePrice} tk</span>
-              <span style={{fontSize:12,color:"#888"}}>▼</span>
+              <span style={{fontSize:12,color:"#aaa"}}>▼</span>
             </button>
 
             <button onClick={()=>setShowTip(true)} style={{
@@ -278,22 +278,22 @@ export default function WatchPage({ username }) {
               onMouseLeave={e=>e.currentTarget.style.opacity="1"}
             >
               Send Tip
-              <div style={{width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🪙</div>
+              <div style={{width:26,height:26,borderRadius:"50%",background:"rgba(0,0,0,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🪙</div>
             </button>
           </div>
 
           {/* ── RELATED GIRLS ── */}
-          <div style={{padding:"24px 16px 8px"}}>
-            <h3 style={{color:"#fff",fontSize:16,fontWeight:700,margin:"0 0 14px"}}>Related Girls</h3>
+          <div style={{padding:"24px 16px 8px", background:"#fff", marginTop:8, borderTop:"1px solid #e8e8e8", borderBottom:"1px solid #e8e8e8"}}>
+            <h3 style={{color:"#1a1a1a",fontSize:16,fontWeight:700,margin:"0 0 14px"}}>Related Girls</h3>
             <div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:8}}>
               {RELATED.map((name,i)=>(
-                <div key={name} onClick={()=>router.push(`/watch/${name}`)} style={{cursor:"pointer",borderRadius:6,overflow:"hidden",background:"#1a1a1a",position:"relative"}}>
-                  <div style={{aspectRatio:"3/4",background:`hsl(${i*37},40%,20%)`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                    <span style={{color:"rgba(255,255,255,0.3)",fontSize:28}}>👤</span>
+                <div key={name} onClick={()=>router.push(`/watch/${name}`)} style={{cursor:"pointer",borderRadius:6,overflow:"hidden",background:"#f5f5f5",border:"1px solid #e8e8e8",position:"relative"}}>
+                  <div style={{aspectRatio:"3/4",background:`hsl(${i*37},30%,88%)`,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <span style={{color:"rgba(0,0,0,0.2)",fontSize:28}}>👤</span>
                   </div>
                   {i < 2 && <div style={{position:"absolute",top:6,left:6,background:"#e53935",color:"#fff",fontSize:9,fontWeight:700,padding:"2px 6px",borderRadius:3}}>LIVE</div>}
                   <div style={{padding:"6px 8px"}}>
-                    <div style={{fontSize:11,color:"#ccc",fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name}</div>
+                    <div style={{fontSize:11,color:"#333",fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name}</div>
                   </div>
                 </div>
               ))}
@@ -301,16 +301,16 @@ export default function WatchPage({ username }) {
           </div>
 
           {/* ── CATEGORIES ── */}
-          <div style={{padding:"20px 16px"}}>
-            <h3 style={{color:"#fff",fontSize:16,fontWeight:700,margin:"0 0 12px"}}>{username}'s Categories</h3>
+          <div style={{padding:"20px 16px", background:"#fff", marginTop:8, borderTop:"1px solid #e8e8e8", borderBottom:"1px solid #e8e8e8"}}>
+            <h3 style={{color:"#1a1a1a",fontSize:16,fontWeight:700,margin:"0 0 12px"}}>{username}'s Categories</h3>
             <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
               {CATEGORIES_LIST.map(cat=>(
                 <span key={cat} style={{
-                  background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)",
-                  color:"#ccc", fontSize:12, padding:"6px 14px", borderRadius:20, cursor:"pointer",
+                  background:"#f5f5f5", border:"1px solid #e0e0e0",
+                  color:"#555", fontSize:12, padding:"6px 14px", borderRadius:20, cursor:"pointer",
                 }}
-                  onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.13)"}
-                  onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.07)"}
+                  onMouseEnter={e=>e.currentTarget.style.background="#ebebeb"}
+                  onMouseLeave={e=>e.currentTarget.style.background="#f5f5f5"}
                 >{cat}</span>
               ))}
             </div>
@@ -318,18 +318,18 @@ export default function WatchPage({ username }) {
 
           {/* ── FOOTER ── */}
           <div style={{
-            background:"#0d0d0d", borderTop:"1px solid rgba(255,255,255,0.06)",
+            background:"#f9f9f9", borderTop:"1px solid #e8e8e8",
             padding:"32px 24px", marginTop:8,
             display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr", gap:32,
           }}>
             <div>
-              <div style={{fontSize:18,fontWeight:800,color:"#fff",marginBottom:12}}>
+              <div style={{fontSize:18,fontWeight:800,color:"#1a1a1a",marginBottom:12}}>
                 <span style={{color:"#e53935"}}>STRIP</span>CHATBATE
               </div>
-              <p style={{fontSize:12,color:"#666",lineHeight:1.7,margin:"0 0 16px"}}>
+              <p style={{fontSize:12,color:"#888",lineHeight:1.7,margin:"0 0 16px"}}>
                 The world's premier 18+ LIVE adult entertainment destination.
               </p>
-              <p style={{fontSize:11,color:"#444",margin:0}}>All models are 18 years of age or older.</p>
+              <p style={{fontSize:11,color:"#bbb",margin:0}}>All models are 18 years of age or older.</p>
             </div>
             {[
               { title:"STRIPCHATBATE", links:["About","Blog","Media Inquiries"] },
@@ -338,25 +338,25 @@ export default function WatchPage({ username }) {
               { title:"HELP & SUPPORT",links:["Support & FAQ","Billing Support","DMCA Protection"] },
             ].map(col=>(
               <div key={col.title}>
-                <div style={{fontSize:11,fontWeight:700,color:"#888",letterSpacing:"0.08em",marginBottom:12}}>{col.title}</div>
+                <div style={{fontSize:11,fontWeight:700,color:"#999",letterSpacing:"0.08em",marginBottom:12}}>{col.title}</div>
                 {col.links.map(link=>(
-                  <div key={link} style={{fontSize:12,color:"#555",marginBottom:8,cursor:"pointer"}}
-                    onMouseEnter={e=>e.currentTarget.style.color="#ccc"}
-                    onMouseLeave={e=>e.currentTarget.style.color="#555"}
+                  <div key={link} style={{fontSize:12,color:"#aaa",marginBottom:8,cursor:"pointer"}}
+                    onMouseEnter={e=>e.currentTarget.style.color="#333"}
+                    onMouseLeave={e=>e.currentTarget.style.color="#aaa"}
                   >{link}</div>
                 ))}
               </div>
             ))}
           </div>
 
-          <div style={{background:"#0d0d0d",borderTop:"1px solid rgba(255,255,255,0.04)",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <span style={{fontSize:11,color:"#444"}}>18 U.S.C. 2257 Record-Keeping Requirements Compliance Statement</span>
-            <span style={{fontSize:11,color:"#444"}}>© 2025 Stripchatbate</span>
+          <div style={{background:"#f9f9f9",borderTop:"1px solid #e8e8e8",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <span style={{fontSize:11,color:"#bbb"}}>18 U.S.C. 2257 Record-Keeping Requirements Compliance Statement</span>
+            <span style={{fontSize:11,color:"#bbb"}}>© 2025 Stripchatbate</span>
           </div>
         </>
       </div>
 
-      {/* ── FIXED CHAT PANEL ── hidden when Store tabs are active */}
+      {/* ── FIXED CHAT PANEL ── */}
       <div style={{
         position: "fixed",
         top: CHAT_TOP,
@@ -367,21 +367,21 @@ export default function WatchPage({ username }) {
         display: STORE_TABS.includes(activeTab) ? "none" : "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: "#0f0f0f",
-        borderLeft: "1px solid rgba(255,255,255,0.07)",
+        background: "#ffffff",
+        borderLeft: "1px solid #e0e0e0",
       }}>
         <LiveChat username={username} viewers={viewers} onTipClick={()=>setShowTip(true)}/>
       </div>
 
-      {/* ── PiP ── only show when not on Store tabs ── */}
+      {/* ── PiP ── */}
       {showPip && !STORE_TABS.includes(activeTab) && (
-        <div style={{position:"fixed",bottom:80,left:16,zIndex:999,width:280,borderRadius:10,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.7)",border:"1px solid rgba(255,255,255,0.1)",background:"#000"}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"6px 10px",background:"rgba(0,0,0,0.85)",borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
+        <div style={{position:"fixed",bottom:80,left:16,zIndex:999,width:280,borderRadius:10,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,0.18)",border:"1px solid #e0e0e0",background:"#000"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"6px 10px",background:"#fff",borderBottom:"1px solid #e8e8e8"}}>
             <div style={{display:"flex",alignItems:"center",gap:6}}>
               <div style={{width:20,height:20,borderRadius:"50%",background:color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,color:"#fff"}}>
                 {username?.[0]?.toUpperCase()}
               </div>
-              <span style={{fontSize:11,fontWeight:700,color:"#fff"}}>{username}</span>
+              <span style={{fontSize:11,fontWeight:700,color:"#1a1a1a"}}>{username}</span>
               <span style={{background:"#e53935",color:"#fff",fontSize:8,fontWeight:700,padding:"1px 5px",borderRadius:3}}>LIVE</span>
             </div>
             <button onClick={()=>setShowPip(false)} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:16,lineHeight:1,padding:2}}>✕</button>
@@ -396,9 +396,9 @@ export default function WatchPage({ username }) {
       <div style={{
         position:"fixed", bottom:0, left:0, right:0, zIndex:1000,
         background:"#e53935", display:"flex", alignItems:"center", justifyContent:"center",
-        gap:14, height:BANNER_H, boxShadow:"0 -2px 12px rgba(0,0,0,0.4)",
+        gap:14, height:BANNER_H, boxShadow:"0 -2px 12px rgba(0,0,0,0.15)",
       }}>
-        <div style={{width:32,height:32,borderRadius:"50%",background:"rgba(0,0,0,0.25)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <div style={{width:32,height:32,borderRadius:"50%",background:"rgba(0,0,0,0.2)",display:"flex",alignItems:"center",justifyContent:"center"}}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
         </div>
         <span style={{color:"#fff",fontSize:14,fontWeight:600}}>Join Stripchatbate to interact with models!</span>
