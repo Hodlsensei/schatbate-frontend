@@ -577,28 +577,33 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
               {AGE.map(s => <PlainRow key={s.label} {...s}/>)}
 
               {/* ETHNICITY */}
-              <Divider/>
-              <SecLabel text="Ethnicity"/>
+              <div style={{ marginTop: 12 }}>
+               <SecLabel text="Ethnicity"/>
+              </div>
               {ETHNICITY.map(s => <PlainRow key={s.label} {...s}/>)}
 
               {/* BODY TYPE */}
-              <Divider/>
-              <SecLabel text="Body Type"/>
+              <div style={{ marginTop: 12 }}>
+               <SecLabel text="Body Type"/>
+              </div> 
               {BODY_TYPE.map(s => <PlainRow key={s.label} {...s}/>)}
 
               {/* HAIR */}
-              <Divider/>
-              <SecLabel text="Hair"/>
+              <div style={{ marginTop: 12 }}>
+               <SecLabel text="Hair"/>
+              </div> 
               {HAIR.map(s => <PlainRow key={s.label} {...s}/>)}
 
               {/* PRIVATE SHOWS */}
-              <Divider/>
-              <SecLabel text="Private Shows"/>
+              <div style={{ marginTop: 12 }}>
+               <SecLabel text="Private Shows"/>
+              </div> 
               {PRIVATE_SHOWS.map(s => <PlainRow key={s.label} {...s}/>)}
 
               {/* POPULAR */}
-              <Divider/>
-              <SecLabel text="Popular"/>
+              <div style={{ marginTop: 12 }}>
+               <SecLabel text="Popular"/>
+              </div> 
               {POPULAR.map(s =>
                 s.icon
                   ? <IconRow key={s.label} {...s}/>
@@ -608,18 +613,19 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
               {/* ALL CATEGORIES — sticky */}
               <div style={{
                 position: "sticky",
-                bottom: 50,
+                bottom: -25,
                 zIndex: 20,
                 background: BG,
-                borderTop: "1px solid #D1D3D4",
-                padding: "10px 12px",
+                padding: "10px 12px 30px",
+                marginTop: 10,
                 boxShadow: '0 20px 0 20px ${BG}',
               }}>
                 <AllCatsBtn collapsed={false} onClick={openCats}/>
+                <div style={{ height: 1, background: "#D1D3D4", marginTop: 60 }}/>
               </div>
 
               {/* FOOTER LINKS */}
-              <div style={{ marginTop: 20 }}>
+              <div style={{ marginTop: 20, paddingTop: 20 }}>
                 {FOOTER_LINKS.map(l => <FooterLink key={l.label} label={l.label} href={l.href}/>)}
               </div>
 
