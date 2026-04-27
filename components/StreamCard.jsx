@@ -33,7 +33,24 @@ const AFRICAN_PHOTOS = [
   "https://thumb-cdn77.xvideos-cdn.com/1e1fdc91-f540-4f72-acd2-58ce81d27730/0/xv_4_t.jpg",
 ];
 
-const FLAGS = ["🇿🇦","🇺🇸","🇧🇷","🇨🇴","🇷🇺","🇺🇦","🇯🇵","🇫🇷","🇩🇪","🇬🇧","🇲🇽","🇳🇬","🇹🇭","🇷🇴","🇵🇱"];
+// Emoji flag → ISO 2-letter country code map
+const EMOJI_TO_CODE = {
+  "🇿🇦": "za", "🇺🇸": "us", "🇧🇷": "br", "🇨🇴": "co",
+  "🇷🇺": "ru", "🇺🇦": "ua", "🇯🇵": "jp", "🇫🇷": "fr",
+  "🇩🇪": "de", "🇬🇧": "gb", "🇲🇽": "mx", "🇳🇬": "ng",
+  "🇹🇭": "th", "🇷🇴": "ro", "🇵🇱": "pl", "🇬🇷": "gr",
+  "🇮🇹": "it", "🇪🇸": "es", "🇨🇿": "cz", "🇸🇪": "se",
+  "🇦🇷": "ar", "🇰🇪": "ke", "🇨🇦": "ca", "🇵🇭": "ph",
+  "🇮🇳": "in", "🇰🇷": "kr", "🇨🇳": "cn", "🇦🇺": "au",
+};
+
+function getFlagCode(flag) {
+  if (!flag) return "us";
+  // Already an ISO code (2 letters)
+  if (typeof flag === "string" && flag.length === 2) return flag.toLowerCase();
+  // Emoji flag
+  return EMOJI_TO_CODE[flag] || "us";
+}
 
 function MobileIcon() {
   return (
@@ -59,7 +76,8 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
   const isAfrican = !!streamer?.photo && streamer.photo.includes("african");
   const photoPool = isAfrican ? AFRICAN_PHOTOS : PHOTOS;
   const photo      = streamer?.photo || photoPool[index % photoPool.length];
-  const flag       = streamer?.region || FLAGS[index % FLAGS.length];
+  const flag       = streamer?.region || "us";
+  const flagCode   = getFlagCode(flag);
   const name       = streamer?.username || `Model_${index + 1}`;
   const isNew      = streamer?.isNew  || false;
   const isVR       = streamer?.vr     || false;
@@ -84,12 +102,7 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
       style={{
         width: gridMode ? "100%" : 160,
         flexShrink: gridMode ? undefined : 0,
-        /*
-          Reference site uses very minimal rounding — ~4px.
-          The client noted the old code was "curved at the edge",
-          so we keep borderRadius at 4 (nearly square corners).
-        */
-        borderRadius: 4,
+        borderRadius: 0,
         overflow: "hidden",
         position: "relative",
         cursor: "pointer",
@@ -114,7 +127,7 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
           onError={e => { e.currentTarget.style.display = "none"; }}
         />
 
-        {/* Gradient overlay — stronger at bottom to make text readable */}
+        {/* Gradient overlay */}
         <div style={{
           position: "absolute", inset: 0,
           background: "linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.08) 45%,transparent 100%)",
@@ -158,45 +171,36 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
           }}>NEW</div>
         )}
 
-        {/*
-          COUNTRY FLAG
-          Positioned in the BOTTOM-LEFT area, just ABOVE the username.
-          Reference site: flag sits at the left side, roughly 22px from bottom,
-          clearly above the model name row.
-          Changed from right-side to left-side to match reference layout.
-        */}
+        {/* BOTTOM: username on left, real flag image on right — matching reference */}
         <div style={{
           position: "absolute",
-          bottom: 20,        /* sits above the name line */
-          left: 6,
-          fontSize: 13,
-          lineHeight: 1,
-          filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.7))",
-        }}>
-          {flag}
-        </div>
-
-        {/*
-          BOTTOM: username
-          - font-size: 12px (matching reference — slightly larger than before)
-          - positioned higher: bottom: 5px → stays clear of cell edge
-          - left offset accounts for flag width
-        */}
-        <div style={{
-          position: "absolute",
-          bottom: 5,
+          bottom: 6,
           left: 6,
           right: 6,
-          fontSize: 12,      /* matches reference site font size */
-          fontWeight: 600,
-          color: "#fff",
-          fontFamily: FONT,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          textShadow: "0 1px 4px rgba(0,0,0,0.9)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 4,
         }}>
-          {name}
+          <span style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: "#fff",
+            fontFamily: FONT,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            textShadow: "0 1px 4px rgba(0,0,0,0.9)",
+          }}>
+            {name}
+          </span>
+          <img
+            src={`https://flagcdn.com/w20/${flagCode}.png`}
+            width={16}
+            height={11}
+            alt={flagCode}
+            style={{ borderRadius: 1, objectFit: "cover", flexShrink: 0, display: "block" }}
+          />
         </div>
       </div>
     </div>
