@@ -167,31 +167,14 @@ function generateCard(tag, index) {
   };
 }
 
-/*
-  Card dimensions — updated to match reference site exactly:
-
-  Reference site cells (landscape, non-mobile sections):
-    • Width:  ~175px
-    • Height: ~131px  (ratio ≈ 4:3, nearly square-ish landscape)
-    • Gap:    4px between cells
-
-  Mobile/portrait sections:
-    • Width:  162px
-    • Height: 248px  (portrait 2:3)
-
-  The old code used 185×138 which made cells slightly taller.
-  The reference is clearly a compact near-4:3 landscape card.
-*/
-const GAP            = 4;   /* matches reference tighter grid gap */
+const GAP            = 6;
 const BATCH_H        = 12;
 const BATCH_V        = 24;
+const CARD_W_DEFAULT = 175;
+const CARD_H_DEFAULT = 131;
+const CARD_W_MOBILE  = 162;
+const CARD_H_MOBILE  = 248;
 
-const CARD_W_DEFAULT = 175; /* reference width  */
-const CARD_H_DEFAULT = 131; /* reference height — ~4:3 landscape */
-const CARD_W_MOBILE  = 162; /* portrait card    */
-const CARD_H_MOBILE  = 248; /* portrait height  */
-
-/* ── Section title row ─────────────────────────────────── */
 function SectionHeader({ title, showSeeAll = true }) {
   return (
     <div style={{
@@ -199,7 +182,6 @@ function SectionHeader({ title, showSeeAll = true }) {
       marginBottom: 8, paddingBottom: 8,
       borderBottom: "2px solid #e8e8e8",
     }}>
-      {/* Font size matches reference: 16px bold section headings */}
       <span style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", fontFamily: FONT }}>
         {title}
       </span>
@@ -219,7 +201,6 @@ function SectionHeader({ title, showSeeAll = true }) {
   );
 }
 
-/* ── Horizontal scrolling section ─────────────────────── */
 function HorizontalSection({ title, tag }) {
   const scrollRef   = useRef(null);
   const sentinelRef = useRef(null);
@@ -267,7 +248,6 @@ function HorizontalSection({ title, tag }) {
   return (
     <div style={{ marginBottom: 28 }}>
       <SectionHeader title={title} />
-
       <div style={{ position: "relative", overflow: "hidden" }}>
         <div ref={scrollRef} style={{ overflowX: "auto", overflowY: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}>
           <style>{`
@@ -281,7 +261,6 @@ function HorizontalSection({ title, tag }) {
               to   { opacity: 1; transform: translateY(0); }
             }
           `}</style>
-
           <div className="hscroll" style={{
             display: "grid",
             gridTemplateRows: "repeat(2, auto)",
@@ -295,7 +274,6 @@ function HorizontalSection({ title, tag }) {
                 <StreamCard streamer={s} gridMode cardHeight={CARD_H} />
               </div>
             ))}
-
             {loading && Array.from({ length: BATCH_H }).map((_, i) => (
               <div key={`sk-${i}`} style={{
                 width: CARD_W, height: CARD_H, borderRadius: 4,
@@ -303,12 +281,9 @@ function HorizontalSection({ title, tag }) {
                 backgroundSize: "200% 100%", animation: "shimmer 1.2s infinite",
               }} />
             ))}
-
             <div ref={sentinelRef} style={{ width: 1, height: "100%", gridRow: "1 / span 2" }} />
           </div>
         </div>
-
-        {/* Scroll right arrow */}
         <button onClick={scrollRight} style={{
           position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
           background: "rgba(255,255,255,0.92)", border: "1px solid #ddd",
@@ -330,7 +305,6 @@ function HorizontalSection({ title, tag }) {
   );
 }
 
-/* ── Vertical infinite featured grid ──────────────────── */
 function FeaturedSection({ cols, title }) {
   const [cards,    setCards]   = useState(() => Array.from({ length: BATCH_V }, (_, i) => generateCard("featured", i)));
   const [loading,  setLoading] = useState(false);
@@ -387,11 +361,12 @@ function FeaturedSection({ cols, title }) {
   );
 }
 
-/* ── Main HomePage ─────────────────────────────────────── */
+/* ── Main HomePage ─────────────────────────────────────────── */
 export default function HomePage() {
   const { category }    = useCategory();
   const [isMobile,  setIsMobile]  = useState(false);
   const [showPromo, setShowPromo] = useState(true);
+  const [showVerify, setShowVerify] = useState(true);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 820);
@@ -410,6 +385,61 @@ export default function HomePage() {
       fontFamily: FONT, fontSize: 13,
     }}>
       <main style={{ padding: isMobile ? "12px 8px 80px" : "16px 24px 80px" }}>
+
+        {/* ── Verify Age Banner ── */}
+        {showVerify && (
+          <div style={{
+            background: "linear-gradient(90deg, #1565c0 0%, #1976d2 100%)",
+            borderRadius: 6, marginBottom: 12,
+            display: "flex", alignItems: "center",
+            padding: isMobile ? "8px 12px" : "10px 16px",
+            gap: 12,
+          }}>
+            {/* Shield icon */}
+            <div style={{
+              width: 36, height: 36, borderRadius: "50%",
+              background: "rgba(255,255,255,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}>
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+
+            {/* Text */}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "#fff", fontFamily: FONT, lineHeight: 1.3 }}>
+                Verify your age to unlock{" "}
+                <span style={{ color: "#ffe082" }}>18+ content</span>
+              </div>
+              {!isMobile && (
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.78)", fontFamily: FONT, marginTop: 2 }}>
+                  Required by{" "}
+                  <img src="https://flagcdn.com/w20/gb.png" width={14} height={10}
+                    alt="UK" style={{ borderRadius: 1, verticalAlign: "middle", margin: "0 3px" }}/>
+                  UK law. It's fast and we don't store personal data
+                </div>
+              )}
+            </div>
+
+            {/* Verify Age button */}
+            <button style={{
+              background: "linear-gradient(135deg, #f9a825, #f57f17)",
+              border: "none", color: "#fff",
+              fontWeight: 700, fontSize: isMobile ? 12 : 13, fontFamily: FONT,
+              padding: isMobile ? "6px 14px" : "9px 24px",
+              borderRadius: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              transition: "opacity .15s",
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+              Verify Age
+            </button>
+          </div>
+        )}
 
         {/* ── Promo banner ── */}
         {showPromo && (
@@ -461,7 +491,7 @@ export default function HomePage() {
           />
         ))}
 
-        {/* ── Vertical featured grid: 6 cols desktop, 2 mobile ── */}
+        {/* ── Vertical featured grid ── */}
         <FeaturedSection key={category} cols={isMobile ? 2 : 6} title={featuredTitle} />
 
       </main>

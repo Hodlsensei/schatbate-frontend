@@ -119,7 +119,7 @@ const POPULAR = [
   { label: "Foot Fetish",     count: 4281, hot: true },
 ];
 const FOOTER_LINKS = [
-  { label: "About Us",                                 href: "/about" },
+  { label: "About Stripchatbate",                                 href: "/about" },
   { label: "Blog",                                     href: "#"      },
   { label: "Support & FAQ",                            href: "#"      },
   { label: "Billing Support",                          href: "#"      },
@@ -136,43 +136,16 @@ const FOOTER_LINKS = [
 ];
 
 const LANGUAGES = [
-  "English",
-  "Deutsch",
-  "Français",
-  "Español",
-  "Italiano",
-  "Nederlands",
-  "Português (EU)",
-  "Português (BR)",
-  "Ελληνικά",
-  "Українська",
-  "Polski",
-  "Русский",
-  "Română",
-  "Magyar",
-  "Čeština",
-  "Hrvatski",
-  "Slovenčina",
-  "Norsk",
-  "Svenska",
-  "Dansk",
-  "Suomi",
-  "日本語",
-  "한국어",
-  "中文",
-  "繁體中文",
-  "ภาษาไทย",
-  "বাংলা",
-  "Bahasa Indonèsia",
-  "Bahasa Melayu",
-  "Tiếng Việt",
-  "العربية",
-  "Türkçe",
+  "English","Deutsch","Français","Español","Italiano","Nederlands",
+  "Português (EU)","Português (BR)","Ελληνικά","Українська","Polski",
+  "Русский","Română","Magyar","Čeština","Hrvatski","Slovenčina",
+  "Norsk","Svenska","Dansk","Suomi","日本語","한국어","中文","繁體中文",
+  "ภาษาไทย","বাংলা","Bahasa Indonèsia","Bahasa Melayu","Tiếng Việt",
+  "العربية","Türkçe",
 ];
 
-/* ─── Divider */
 const Divider = () => (
-  <div style={{ height: 1, background: "#D1D3D4", margin: "20px 0 18px" }} />
+  <div style={{ height: 1, background: "#D1D3D4", margin: "20px 16px 18px" }} />
 );
 
 function SecLabel({ text }) {
@@ -181,8 +154,7 @@ function SecLabel({ text }) {
       padding: "12px 16px 5px",
       fontSize: 11, fontWeight: 700,
       letterSpacing: ".1em", textTransform: "uppercase",
-      color: MUTED, fontFamily: FONT,
-      lineHeight: 1.2,
+      color: MUTED, fontFamily: FONT, lineHeight: 1.2,
     }}>
       {text}
     </div>
@@ -218,6 +190,7 @@ function SpecialIcon({ flagCode, vr, type }) {
   return null;
 }
 
+/* ── PlainRow — NO transform on hover ── */
 function PlainRow({ label, count, hot, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
@@ -227,8 +200,8 @@ function PlainRow({ label, count, hot, href = "#" }) {
       fontSize: 13, fontFamily: FONT, fontWeight: 400,
       color: TEXT, textDecoration: "none",
       background: hov ? HOVER : "transparent",
-      transition: "background .12s, transform .1s",
-      transform: hov ? "translateX(2px)" : "none",
+      transition: "background .12s",
+      marginLeft: 4, borderRadius: "4px 0 0 4px",
     }}
     onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
       <span style={{ flex: 1 }}>
@@ -242,6 +215,7 @@ function PlainRow({ label, count, hot, href = "#" }) {
   );
 }
 
+/* ── IconRow — NO transform on hover ── */
 function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
@@ -251,8 +225,8 @@ function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
       fontSize: 13, fontFamily: FONT, fontWeight: 400,
       color: TEXT, textDecoration: "none",
       background: hov ? HOVER : "transparent",
-      transition: "background .12s, transform .1s",
-      transform: hov ? "translateX(2px)" : "none",
+      transition: "background .12s",
+      marginLeft: 4, borderRadius: "4px 0 0 4px",
     }}
     onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
       <span style={{ width: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -269,6 +243,7 @@ function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
   );
 }
 
+/* ── NavItem — NO transform on hover, highlight stretches full width ── */
 function NavItem({ item, active, collapsed }) {
   const [hov, setHov] = useState(false);
   const isVip = item.icon === "vip";
@@ -285,8 +260,8 @@ function NavItem({ item, active, collapsed }) {
       fontSize: 13, fontFamily: FONT,
       textDecoration: "none", whiteSpace: "nowrap",
       background: bg, position: "relative",
-      transition: "background .15s, color .15s, transform .12s",
-      transform: (!active && hov && !collapsed) ? "translateX(3px)" : "none",
+      marginLeft: collapsed ? 0 : 4, borderRadius: collapsed ? 0 : "4px 0 0 4px",
+      transition: "background .15s, color .15s",
     }}
     onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
       {active && !collapsed && (
@@ -324,7 +299,7 @@ function FooterLink({ label, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
     <Link href={href} style={{
-      display: "block", padding: "4px 16px",
+      display: "block", padding: "7px 16px",
       fontSize: 12, fontFamily: FONT,
       color: hov ? TEXT : "#6b7280",
       textDecoration: "none", transition: "color .12s",
@@ -401,11 +376,10 @@ function AllCatsBtn({ collapsed, onClick }) {
   );
 }
 
-/* ─── Language Selector ──────────────────────────────────── */
 function LanguageSelector({ collapsed }) {
-  const [open, setOpen]   = useState(false);
-  const [lang, setLang]   = useState("English");
-  const wrapRef           = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [lang, setLang] = useState("English");
+  const wrapRef         = useRef(null);
 
   useEffect(() => {
     if (!open) return;
@@ -422,7 +396,6 @@ function LanguageSelector({ collapsed }) {
 
   return (
     <div ref={wrapRef} style={{ position: "relative", padding: "4px 12px 14px" }}>
-      {/* Trigger button */}
       <button onClick={() => setOpen(o => !o)} style={{
         display: "flex", alignItems: "center", gap: 8, width: "100%",
         padding: "8px 10px",
@@ -440,52 +413,36 @@ function LanguageSelector({ collapsed }) {
         </svg>
       </button>
 
-      {/* Dropdown — opens downward, white bg, checkmark for selected */}
       {open && (
         <div style={{
           position: "absolute",
           top: "calc(100% - 4px)",
           left: 12, right: 12,
           background: "#ffffff",
-          borderRadius: 8,
-          zIndex: 200,
+          borderRadius: 8, zIndex: 200,
           boxShadow: "0 6px 24px rgba(0,0,0,0.13)",
           border: "1px solid #e5e7eb",
-          maxHeight: 260,
-          overflowY: "auto",
-          scrollbarWidth: "thin",
-          scrollbarColor: "#bbb transparent",
+          maxHeight: 260, overflowY: "auto",
+          scrollbarWidth: "thin", scrollbarColor: "#bbb transparent",
         }}>
           {LANGUAGES.map(l => {
             const sel = l === lang;
             return (
-              <button
-                key={l}
-                onClick={() => { setLang(l); setOpen(false); }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "8px 14px",
-                  border: "none",
-                  cursor: "pointer",
-                  background: "transparent",
-                  color: sel ? ACTIVE_CLR : TEXT,
-                  fontWeight: sel ? 600 : 400,
-                  fontSize: 13,
-                  fontFamily: FONT,
-                  transition: "background .1s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "#f3f4f6"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-              >
+              <button key={l} onClick={() => { setLang(l); setOpen(false); }} style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                width: "100%", textAlign: "left",
+                padding: "8px 14px", border: "none", cursor: "pointer",
+                background: "transparent",
+                color: sel ? ACTIVE_CLR : TEXT,
+                fontWeight: sel ? 600 : 400,
+                fontSize: 13, fontFamily: FONT, transition: "background .1s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#f3f4f6"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
                 <span>{l}</span>
                 {sel && (
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
-                    stroke={ACTIVE_CLR} strokeWidth={2.5}
-                    strokeLinecap="round" strokeLinejoin="round">
+                    stroke={ACTIVE_CLR} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                 )}
@@ -571,68 +528,55 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
 
           {!collapsed && (
             <>
-              {/* AGE */}
               <Divider/>
               <SecLabel text="Age"/>
               {AGE.map(s => <PlainRow key={s.label} {...s}/>)}
 
-              {/* ETHNICITY */}
               <div style={{ marginTop: 12 }}>
-               <SecLabel text="Ethnicity"/>
+                <SecLabel text="Ethnicity"/>
               </div>
               {ETHNICITY.map(s => <PlainRow key={s.label} {...s}/>)}
 
-              {/* BODY TYPE */}
               <div style={{ marginTop: 12 }}>
-               <SecLabel text="Body Type"/>
-              </div> 
+                <SecLabel text="Body Type"/>
+              </div>
               {BODY_TYPE.map(s => <PlainRow key={s.label} {...s}/>)}
 
-              {/* HAIR */}
               <div style={{ marginTop: 12 }}>
-               <SecLabel text="Hair"/>
-              </div> 
+                <SecLabel text="Hair"/>
+              </div>
               {HAIR.map(s => <PlainRow key={s.label} {...s}/>)}
 
-              {/* PRIVATE SHOWS */}
               <div style={{ marginTop: 12 }}>
-               <SecLabel text="Private Shows"/>
-              </div> 
+                <SecLabel text="Private Shows"/>
+              </div>
               {PRIVATE_SHOWS.map(s => <PlainRow key={s.label} {...s}/>)}
 
-              {/* POPULAR */}
               <div style={{ marginTop: 12 }}>
-               <SecLabel text="Popular"/>
-              </div> 
+                <SecLabel text="Popular"/>
+              </div>
               {POPULAR.map(s =>
                 s.icon
                   ? <IconRow key={s.label} {...s}/>
                   : <PlainRow key={s.label} label={s.label} count={s.count} hot={s.hot}/>
               )}
 
-              {/* ALL CATEGORIES — sticky */}
               <div style={{
-                position: "sticky",
-                bottom: -25,
-                zIndex: 20,
-                background: BG,
-                padding: "10px 12px 30px",
+                position: "sticky", bottom: -25, zIndex: 20,
+                background: BG, padding: "10px 12px 30px",
                 marginTop: 10,
-                boxShadow: '0 20px 0 20px ${BG}',
               }}>
                 <AllCatsBtn collapsed={false} onClick={openCats}/>
                 <div style={{ height: 1, background: "#D1D3D4", marginTop: 60 }}/>
               </div>
 
-              {/* FOOTER LINKS */}
               <div style={{ marginTop: 20, paddingTop: 20 }}>
                 {FOOTER_LINKS.map(l => <FooterLink key={l.label} label={l.label} href={l.href}/>)}
               </div>
 
-              {/* LANGUAGE SELECTOR — above footer links */}
               <Divider/>
-              <div style={{  paddingBottom: 140}}>
-              <LanguageSelector collapsed={false}/>
+              <div style={{ paddingBottom: 140 }}>
+                <LanguageSelector collapsed={false}/>
               </div>
             </>
           )}

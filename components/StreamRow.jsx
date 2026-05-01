@@ -26,17 +26,15 @@ const AFRICAN_PHOTOS = [
   "https://images.unsplash.com/photo-1589156191108-c762ff4b96ab?w=400&h=267&fit=crop",
 ];
 
-// Maps continent code → region tag used in streamer data
 const CONTINENT_REGION_MAP = {
-  AF: ["NG", "ZA", "KE", "GH", "ET", "TZ", "EG", "SN", "CM", "CI"],  // Africa
-  EU: ["RU", "UA", "RO", "PL", "DE", "FR", "GB", "IT", "ES", "GR"],  // Europe
-  NA: ["US", "MX", "CA"],                                               // North America
-  SA: ["BR", "CO", "AR", "PE", "VE"],                                  // South America
-  AS: ["JP", "TH", "KR", "CN", "IN", "PH"],                           // Asia
-  OC: ["AU", "NZ"],                                                     // Oceania
+  AF: ["NG", "ZA", "KE", "GH", "ET", "TZ", "EG", "SN", "CM", "CI"],
+  EU: ["RU", "UA", "RO", "PL", "DE", "FR", "GB", "IT", "ES", "GR"],
+  NA: ["US", "MX", "CA"],
+  SA: ["BR", "CO", "AR", "PE", "VE"],
+  AS: ["JP", "TH", "KR", "CN", "IN", "PH"],
+  OC: ["AU", "NZ"],
 };
 
-// Detect user continent via free IP API
 async function detectContinent() {
   try {
     const res = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(3000) });
@@ -47,7 +45,6 @@ async function detectContinent() {
   }
 }
 
-// Sort streamers so those matching user's region come first
 function geoSort(cards, continent) {
   if (!continent || !CONTINENT_REGION_MAP[continent]) return cards;
   const preferredRegions = CONTINENT_REGION_MAP[continent];
@@ -68,7 +65,6 @@ export default function StreamRow({ title, category, vr, mobile, trending, afric
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Detect geo if not passed in as prop
   useEffect(() => {
     if (!userContinent) {
       detectContinent().then(({ continent: c }) => {
@@ -78,7 +74,6 @@ export default function StreamRow({ title, category, vr, mobile, trending, afric
   }, [userContinent]);
 
   const names = african ? AFRICAN_NAMES : MOCK_NAMES;
-
   const ALL_REGIONS = ["NG","ZA","US","BR","RU","UA","JP","FR","DE","GB","MX","KE","TH","RO","PL","CO","GR","IT","ES","GH"];
 
   const rawCards = names.map((username, i) => ({
@@ -95,7 +90,6 @@ export default function StreamRow({ title, category, vr, mobile, trending, afric
     photo: african ? AFRICAN_PHOTOS[i % AFRICAN_PHOTOS.length] : undefined,
   }));
 
-  // Apply geo sorting
   const cards = geoSort(rawCards, continent);
 
   const scroll = (dir) => {
@@ -117,7 +111,6 @@ export default function StreamRow({ title, category, vr, mobile, trending, afric
       {/* Scroll wrapper */}
       <div style={{ position: "relative" }}>
 
-        {/* Left arrow — desktop only */}
         {!isMobile && (
           <button onClick={() => scroll(-1)} style={{
             position: "absolute", left: 0, top: 0, bottom: 0, zIndex: 10, width: 36,
@@ -127,13 +120,13 @@ export default function StreamRow({ title, category, vr, mobile, trending, afric
           }}>‹</button>
         )}
 
-        {/* 2-row horizontal scroll */}
         <div ref={scrollRef} style={{
           display: "grid",
           gridTemplateRows: "1fr 1fr",
           gridAutoFlow: "column",
-          gridAutoColumns: isMobile ? "calc(50% - 6px)" : 175,
-          gap: 4,
+          gridAutoColumns: isMobile ? "calc(50% - 10px)" : 180,
+          columnGap: 14,
+          rowGap: 14,
           overflowX: "scroll",
           overflowY: "hidden",
           padding: isMobile ? "0 8px 4px" : "0 16px 4px",
@@ -147,7 +140,6 @@ export default function StreamRow({ title, category, vr, mobile, trending, afric
           ))}
         </div>
 
-        {/* Right arrow — desktop only */}
         {!isMobile && (
           <button onClick={() => scroll(1)} style={{
             position: "absolute", right: 0, top: 0, bottom: 0, zIndex: 10, width: 36,

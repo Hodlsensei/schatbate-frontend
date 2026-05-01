@@ -56,9 +56,9 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
 
   const hideGenderTabs =
     isTopModels ||
-    pathname?.startsWith("/about")       ||
-    pathname?.startsWith("/watch")       ||
-    pathname?.startsWith("/shop")        ||
+    pathname?.startsWith("/about")        ||
+    pathname?.startsWith("/watch")        ||
+    pathname?.startsWith("/shop")         ||
     pathname?.startsWith("/dashboard/vip") ||
     pathname?.startsWith("/checkout");
 
@@ -70,24 +70,18 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
         .sc-search-mob::placeholder { color: rgba(255,255,255,0.5); }
         .sc-search-mob { caret-color: #fff; }
 
-        /* Live dot ring pulse */
         @keyframes livePulse {
           0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.5); }
           60%       { box-shadow: 0 0 0 5px rgba(76,175,80,0); }
         }
-
-        /* Magic Search star spin */
         @keyframes starSpin {
           0%, 100% { transform: scale(1)   rotate(0deg);  }
           50%       { transform: scale(1.25) rotate(20deg); }
         }
-
-        /* Age banner text shimmer */
         @keyframes ageShimmer {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0.75; }
         }
-
         .live-dot {
           width: 8px; height: 8px; border-radius: 50%;
           background: #4caf50; display: inline-block; flex-shrink: 0;
@@ -102,6 +96,29 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           background: #333; border-radius: 2px;
           transition: transform 0.22s ease, opacity 0.22s ease;
         }
+
+        /*
+         * KEY FIX: the button has zero horizontal padding so it's only
+         * as wide as the text. The border-bottom on the button therefore
+         * only underlines the text itself — matching the reference.
+         * Gap between tabs is handled by the parent flexbox gap instead.
+         */
+        .gender-tab {
+          background: none;
+          border: none;
+          border-bottom: 3px solid transparent;
+          padding: 0;                /* ← no side padding → underline = text width */
+          height: 100%;
+          cursor: pointer;
+          white-space: nowrap;
+          font-family: ${FONT};
+          transition: color .15s, border-color .15s;
+          display: inline-flex;
+          align-items: center;
+        }
+        .gender-tab.active {
+          border-bottom-color: #e53935;
+        }
       `}</style>
 
       <div style={{
@@ -109,18 +126,16 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
         fontFamily: FONT,
       }}>
 
-        {/* ── MAIN BAR ────────────────────────────────────── */}
+        {/* ── MAIN BAR ── */}
         <header style={{
           height: isMobile ? 48 : 52, background: "#fff",
-          borderBottom: "1px solid #e5e7eb",
+          borderBottom: "none",
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
           display: "flex", alignItems: "center", padding: "0 12px", gap: 0,
         }}>
 
-          {/* LEFT: hamburger + logo + live count + Top Models */}
+          {/* LEFT */}
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, flexShrink: 0 }}>
-
-            {/* Hamburger — toggles expand/collapse sidebar */}
             <button
               onClick={onMenuToggle}
               title={sidebarCollapsed ? "Expand menu" : "Collapse menu"}
@@ -131,14 +146,11 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
               }}
               aria-label="Toggle sidebar"
             >
-              <span className="hamburger-line" style={{
-                transform: sidebarCollapsed ? "none" : "none",
-              }} />
+              <span className="hamburger-line" />
               <span className="hamburger-line" />
               <span className="hamburger-line" />
             </button>
 
-            {/* Logo */}
             <div onClick={() => router.push("/")} style={{ display: "flex", alignItems: "center", flexShrink: 0, cursor: "pointer" }}>
               <img src="/stripchatbate-rd.png" alt="Stripchatbate"
                 style={{ height: isMobile ? 24 : 30, objectFit: "contain" }} />
@@ -146,7 +158,6 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
 
             {!isMobile && <div style={{ width: 1, height: 20, background: "#e5e7eb", flexShrink: 0 }} />}
 
-            {/* Live count with animated dot */}
             <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: isMobile ? 10 : 12, fontWeight: 700, color: "#222", flexShrink: 0 }}>
               <span className="live-dot" />
               {(liveCount ?? 11304).toLocaleString()} LIVE
@@ -204,7 +215,6 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           ) : (
             <>
               <div style={{ flex: 1 }} />
-              {/* Desktop search bar */}
               <div
                 onClick={() => inputRef.current?.focus()}
                 style={{
@@ -227,7 +237,6 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                   placeholder="Find anything you want"
                   style={{ background: "none", border: "none", outline: "none", fontSize: 13,
                     fontFamily: FONT, flex: 1, color: "#222", minWidth: 0 }} />
-                {/* Filter icon */}
                 <div style={{ padding: "0 10px", display: "flex", alignItems: "center", flexShrink: 0 }}>
                   <svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round">
                     <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/>
@@ -237,7 +246,6 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                     <circle cx="10" cy="18" r="2.2" fill="#fff" stroke="#999" strokeWidth="2"/>
                   </svg>
                 </div>
-                {/* Magic Search button — animated star icon */}
                 <div
                   style={{ display: "flex", alignItems: "center", gap: 5, background: "#e53935",
                     borderRadius: 20, padding: "0 10px 0 9px", height: 28, margin: "0 5px",
@@ -260,7 +268,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
             </>
           )}
 
-          {/* RIGHT: auth buttons (no About link per client request) */}
+          {/* RIGHT: auth */}
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 6 : 10, flexShrink: 0 }}>
             {user ? (
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -302,70 +310,40 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           </div>
         </header>
 
-        {/* ── AGE VERIFICATION BANNER ───────────────────────── */}
-        <div style={{
-          background: "#1a1a2e", borderBottom: "1px solid #2d2d4e",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          padding: "5px 16px", gap: 10,
-        }}>
-          {/* 18+ badge */}
-          <div style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            width: 28, height: 28, borderRadius: "50%",
-            background: "#e53935", color: "#fff",
-            fontSize: 10, fontWeight: 800, flexShrink: 0,
-            border: "2px solid rgba(255,255,255,0.25)",
-            letterSpacing: "-.5px",
-          }}>18+</div>
-          <span style={{
-            fontSize: 11, color: "rgba(255,255,255,0.75)", fontFamily: FONT,
-            whiteSpace: isMobile ? "normal" : "nowrap", textAlign: "center",
-          }}>
-            This website contains <strong style={{ color: "#fff" }}>explicit adult content</strong>.
-            &nbsp;You must be <strong style={{ color: "#e53935" }}>18 years or older</strong> to access this site.
-            By continuing you confirm you are of legal age in your jurisdiction.
-          </span>
-          {!isMobile && (
-            <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-              <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth={2}>
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-              <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", fontFamily: FONT }}>
-                Protected by SSL
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* ── GENDER TABS ──────────────────────────────────── */}
+        {/* ── GENDER TABS ── */}
         {!hideGenderTabs && (
           <div style={{
-            background: "#fff", borderTop: "1px solid #f0f0f0",
-            display: "flex", alignItems: "center", padding: "0 12px",
-            gap: isMobile ? 0 : 4, height: 38, overflowX: "auto",
+            background: "#fff", borderTop: "none",
+            display: "flex", alignItems: "center",
+            padding: "0 12px",
+            /* gap between tabs — spacing comes from here, NOT button padding */
+            gap: isMobile ? 20 : 28,
+            height: 38, overflowX: "auto",
             boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
           }}>
             {GENDER_TABS.map(tab => {
               const key    = tab.toLowerCase();
               const active = category === key;
               return (
-                <button key={tab} onClick={() => setCategory(key)} style={{
-                  background: "none", border: "none",
-                  borderBottom: active ? "3px solid #e53935" : "3px solid transparent",
-                  color: active ? "#e53935" : "#555",
-                  fontSize: isMobile ? 13 : 14, fontWeight: active ? 700 : 500,
-                  padding: isMobile ? "0 12px" : "0 14px", height: "100%",
-                  cursor: "pointer", fontFamily: FONT, whiteSpace: "nowrap",
-                  transition: "color .15s, border-color .15s",
-                }}
-                onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#222"; }}
-                onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}>
+                <button
+                  key={tab}
+                  onClick={() => setCategory(key)}
+                  className={`gender-tab${active ? " active" : ""}`}
+                  style={{
+                    color: active ? "#e53935" : "#555",
+                    fontSize: isMobile ? 13 : 14,
+                    fontWeight: active ? 700 : 500,
+                  }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#222"; }}
+                  onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
+                >
                   {tab}
                 </button>
               );
             })}
           </div>
         )}
+
       </div>
 
       {showAuth && <AuthModal defaultTab={authTab} onClose={handleAuthClose} />}
