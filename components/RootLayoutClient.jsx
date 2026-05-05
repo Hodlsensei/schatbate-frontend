@@ -7,7 +7,7 @@ import SidebarWrapper from "./SidebarWrapper";
 const FULLSCREEN_ROUTES = ["/watch"];
 
 const SIDEBAR_FULL = 220;
-const SIDEBAR_ICON = 58;   // icon-only collapsed width
+const SIDEBAR_ICON = 58;
 
 export default function RootLayoutClient({ children }) {
   const pathname = usePathname();
@@ -15,11 +15,9 @@ export default function RootLayoutClient({ children }) {
   const [ready, setReady]               = useState(false);
   const [isMobile, setIsMobile]         = useState(false);
 
-  // Desktop: collapsed = true → icon-only (58px); false → full (220px)
-  const [collapsed, setCollapsed] = useState(false);
-
-  // Mobile: overlay open/closed
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed]           = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [mobileOpen, setMobileOpen]         = useState(false);
 
   const isFullscreen = FULLSCREEN_ROUTES.some(r => pathname?.startsWith(r));
 
@@ -28,7 +26,6 @@ export default function RootLayoutClient({ children }) {
 
   const isHome = pathname === "/";
 
-  /* responsive check */
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -36,16 +33,13 @@ export default function RootLayoutClient({ children }) {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  /* auto-expand sidebar on homepage (desktop) */
   useEffect(() => {
     const mobile = window.innerWidth < 768;
-    if (isHome && !mobile) {
-      setCollapsed(false);
-    }
+    if (isHome && !mobile) setCollapsed(false);
+    if (!isHome) setSidebarVisible(false);
     setMobileOpen(false);
   }, [pathname]);
 
-  /* age gate */
   useEffect(() => {
     const confirmed = localStorage.getItem("ageConfirmed") === "true";
     setAgeConfirmed(confirmed);
@@ -58,22 +52,23 @@ export default function RootLayoutClient({ children }) {
 
   if (!ready || !ageConfirmed) return <>{children}</>;
 
-  /* hamburger toggle:
-     mobile → toggle overlay
-     desktop → toggle between full and icon-only */
   const handleMenuToggle = () => {
     if (isMobile) {
       setMobileOpen(o => !o);
     } else {
-      setCollapsed(c => !c);
+      if (isHome) {
+        setCollapsed(c => !c);
+      } else {
+        setSidebarVisible(v => !v);
+      }
     }
   };
 
-  /* ── Mobile overlay sidebar ── */
-  const MobileOverlay = () => (
+  /* ── Overlay sidebar (used on non-home pages + mobile) ── */
+  const OverlaySidebar = ({ open, onClose }) => (
     <>
-      {mobileOpen && (
-        <div onClick={() => setMobileOpen(false)} style={{
+      {open && (
+        <div onClick={onClose} style={{
           position: "fixed", inset: 0, zIndex: 9998,
           background: "rgba(0,0,0,0.55)", cursor: "pointer",
         }} />
@@ -83,11 +78,11 @@ export default function RootLayoutClient({ children }) {
         width: 260, height: "100vh",
         background: "#EEEEF0",
         overflowY: "auto", overflowX: "hidden",
-        boxShadow: mobileOpen ? "4px 0 24px rgba(0,0,0,0.22)" : "none",
-        transform: mobileOpen ? "translateX(0)" : "translateX(-260px)",
+        boxShadow: open ? "4px 0 24px rgba(0,0,0,0.22)" : "none",
+        transform: open ? "translateX(0)" : "translateX(-260px)",
         transition: "transform 0.28s cubic-bezier(.4,0,.2,1), box-shadow 0.28s ease",
       }}>
-        <button onClick={() => setMobileOpen(false)} style={{
+        <button onClick={onClose} style={{
           position: "absolute", top: 10, right: 10, zIndex: 1,
           background: "none", border: "none", cursor: "pointer",
           fontSize: 20, color: "#888", lineHeight: 1, padding: 4,
@@ -104,7 +99,10 @@ export default function RootLayoutClient({ children }) {
       <div style={{ flex: 1, minHeight: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
         {children}
       </div>
-      {isMobile && <MobileOverlay />}
+      <OverlaySidebar
+        open={isMobile ? mobileOpen : sidebarVisible}
+        onClose={() => { setMobileOpen(false); setSidebarVisible(false); }}
+      />
     </div>
   );
 
@@ -113,7 +111,10 @@ export default function RootLayoutClient({ children }) {
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       <Topbar onMenuToggle={handleMenuToggle} sidebarCollapsed={collapsed} />
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>{children}</div>
-      {isMobile && <MobileOverlay />}
+      <OverlaySidebar
+        open={isMobile ? mobileOpen : sidebarVisible}
+        onClose={() => { setMobileOpen(false); setSidebarVisible(false); }}
+      />
     </div>
   );
 
@@ -125,13 +126,12 @@ export default function RootLayoutClient({ children }) {
       <div style={{ display: "flex", flex: 1, overflow: "hidden", minHeight: 0 }}>
 
         {isMobile ? (
-          <MobileOverlay />
-        ) : (
-          /* Desktop inline sidebar:
-             - Full mode  → 220px (icons + labels)
-             - Icon mode  → 58px  (icons only)
-             Never fully hidden on desktop — always shows at least the icons.
-          */
+          <OverlaySidebar
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+          />
+        ) : isHome ? (
+          /* Home: inline sidebar, collapses to icon-only */
           <div style={{
             width: collapsed ? SIDEBAR_ICON : SIDEBAR_FULL,
             minWidth: collapsed ? SIDEBAR_ICON : SIDEBAR_FULL,
@@ -146,6 +146,12 @@ export default function RootLayoutClient({ children }) {
               <SidebarWrapper collapsed={collapsed} />
             </div>
           </div>
+        ) : (
+          /* Other pages: overlay sidebar triggered by hamburger */
+          <OverlaySidebar
+            open={sidebarVisible}
+            onClose={() => setSidebarVisible(false)}
+          />
         )}
 
         <div style={{ flex: 1, minWidth: 0, overflowY: "auto", overflowX: "hidden", height: "100%", background: "#F5F5F5" }}>

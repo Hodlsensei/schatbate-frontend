@@ -384,7 +384,7 @@ export default function HomePage() {
       minHeight: "100%", color: "#1a1a1a",
       fontFamily: FONT, fontSize: 13,
     }}>
-      <main style={{ padding: isMobile ? "12px 8px 80px" : "16px 24px 80px" }}>
+      <main style={{ padding: isMobile ? "12px 8px 16px" : "16px 24px 16px" }}>
 
         {/* ── Verify Age Banner ── */}
         {showVerify && (
@@ -495,30 +495,6 @@ export default function HomePage() {
         <FeaturedSection key={category} cols={isMobile ? 2 : 6} title={featuredTitle} />
 
       </main>
-
-      {/* ── Bottom join banner ── */}
-      <div style={{
-        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 999,
-        background: "#e53935", padding: "9px 20px",
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 12,
-        boxShadow: "0 -2px 12px rgba(229,57,53,0.3)",
-      }}>
-        <span style={{ fontSize: 17 }}>💬</span>
-        <span style={{ color: "#fff", fontWeight: 600, fontSize: 13, fontFamily: FONT }}>
-          Join Stripchatbate to interact with models!
-        </span>
-        <button style={{
-          background: "#fff", border: "none", color: "#e53935",
-          fontWeight: 700, fontSize: 13, fontFamily: FONT,
-          padding: "5px 18px", borderRadius: 20, cursor: "pointer",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-          transition: "transform .15s, box-shadow .15s",
-        }}
-        onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.04)"; e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)"; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)"; }}>
-          Join FREE
-        </button>
-      </div>
     </div>
   );
 }

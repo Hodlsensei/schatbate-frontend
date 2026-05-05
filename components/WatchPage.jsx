@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import StreamPlayer from "./StreamPlayer";
 import LiveChat from "./LiveChat";
 import TipModal from "./TipModal";
@@ -26,7 +27,7 @@ const CATEGORIES_LIST = [
 const CHAT_WIDTH  = 460;
 const TOPBAR_H    = 48;
 const NAVBAR_H    = 48;
-const BANNER_H    = 52;
+const BANNER_H    = 0;
 const ACTION_H    = 58;
 const CHAT_TOP    = TOPBAR_H + NAVBAR_H;
 const CHAT_BOTTOM = BANNER_H;
@@ -122,6 +123,7 @@ export default function WatchPage({ username }) {
           ))}
         </div>
 
+        {/* Join Fan Club */}
         <button style={{
           marginLeft:4, background:"transparent", border:"1px solid #e53935",
           color:"#e53935", fontSize:12, fontWeight:700, padding:"6px 14px",
@@ -131,6 +133,27 @@ export default function WatchPage({ username }) {
           onMouseEnter={e=>e.currentTarget.style.background="rgba(229,57,53,0.08)"}
           onMouseLeave={e=>e.currentTarget.style.background="transparent"}
         >🤍 Join Fan Club</button>
+
+        {/* VIP Membership */}
+        <Link href="/dashboard/vip" style={{
+          marginLeft:4,
+          background:"linear-gradient(135deg,#b8860b,#ffd700)",
+          border:"none", color:"#fff", fontSize:12, fontWeight:700,
+          padding:"6px 14px", borderRadius:20, cursor:"pointer",
+          fontFamily:"inherit", display:"flex", alignItems:"center",
+          gap:6, flexShrink:0, textDecoration:"none",
+          boxShadow:"0 2px 8px rgba(184,134,11,0.35)",
+          transition:"opacity .15s",
+        }}
+          onMouseEnter={e=>e.currentTarget.style.opacity="0.88"}
+          onMouseLeave={e=>e.currentTarget.style.opacity="1"}
+        >
+          ⭐ VIP
+          <span style={{
+            fontSize:9, fontWeight:800, padding:"1px 5px", borderRadius:3,
+            background:"rgba(0,0,0,0.2)", color:"#fff", letterSpacing:".05em",
+          }}>GOLD</span>
+        </Link>
 
         <div style={{flex:1}}/>
 
@@ -391,22 +414,6 @@ export default function WatchPage({ username }) {
           </div>
         </div>
       )}
-
-      {/* ── STICKY BOTTOM BANNER ── */}
-      <div style={{
-        position:"fixed", bottom:0, left:0, right:0, zIndex:1000,
-        background:"#e53935", display:"flex", alignItems:"center", justifyContent:"center",
-        gap:14, height:BANNER_H, boxShadow:"0 -2px 12px rgba(0,0,0,0.15)",
-      }}>
-        <div style={{width:32,height:32,borderRadius:"50%",background:"rgba(0,0,0,0.2)",display:"flex",alignItems:"center",justifyContent:"center"}}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-        </div>
-        <span style={{color:"#fff",fontSize:14,fontWeight:600}}>Join Stripchatbate to interact with models!</span>
-        <button style={{background:"#fff",border:"none",color:"#e53935",fontSize:13,fontWeight:700,padding:"8px 22px",borderRadius:20,cursor:"pointer",fontFamily:"inherit"}}
-          onMouseEnter={e=>e.currentTarget.style.opacity=".88"}
-          onMouseLeave={e=>e.currentTarget.style.opacity="1"}
-        >Join FREE</button>
-      </div>
 
       {/* ── MODALS ── */}
       {showPrivate && (

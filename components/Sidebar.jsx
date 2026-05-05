@@ -54,7 +54,6 @@ const NAV = [
   { label: "Shop",              href: "/shop",          icon: "shop"      },
   { label: "Best for Privates", href: "/privates",      icon: "privates"  },
   { label: "Watch History",     href: "/history",       icon: "history"   },
-  { label: "VIP Membership",    href: "/dashboard/vip", icon: "vip"       },
 ];
 
 const SPECIALS = [
