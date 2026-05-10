@@ -5,7 +5,6 @@ import { useCategory } from "./CategoryContext";
 
 const FONT = "'Inter', Helvetica, Roboto, sans-serif";
 
-/* ── Photo pools ──────────────────────────────────────────── */
 const PHOTO_POOLS = {
   african: [
     "https://cdni.pornpics.com/460/7/106/78051532/78051532_184_aa54.jpg",
@@ -98,33 +97,33 @@ const PHOTO_POOLS = {
 
 const SECTIONS_BY_CATEGORY = {
   girls: [
-    { key: "african",  title: "USA"                         },
-    { key: "top",      title: "Top Free Live Sex Cams"      },
-    { key: "couples",  title: "Couples Live Sex Cams"       },
-    { key: "mobile",   title: "Mobile Live Sex Cams"        },
-    { key: "trending", title: "New Trending Live Sex Cams"  },
-    { key: "vr",       title: "VR Cams"                     },
+    { key: "african",  title: "USA"                        },
+    { key: "top",      title: "Top Free Live Sex Cams"     },
+    { key: "couples",  title: "Couples Live Sex Cams"      },
+    { key: "mobile",   title: "Mobile Live Sex Cams"       },
+    { key: "trending", title: "New Trending Live Sex Cams" },
+    { key: "vr",       title: "VR Cams"                    },
   ],
   couples: [
-    { key: "couples",  title: "Top Couples Live Now"        },
-    { key: "trending", title: "Trending Couples"            },
-    { key: "mobile",   title: "Mobile Couples"              },
-    { key: "vr",       title: "Couples VR Cams"             },
-    { key: "african",  title: "USA Couples"                 },
+    { key: "couples",  title: "Top Couples Live Now"  },
+    { key: "trending", title: "Trending Couples"      },
+    { key: "mobile",   title: "Mobile Couples"        },
+    { key: "vr",       title: "Couples VR Cams"       },
+    { key: "african",  title: "USA Couples"           },
   ],
   guys: [
-    { key: "top",      title: "Top Guys Live Now"           },
-    { key: "trending", title: "Trending Guys"               },
-    { key: "mobile",   title: "Mobile Guys"                 },
-    { key: "vr",       title: "Guys VR Cams"                },
-    { key: "african",  title: "USA Guys"                    },
+    { key: "top",      title: "Top Guys Live Now" },
+    { key: "trending", title: "Trending Guys"     },
+    { key: "mobile",   title: "Mobile Guys"       },
+    { key: "vr",       title: "Guys VR Cams"      },
+    { key: "african",  title: "USA Guys"          },
   ],
   trans: [
-    { key: "top",      title: "Top Trans Live Now"          },
-    { key: "trending", title: "Trending Trans"              },
-    { key: "mobile",   title: "Mobile Trans"                },
-    { key: "vr",       title: "Trans VR Cams"               },
-    { key: "couples",  title: "Trans Couples"               },
+    { key: "top",      title: "Top Trans Live Now" },
+    { key: "trending", title: "Trending Trans"     },
+    { key: "mobile",   title: "Mobile Trans"       },
+    { key: "vr",       title: "Trans VR Cams"      },
+    { key: "couples",  title: "Trans Couples"      },
   ],
 };
 
@@ -167,14 +166,16 @@ function generateCard(tag, index) {
   };
 }
 
-const GAP            = 6;
+/* ── Layout constants ── */
+const GAP            = 12;
 const BATCH_H        = 12;
 const BATCH_V        = 24;
 const CARD_W_DEFAULT = 175;
-const CARD_H_DEFAULT = 131;
+const CARD_H_DEFAULT = 175;
 const CARD_W_MOBILE  = 162;
-const CARD_H_MOBILE  = 248;
+const CARD_H_MOBILE  = 290;
 
+/* ── Section header ── */
 function SectionHeader({ title, showSeeAll = true }) {
   return (
     <div style={{
@@ -186,14 +187,16 @@ function SectionHeader({ title, showSeeAll = true }) {
         {title}
       </span>
       {showSeeAll && (
-        <button style={{
-          background: "none", border: "1px solid #ddd", cursor: "pointer",
-          color: "#e53935", fontSize: 12, fontFamily: FONT,
-          padding: "3px 12px", borderRadius: 20, fontWeight: 600,
-          transition: "border-color .15s, background .15s",
-        }}
-        onMouseEnter={e => { e.currentTarget.style.background = "#fdecea"; e.currentTarget.style.borderColor = "#e53935"; }}
-        onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.borderColor = "#ddd"; }}>
+        <button
+          style={{
+            background: "none", border: "1px solid #ddd", cursor: "pointer",
+            color: "#e53935", fontSize: 12, fontFamily: FONT,
+            padding: "3px 12px", borderRadius: 20, fontWeight: 600,
+            transition: "border-color .15s, background .15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#fdecea"; e.currentTarget.style.borderColor = "#e53935"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.borderColor = "#ddd"; }}
+        >
           See All
         </button>
       )}
@@ -201,6 +204,7 @@ function SectionHeader({ title, showSeeAll = true }) {
   );
 }
 
+/* ── Horizontal scrolling section ── */
 function HorizontalSection({ title, tag }) {
   const scrollRef   = useRef(null);
   const sentinelRef = useRef(null);
@@ -248,8 +252,26 @@ function HorizontalSection({ title, tag }) {
   return (
     <div style={{ marginBottom: 28 }}>
       <SectionHeader title={title} />
-      <div style={{ position: "relative", overflow: "hidden" }}>
-        <div ref={scrollRef} style={{ overflowX: "auto", overflowY: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}>
+
+      {/* Hover wrapper — reveals arrow on hover */}
+      <div
+        style={{ position: "relative", overflow: "hidden" }}
+        onMouseEnter={e => {
+          const btn = e.currentTarget.querySelector(".scroll-arrow");
+          if (btn) btn.style.opacity = "1";
+        }}
+        onMouseLeave={e => {
+          const btn = e.currentTarget.querySelector(".scroll-arrow");
+          if (btn) btn.style.opacity = "0";
+        }}
+      >
+        <div
+          ref={scrollRef}
+          style={{
+            overflowX: "auto", overflowY: "hidden",
+            scrollbarWidth: "none", msOverflowStyle: "none",
+          }}
+        >
           <style>{`
             .hscroll::-webkit-scrollbar { display: none; }
             @keyframes shimmer {
@@ -261,14 +283,17 @@ function HorizontalSection({ title, tag }) {
               to   { opacity: 1; transform: translateY(0); }
             }
           `}</style>
-          <div className="hscroll" style={{
-            display: "grid",
-            gridTemplateRows: "repeat(2, auto)",
-            gridAutoFlow: "column",
-            gridAutoColumns: CARD_W,
-            gap: GAP,
-            width: colCount * CARD_W + (colCount - 1) * GAP,
-          }}>
+          <div
+            className="hscroll"
+            style={{
+              display: "grid",
+              gridTemplateRows: "repeat(2, auto)",
+              gridAutoFlow: "column",
+              gridAutoColumns: CARD_W,
+              gap: GAP,
+              width: colCount * CARD_W + (colCount - 1) * GAP,
+            }}
+          >
             {cards.map(s => (
               <div key={s.id} style={{ width: CARD_W }}>
                 <StreamCard streamer={s} gridMode cardHeight={CARD_H} />
@@ -284,20 +309,33 @@ function HorizontalSection({ title, tag }) {
             <div ref={sentinelRef} style={{ width: 1, height: "100%", gridRow: "1 / span 2" }} />
           </div>
         </div>
-        <button onClick={scrollRight} style={{
-          position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.92)", border: "1px solid #ddd",
-          borderRadius: "50%", width: 28, height: 28,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", zIndex: 10,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          transition: "background .15s, box-shadow .15s",
-        }}
-        onMouseEnter={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.boxShadow = "0 3px 12px rgba(0,0,0,0.2)"; }}
-        onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.92)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)"; }}
-        aria-label="Scroll right">
+
+        {/* Arrow — hidden by default, fades in on section hover */}
+        <button
+          onClick={scrollRight}
+          className="scroll-arrow"
+          style={{
+            position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
+            background: "rgba(255,255,255,0.92)", border: "1px solid #ddd",
+            borderRadius: "50%", width: 32, height: 32,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", zIndex: 10,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            opacity: 0,
+            transition: "opacity .2s ease, background .15s, box-shadow .15s",
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "#fff";
+            e.currentTarget.style.boxShadow = "0 3px 12px rgba(0,0,0,0.2)";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.92)";
+            e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+          }}
+          aria-label="Scroll right"
+        >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -305,12 +343,13 @@ function HorizontalSection({ title, tag }) {
   );
 }
 
+/* ── Vertical infinite featured grid ── */
 function FeaturedSection({ cols, title }) {
-  const [cards,    setCards]   = useState(() => Array.from({ length: BATCH_V }, (_, i) => generateCard("featured", i)));
-  const [loading,  setLoading] = useState(false);
-  const nextRef    = useRef(BATCH_V);
-  const loadingRef = useRef(false);
-  const sentinelRef= useRef(null);
+  const [cards,     setCards]   = useState(() => Array.from({ length: BATCH_V }, (_, i) => generateCard("featured", i)));
+  const [loading,   setLoading] = useState(false);
+  const nextRef     = useRef(BATCH_V);
+  const loadingRef  = useRef(false);
+  const sentinelRef = useRef(null);
 
   const loadMore = useCallback(() => {
     if (loadingRef.current) return;
@@ -340,14 +379,23 @@ function FeaturedSection({ cols, title }) {
   return (
     <div>
       <SectionHeader title={title} showSeeAll={false} />
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: GAP }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: GAP,
+      }}>
         {cards.map(s => (
           <StreamCard key={s.id} streamer={s} gridMode cardHeight={CARD_H_DEFAULT} />
         ))}
       </div>
       <div ref={sentinelRef} style={{ height: 1, marginTop: 8 }} aria-hidden="true" />
       {loading && (
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: GAP, marginTop: 8 }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${cols}, 1fr)`,
+          gap: GAP,
+          marginTop: GAP,
+        }}>
           {Array.from({ length: BATCH_V }).map((_, i) => (
             <div key={`sk-${i}`} style={{
               height: CARD_H_DEFAULT, borderRadius: 4,
@@ -361,11 +409,11 @@ function FeaturedSection({ cols, title }) {
   );
 }
 
-/* ── Main HomePage ─────────────────────────────────────────── */
+/* ── Main export ── */
 export default function HomePage() {
-  const { category }    = useCategory();
-  const [isMobile,  setIsMobile]  = useState(false);
-  const [showPromo, setShowPromo] = useState(true);
+  const { category } = useCategory();
+  const [isMobile,   setIsMobile]   = useState(false);
+  const [showPromo,  setShowPromo]  = useState(true);
   const [showVerify, setShowVerify] = useState(true);
 
   useEffect(() => {
@@ -376,17 +424,19 @@ export default function HomePage() {
   }, []);
 
   const sections      = SECTIONS_BY_CATEGORY[category] ?? SECTIONS_BY_CATEGORY.girls;
-  const featuredTitle = FEATURED_TITLE[category] ?? FEATURED_TITLE.girls;
+  const featuredTitle = FEATURED_TITLE[category]        ?? FEATURED_TITLE.girls;
 
   return (
     <div style={{
       background: "#F5F5F5",
-      minHeight: "100%", color: "#1a1a1a",
-      fontFamily: FONT, fontSize: 13,
+      minHeight: "100%",
+      color: "#1a1a1a",
+      fontFamily: FONT,
+      fontSize: 13,
     }}>
       <main style={{ padding: isMobile ? "12px 8px 16px" : "16px 24px 16px" }}>
 
-        {/* ── Verify Age Banner ── */}
+        {/* Verify Age Banner */}
         {showVerify && (
           <div style={{
             background: "linear-gradient(90deg, #1565c0 0%, #1976d2 100%)",
@@ -395,7 +445,6 @@ export default function HomePage() {
             padding: isMobile ? "8px 12px" : "10px 16px",
             gap: 12,
           }}>
-            {/* Shield icon */}
             <div style={{
               width: 36, height: 36, borderRadius: "50%",
               background: "rgba(255,255,255,0.2)",
@@ -407,8 +456,6 @@ export default function HomePage() {
                 <polyline points="9 12 11 14 15 10"/>
               </svg>
             </div>
-
-            {/* Text */}
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "#fff", fontFamily: FONT, lineHeight: 1.3 }}>
                 Verify your age to unlock{" "}
@@ -417,31 +464,34 @@ export default function HomePage() {
               {!isMobile && (
                 <div style={{ fontSize: 11, color: "rgba(255,255,255,0.78)", fontFamily: FONT, marginTop: 2 }}>
                   Required by{" "}
-                  <img src="https://flagcdn.com/w20/gb.png" width={14} height={10}
-                    alt="UK" style={{ borderRadius: 1, verticalAlign: "middle", margin: "0 3px" }}/>
+                  <img
+                    src="https://flagcdn.com/w20/gb.png"
+                    width={14} height={10} alt="UK"
+                    style={{ borderRadius: 1, verticalAlign: "middle", margin: "0 3px" }}
+                  />
                   UK law. It's fast and we don't store personal data
                 </div>
               )}
             </div>
-
-            {/* Verify Age button */}
-            <button style={{
-              background: "linear-gradient(135deg, #f9a825, #f57f17)",
-              border: "none", color: "#fff",
-              fontWeight: 700, fontSize: isMobile ? 12 : 13, fontFamily: FONT,
-              padding: isMobile ? "6px 14px" : "9px 24px",
-              borderRadius: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              transition: "opacity .15s",
-            }}
-            onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
-            onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+            <button
+              style={{
+                background: "linear-gradient(135deg, #f9a825, #f57f17)",
+                border: "none", color: "#fff",
+                fontWeight: 700, fontSize: isMobile ? 12 : 13, fontFamily: FONT,
+                padding: isMobile ? "6px 14px" : "9px 24px",
+                borderRadius: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                transition: "opacity .15s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+            >
               Verify Age
             </button>
           </div>
         )}
 
-        {/* ── Promo banner ── */}
+        {/* Promo Banner */}
         {showPromo && (
           <div style={{
             background: "linear-gradient(90deg,#b71c1c 0%,#e53935 30%,#e53935 70%,#b71c1c 100%)",
@@ -463,26 +513,32 @@ export default function HomePage() {
               Get tokens now with{" "}
               <span style={{ fontWeight: 700, color: "#ffe082" }}>25% OFF!</span>
             </span>
-            <button style={{
-              background: "transparent", border: "1.5px solid rgba(255,255,255,0.7)",
-              color: "#fff", fontWeight: 700, fontSize: 12, fontFamily: FONT,
-              padding: "5px 16px", borderRadius: 20, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
-            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+            <button
+              style={{
+                background: "transparent", border: "1.5px solid rgba(255,255,255,0.7)",
+                color: "#fff", fontWeight: 700, fontSize: 12, fontFamily: FONT,
+                padding: "5px 16px", borderRadius: 20, cursor: "pointer",
+                whiteSpace: "nowrap", flexShrink: 0,
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >
               GET TOKENS
             </button>
             <div style={{ flex: 1 }} />
-            <button onClick={() => setShowPromo(false)} style={{
-              background: "none", border: "none", color: "rgba(255,255,255,0.6)",
-              cursor: "pointer", fontSize: 14, padding: 0, fontFamily: FONT, flexShrink: 0,
-            }}
-            onMouseEnter={e => e.currentTarget.style.color = "#fff"}
-            onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}>✕</button>
+            <button
+              onClick={() => setShowPromo(false)}
+              style={{
+                background: "none", border: "none", color: "rgba(255,255,255,0.6)",
+                cursor: "pointer", fontSize: 14, padding: 0, fontFamily: FONT, flexShrink: 0,
+              }}
+              onMouseEnter={e => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}
+            >✕</button>
           </div>
         )}
 
-        {/* ── Horizontal sections ── */}
+        {/* Horizontal sections */}
         {sections.map(sec => (
           <HorizontalSection
             key={`${category}-${sec.key}-${sec.title}`}
@@ -491,7 +547,7 @@ export default function HomePage() {
           />
         ))}
 
-        {/* ── Vertical featured grid ── */}
+        {/* Vertical featured grid */}
         <FeaturedSection key={category} cols={isMobile ? 2 : 6} title={featuredTitle} />
 
       </main>

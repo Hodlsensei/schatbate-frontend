@@ -183,7 +183,7 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
           gap: 4,
         }}>
           <span style={{
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: 600,
             color: "#fff",
             fontFamily: FONT,
