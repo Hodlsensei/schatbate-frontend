@@ -167,11 +167,11 @@ function generateCard(tag, index) {
 }
 
 /* ── Layout constants ── */
-const GAP            = 12;
+const GAP            = 4;
 const BATCH_H        = 12;
 const BATCH_V        = 24;
 const CARD_W_DEFAULT = 175;
-const CARD_H_DEFAULT = 175;
+const CARD_H_DEFAULT = 118;
 const CARD_W_MOBILE  = 162;
 const CARD_H_MOBILE  = 290;
 

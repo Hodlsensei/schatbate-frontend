@@ -189,7 +189,7 @@ function SpecialIcon({ flagCode, vr, type }) {
   return null;
 }
 
-/* ── PlainRow — NO transform on hover ── */
+/* ── PlainRow ── */
 function PlainRow({ label, count, hot, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
@@ -197,12 +197,13 @@ function PlainRow({ label, count, hot, href = "#" }) {
       display: "flex", alignItems: "center",
       padding: "7px 16px",
       fontSize: 13, fontFamily: FONT, fontWeight: 400,
-      color: TEXT, textDecoration: "none",
+      color: TEXT, textDecoration: hov ? "underline" : "none",
       background: hov ? HOVER : "transparent",
       transition: "background .12s",
       marginLeft: 4, borderRadius: "4px 0 0 4px",
     }}
-    onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+    onMouseEnter={() => setHov(true)}
+    onMouseLeave={() => setHov(false)}>
       <span style={{ flex: 1 }}>
         {label}
         {hot && <span style={{ color: "#f472b6", fontSize: 11, marginLeft: 4 }}>✦✦</span>}
@@ -214,7 +215,7 @@ function PlainRow({ label, count, hot, href = "#" }) {
   );
 }
 
-/* ── IconRow — NO transform on hover ── */
+/* ── IconRow ── */
 function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
@@ -222,12 +223,13 @@ function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
       display: "flex", alignItems: "center", gap: 8,
       padding: "7px 16px",
       fontSize: 13, fontFamily: FONT, fontWeight: 400,
-      color: TEXT, textDecoration: "none",
+      color: TEXT, textDecoration: hov ? "underline" : "none",
       background: hov ? HOVER : "transparent",
       transition: "background .12s",
       marginLeft: 4, borderRadius: "4px 0 0 4px",
     }}
-    onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+    onMouseEnter={() => setHov(true)}
+    onMouseLeave={() => setHov(false)}>
       <span style={{ width: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <SpecialIcon flagCode={flagCode} vr={vr} type={icon}/>
       </span>
@@ -242,7 +244,7 @@ function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
   );
 }
 
-/* ── NavItem — NO transform on hover, highlight stretches full width ── */
+/* ── NavItem ── */
 function NavItem({ item, active, collapsed }) {
   const [hov, setHov] = useState(false);
   const isVip = item.icon === "vip";
@@ -257,12 +259,14 @@ function NavItem({ item, active, collapsed }) {
       padding: collapsed ? "11px 0" : "9px 16px",
       color: clr, fontWeight: active ? 700 : 400,
       fontSize: 13, fontFamily: FONT,
-      textDecoration: "none", whiteSpace: "nowrap",
+      textDecoration: hov && !collapsed ? "underline" : "none",
+      whiteSpace: "nowrap",
       background: bg, position: "relative",
       marginLeft: collapsed ? 0 : 4, borderRadius: collapsed ? 0 : "4px 0 0 4px",
       transition: "background .15s, color .15s",
     }}
-    onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+    onMouseEnter={() => setHov(true)}
+    onMouseLeave={() => setHov(false)}>
       {active && !collapsed && (
         <span style={{
           position: "absolute", left: 0, top: "10%", bottom: "10%",
@@ -294,6 +298,7 @@ function NavItem({ item, active, collapsed }) {
   );
 }
 
+/* ── FooterLink ── */
 function FooterLink({ label, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
@@ -301,9 +306,11 @@ function FooterLink({ label, href = "#" }) {
       display: "block", padding: "7px 16px",
       fontSize: 12, fontFamily: FONT,
       color: hov ? TEXT : "#6b7280",
-      textDecoration: "none", transition: "color .12s",
+      textDecoration: hov ? "underline" : "none",
+      transition: "color .12s",
     }}
-    onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+    onMouseEnter={() => setHov(true)}
+    onMouseLeave={() => setHov(false)}>
       {label}
     </Link>
   );
@@ -436,8 +443,14 @@ function LanguageSelector({ collapsed }) {
                 fontWeight: sel ? 600 : 400,
                 fontSize: 13, fontFamily: FONT, transition: "background .1s",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#f3f4f6"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "#f3f4f6";
+                e.currentTarget.style.textDecoration = "underline";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.textDecoration = "none";
+              }}>
                 <span>{l}</span>
                 {sel && (
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
