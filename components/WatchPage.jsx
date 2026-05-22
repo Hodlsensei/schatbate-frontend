@@ -10,6 +10,8 @@ import BuyTokensModal from "./BuyTokensModal";
 import ModelStorefront from "./ModelStorefront";
 import ProductDetailPage from "./ProductDetailPage";
 import CheckoutPage from "./CheckoutPage";
+import { MdOutlineUnfoldLessDouble } from "react-icons/md";
+import { DiVim } from "react-icons/di";
 
 /* ─── constants ─────────────────────────────────────── */
 const FONT   = "'DM Sans', 'Helvetica Neue', Helvetica, sans-serif";
@@ -1178,4 +1180,4 @@ function ModelGrid({ title, models, page, setPage, onModel, showDots }) {
       </div>
     </div>
   );
-}
+}     

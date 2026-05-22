@@ -292,7 +292,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                 {!isMobile && (
                   <button onClick={openRegister} style={{
                     background: "#e53935", border: "none", color: "#fff", fontSize: 12,
-                    padding: "6px 16px", borderRadius: 6, cursor: "pointer", fontFamily: FONT,
+                    padding: "6px 16px", borderRadius: 20, cursor: "pointer", fontFamily: FONT,
                     whiteSpace: "nowrap", fontWeight: 700, transition: "background .15s",
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = "#c62828"}
@@ -303,7 +303,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                 <button onClick={openLogin} style={{
                   background: "transparent", border: "1px solid #e5e7eb", color: "#222",
                   fontSize: isMobile ? 11 : 12, padding: isMobile ? "4px 10px" : "5px 14px",
-                  borderRadius: 6, cursor: "pointer", fontFamily: FONT, whiteSpace: "nowrap",
+                  borderRadius: 20, cursor: "pointer", fontFamily: FONT, whiteSpace: "nowrap",
                 }}>Log In</button>
               </>
             )}
@@ -320,6 +320,8 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
             gap: isMobile ? 20 : 28,
             height: 38, overflowX: "auto",
             boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
+            width: isMobile ? "100%" : "fit-content",
+            paddingRight: isMobile ? 12 : 80,
           }}>
             {GENDER_TABS.map(tab => {
               const key    = tab.toLowerCase();

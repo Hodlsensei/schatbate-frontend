@@ -205,4 +205,4 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
       </div>
     </div>
   );
-}
+}             
