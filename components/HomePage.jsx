@@ -172,8 +172,8 @@ const BATCH_H        = 12;
 const BATCH_V        = 24;
 const CARD_W_DEFAULT = 172;
 const CARD_H_DEFAULT = 130;
-const CARD_W_MOBILE  = 162;
-const CARD_H_MOBILE  = 290;
+const CARD_W_MOBILE  = 147;
+const CARD_H_MOBILE  = 242;
 
 /* ── Section header ── */
 function SectionHeader({ title, showSeeAll = true }) {
@@ -214,6 +214,7 @@ function HorizontalSection({ title, tag }) {
   const isMobileSection = tag === "mobile";
   const CARD_W = isMobileSection ? CARD_W_MOBILE : CARD_W_DEFAULT;
   const CARD_H = isMobileSection ? CARD_H_MOBILE : CARD_H_DEFAULT;
+  const CARD_GAP = isMobileSection ? 8 : GAP;
 
   const [cards,   setCards]   = useState(() => Array.from({ length: BATCH_H * 2 }, (_, i) => generateCard(tag, i)));
   const [loading, setLoading] = useState(false);
@@ -290,8 +291,8 @@ function HorizontalSection({ title, tag }) {
               gridTemplateRows: "repeat(2, auto)",
               gridAutoFlow: "column",
               gridAutoColumns: CARD_W,
-              gap: GAP,
-              width: colCount * CARD_W + (colCount - 1) * GAP,
+              gap: CARD_GAP,
+              width: colCount * CARD_W + (colCount - 1) * CARD_GAP,
             }}
           >
             {cards.map(s => (
