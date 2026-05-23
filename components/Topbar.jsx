@@ -310,41 +310,41 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           </div>
         </header>
 
-        {/* ── GENDER TABS ── */}
-        {!hideGenderTabs && (
-          <div style={{
-            background: "#fff", borderTop: "none",
-            display: "flex", alignItems: "center",
-            padding: "0 12px",
-            /* gap between tabs — spacing comes from here, NOT button padding */
-            gap: isMobile ? 20 : 28,
-            height: 38, overflowX: "auto",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
-            width: isMobile ? "100%" : "fit-content",
-            paddingRight: isMobile ? 12 : 80,
-          }}>
-            {GENDER_TABS.map(tab => {
-              const key    = tab.toLowerCase();
-              const active = category === key;
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setCategory(key)}
-                  className={`gender-tab${active ? " active" : ""}`}
-                  style={{
-                    color: active ? "#e53935" : "#555",
-                    fontSize: isMobile ? 13 : 14,
-                    fontWeight: active ? 700 : 500,
-                  }}
-                  onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#222"; }}
-                  onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
-                >
-                  {tab}
-                </button>
-              );
-            })}
-          </div>
-        )}
+{/* ── GENDER TABS ── */}
+{!hideGenderTabs && (
+  <div style={{
+    width: "100%",
+    boxSizing: "border-box",
+    background: "#fff",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
+    display: "flex",
+    alignItems: "center",
+    height: 42,
+    padding: "0 12px",
+    gap: isMobile ? 20 : 45,
+  }}>
+    {GENDER_TABS.map(tab => {
+      const key    = tab.toLowerCase();
+      const active = category === key;
+      return (
+        <button
+          key={tab}
+          onClick={() => setCategory(key)}
+          className={`gender-tab${active ? " active" : ""}`}
+          style={{
+            color: active ? "#e53935" : "#555",
+            fontSize: isMobile ? 13 : 14,
+            fontWeight: active ? 700 : 500,
+          }}
+          onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#222"; }}
+          onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
+        >
+          {tab}
+        </button>
+      );
+    })}
+  </div>
+)}
 
       </div>
 
