@@ -212,8 +212,8 @@ function HorizontalSection({ title, tag }) {
   const nextRef     = useRef(BATCH_H);
 
   const isMobileSection = tag === "mobile";
-  const CARD_W = isMobileSection ? CARD_W_MOBILE : CARD_W_DEFAULT;
-  const CARD_H = isMobileSection ? CARD_H_MOBILE : CARD_H_DEFAULT;
+  const CARD_W   = isMobileSection ? CARD_W_MOBILE : CARD_W_DEFAULT;
+  const CARD_H   = isMobileSection ? CARD_H_MOBILE : CARD_H_DEFAULT;
   const CARD_GAP = isMobileSection ? 8 : GAP;
 
   const [cards,   setCards]   = useState(() => Array.from({ length: BATCH_H * 2 }, (_, i) => generateCard(tag, i)));
@@ -245,7 +245,7 @@ function HorizontalSection({ title, tag }) {
   }, [tag]);
 
   const scrollRight = () => {
-    scrollRef.current?.scrollBy({ left: (CARD_W + GAP) * 6, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: (CARD_W + CARD_GAP) * 6, behavior: "smooth" });
   };
 
   const colCount = Math.ceil(cards.length / 2);
@@ -254,7 +254,6 @@ function HorizontalSection({ title, tag }) {
     <div style={{ marginBottom: 28 }}>
       <SectionHeader title={title} />
 
-      {/* Hover wrapper — reveals arrow on hover */}
       <div
         style={{ position: "relative", overflow: "hidden" }}
         onMouseEnter={e => {
@@ -275,6 +274,17 @@ function HorizontalSection({ title, tag }) {
         >
           <style>{`
             .hscroll::-webkit-scrollbar { display: none; }
+            .scroll-arrow {
+              -webkit-appearance: none;
+              appearance: none;
+              background: none !important;
+              box-shadow: none !important;
+              border: none !important;
+            } 
+            .scroll-arrow svg {
+              width: 44px !important;
+              height: 44px !important;
+            }
             @keyframes shimmer {
               0%   { background-position: 200% 0; }
               100% { background-position: -200% 0; }
@@ -311,31 +321,26 @@ function HorizontalSection({ title, tag }) {
           </div>
         </div>
 
-        {/* Arrow — hidden by default, fades in on section hover */}
+        {/* Arrow — no background, white chevron */}
         <button
           onClick={scrollRight}
           className="scroll-arrow"
           style={{
             position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
-            background: "rgba(255,255,255,0.92)", border: "1px solid #ddd",
-            borderRadius: "50%", width: 32, height: 32,
+            background: "none",
+            border: "none",
+            borderRadius: "50%",
+            width: 50, height: 50,
             display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer", zIndex: 10,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            boxShadow: "none",
             opacity: 0,
-            transition: "opacity .2s ease, background .15s, box-shadow .15s",
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = "#fff";
-            e.currentTarget.style.boxShadow = "0 3px 12px rgba(0,0,0,0.2)";
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.92)";
-            e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+            transition: "opacity .2s ease",
+            padding: 0,
           }}
           aria-label="Scroll right"
         >
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+          <svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
@@ -346,10 +351,10 @@ function HorizontalSection({ title, tag }) {
 
 /* ── Vertical infinite featured grid ── */
 function FeaturedSection({ cols, title }) {
-  const [cards,     setCards]   = useState(() => Array.from({ length: BATCH_V }, (_, i) => generateCard("featured", i)));
-  const [loading,   setLoading] = useState(false);
-  const nextRef     = useRef(BATCH_V);
-  const loadingRef  = useRef(false);
+  const [cards,    setCards]   = useState(() => Array.from({ length: BATCH_V }, (_, i) => generateCard("featured", i)));
+  const [loading,  setLoading] = useState(false);
+  const nextRef    = useRef(BATCH_V);
+  const loadingRef = useRef(false);
   const sentinelRef = useRef(null);
 
   const loadMore = useCallback(() => {
@@ -413,9 +418,8 @@ function FeaturedSection({ cols, title }) {
 /* ── Main export ── */
 export default function HomePage() {
   const { category } = useCategory();
-  const [isMobile,   setIsMobile]   = useState(false);
-  const [showPromo,  setShowPromo]  = useState(true);
-  const [showVerify, setShowVerify] = useState(true);
+  const [isMobile,  setIsMobile]  = useState(false);
+  const [showPromo, setShowPromo] = useState(true);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 820);
@@ -438,59 +442,57 @@ export default function HomePage() {
       <main style={{ padding: isMobile ? "12px 8px 16px" : "16px 24px 16px" }}>
 
         {/* Verify Age Banner */}
-        {showVerify && (
+        <div style={{
+          background: "linear-gradient(90deg, #1565c0 0%, #1976d2 100%)",
+          borderRadius: 6, marginBottom: 12,
+          display: "flex", alignItems: "center",
+          padding: isMobile ? "8px 12px" : "10px 16px",
+          gap: 12,
+        }}>
           <div style={{
-            background: "linear-gradient(90deg, #1565c0 0%, #1976d2 100%)",
-            borderRadius: 6, marginBottom: 12,
-            display: "flex", alignItems: "center",
-            padding: isMobile ? "8px 12px" : "10px 16px",
-            gap: 12,
+            width: 36, height: 36, borderRadius: "50%",
+            background: "rgba(255,255,255,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
           }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: "50%",
-              background: "rgba(255,255,255,0.2)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
-            }}>
-              <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "#fff", fontFamily: FONT, lineHeight: 1.3 }}>
-                Verify your age to unlock{" "}
-                <span style={{ color: "#ffe082" }}>18+ content</span>
-              </div>
-              {!isMobile && (
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.78)", fontFamily: FONT, marginTop: 2 }}>
-                  Required by{" "}
-                  <img
-                    src="https://flagcdn.com/w20/gb.png"
-                    width={14} height={10} alt="UK"
-                    style={{ borderRadius: 1, verticalAlign: "middle", margin: "0 3px" }}
-                  />
-                  UK law. It's fast and we don't store personal data
-                </div>
-              )}
-            </div>
-            <button
-              style={{
-                background: "linear-gradient(135deg, #f9a825, #f57f17)",
-                border: "none", color: "#fff",
-                fontWeight: 700, fontSize: isMobile ? 12 : 13, fontFamily: FONT,
-                padding: isMobile ? "6px 14px" : "9px 24px",
-                borderRadius: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                transition: "opacity .15s",
-              }}
-              onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
-              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-            >
-              Verify Age
-            </button>
+            <svg width={50} height={50} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
           </div>
-        )}
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "#fff", fontFamily: FONT, lineHeight: 1.3 }}>
+              Verify your age to unlock{" "}
+              <span style={{ color: "#ffe082" }}>18+ content</span>
+            </div>
+            {!isMobile && (
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.78)", fontFamily: FONT, marginTop: 2 }}>
+                Required by{" "}
+                <img
+                  src="https://flagcdn.com/w20/gb.png"
+                  width={14} height={10} alt="UK"
+                  style={{ borderRadius: 1, verticalAlign: "middle", margin: "0 3px" }}
+                />
+                UK law. It's fast and we don't store personal data
+              </div>
+            )}
+          </div>
+          <button
+            style={{
+              background: "linear-gradient(135deg, #f9a825, #f57f17)",
+              border: "none", color: "#fff",
+              fontWeight: 700, fontSize: isMobile ? 12 : 13, fontFamily: FONT,
+              padding: isMobile ? "6px 14px" : "9px 24px",
+              borderRadius: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              transition: "opacity .15s",
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+          >
+            Verify Age
+          </button>
+        </div>
 
         {/* Promo Banner */}
         {showPromo && (

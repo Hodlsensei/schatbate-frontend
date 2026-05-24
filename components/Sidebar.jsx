@@ -118,7 +118,7 @@ const POPULAR = [
   { label: "Foot Fetish",     count: 4281, hot: true },
 ];
 const FOOTER_LINKS = [
-  { label: "About Stripchatbate",                                 href: "/about" },
+  { label: "About Stripchatbate",                      href: "/about" },
   { label: "Blog",                                     href: "#"      },
   { label: "Support & FAQ",                            href: "#"      },
   { label: "Billing Support",                          href: "#"      },
@@ -259,22 +259,16 @@ function NavItem({ item, active, collapsed }) {
       padding: collapsed ? "11px 0" : "9px 16px",
       color: clr, fontWeight: active ? 700 : 400,
       fontSize: 13, fontFamily: FONT,
-      textDecoration:"none",
+      textDecoration: "none",
       whiteSpace: "nowrap",
-      background: bg, position: "relative",
-      marginLeft: collapsed ? 0 : 4, borderRadius: collapsed ? 0 : "4px 0 0 4px",
+      background: bg,
+      position: "relative",
+      marginLeft: collapsed ? 0 : 8,
+      borderRadius: collapsed ? 0 : "4px 0 0 4px",
       transition: "background .15s, color .15s",
     }}
     onMouseEnter={() => setHov(true)}
     onMouseLeave={() => setHov(false)}>
-      {active && !collapsed && (
-        <span style={{
-          position: "absolute", left: 0, top: "10%", bottom: "10%",
-          width: 3, borderRadius: "0 3px 3px 0",
-          background: isVip ? "#b8860b" : ACTIVE_CLR,
-          animation: "activePulse 2.2s ease-in-out infinite",
-        }}/>
-      )}
       <span style={{
         flexShrink: 0, display: "flex", alignItems: "center",
         justifyContent: "center", width: 18,
@@ -484,10 +478,6 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
   return (
     <>
       <style>{`
-        @keyframes activePulse {
-          0%,100% { opacity:1; transform:scaleY(1);   }
-          50%      { opacity:.5; transform:scaleY(.8); }
-        }
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
