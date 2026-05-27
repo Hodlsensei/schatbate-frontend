@@ -166,7 +166,6 @@ function generateCard(tag, index) {
   };
 }
 
-/* ── Layout constants ── */
 const GAP            = 9;
 const BATCH_H        = 12;
 const BATCH_V        = 24;
@@ -175,7 +174,6 @@ const CARD_H_DEFAULT = 130;
 const CARD_W_MOBILE  = 147;
 const CARD_H_MOBILE  = 242;
 
-/* ── Section header ── */
 function SectionHeader({ title, showSeeAll = true }) {
   return (
     <div style={{
@@ -204,7 +202,6 @@ function SectionHeader({ title, showSeeAll = true }) {
   );
 }
 
-/* ── Horizontal scrolling section ── */
 function HorizontalSection({ title, tag }) {
   const scrollRef   = useRef(null);
   const sentinelRef = useRef(null);
@@ -253,7 +250,6 @@ function HorizontalSection({ title, tag }) {
   return (
     <div style={{ marginBottom: 28 }}>
       <SectionHeader title={title} />
-
       <div
         style={{ position: "relative", overflow: "hidden" }}
         onMouseEnter={e => {
@@ -265,34 +261,13 @@ function HorizontalSection({ title, tag }) {
           if (btn) btn.style.opacity = "0";
         }}
       >
-        <div
-          ref={scrollRef}
-          style={{
-            overflowX: "auto", overflowY: "hidden",
-            scrollbarWidth: "none", msOverflowStyle: "none",
-          }}
-        >
+        <div ref={scrollRef} style={{ overflowX: "auto", overflowY: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}>
           <style>{`
             .hscroll::-webkit-scrollbar { display: none; }
-            .scroll-arrow {
-              -webkit-appearance: none;
-              appearance: none;
-              background: none !important;
-              box-shadow: none !important;
-              border: none !important;
-            } 
-            .scroll-arrow svg {
-              width: 44px !important;
-              height: 44px !important;
-            }
-            @keyframes shimmer {
-              0%   { background-position: 200% 0; }
-              100% { background-position: -200% 0; }
-            }
-            @keyframes fadeUp {
-              from { opacity: 0; transform: translateY(10px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
+            .scroll-arrow { -webkit-appearance: none; appearance: none; background: none !important; box-shadow: none !important; border: none !important; }
+            .scroll-arrow svg { width: 44px !important; height: 44px !important; }
+            @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+            @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
           `}</style>
           <div
             className="hscroll"
@@ -320,23 +295,16 @@ function HorizontalSection({ title, tag }) {
             <div ref={sentinelRef} style={{ width: 1, height: "100%", gridRow: "1 / span 2" }} />
           </div>
         </div>
-
-        {/* Arrow — no background, white chevron */}
         <button
           onClick={scrollRight}
           className="scroll-arrow"
           style={{
             position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
-            background: "none",
-            border: "none",
-            borderRadius: "50%",
+            background: "none", border: "none", borderRadius: "50%",
             width: 50, height: 50,
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", zIndex: 10,
-            boxShadow: "none",
-            opacity: 0,
-            transition: "opacity .2s ease",
-            padding: 0,
+            cursor: "pointer", zIndex: 10, boxShadow: "none",
+            opacity: 0, transition: "opacity .2s ease", padding: 0,
           }}
           aria-label="Scroll right"
         >
@@ -349,7 +317,6 @@ function HorizontalSection({ title, tag }) {
   );
 }
 
-/* ── Vertical infinite featured grid ── */
 function FeaturedSection({ cols, title }) {
   const [cards,    setCards]   = useState(() => Array.from({ length: BATCH_V }, (_, i) => generateCard("featured", i)));
   const [loading,  setLoading] = useState(false);
@@ -385,23 +352,14 @@ function FeaturedSection({ cols, title }) {
   return (
     <div>
       <SectionHeader title={title} showSeeAll={false} />
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${cols}, 1fr)`,
-        gap: GAP,
-      }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: GAP }}>
         {cards.map(s => (
           <StreamCard key={s.id} streamer={s} gridMode cardHeight={CARD_H_DEFAULT} />
         ))}
       </div>
       <div ref={sentinelRef} style={{ height: 1, marginTop: 8 }} aria-hidden="true" />
       {loading && (
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gap: GAP,
-          marginTop: GAP,
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: GAP, marginTop: GAP }}>
           {Array.from({ length: BATCH_V }).map((_, i) => (
             <div key={`sk-${i}`} style={{
               height: CARD_H_DEFAULT, borderRadius: 4,
@@ -415,7 +373,6 @@ function FeaturedSection({ cols, title }) {
   );
 }
 
-/* ── Main export ── */
 export default function HomePage() {
   const { category } = useCategory();
   const [isMobile,  setIsMobile]  = useState(false);
@@ -438,13 +395,21 @@ export default function HomePage() {
       color: "#1a1a1a",
       fontFamily: FONT,
       fontSize: 13,
+      display: "flex",
+      flexDirection: "column",
     }}>
-      <main style={{ padding: isMobile ? "12px 8px 16px" : "16px 24px 16px" }}>
 
+      {/* ── Sticky banners — sit above scrollable content, don't scroll ── */}
+      <div style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        background: "#F5F5F5",
+      }}>
         {/* Verify Age Banner */}
         <div style={{
           background: "linear-gradient(90deg, #1565c0 0%, #1976d2 100%)",
-          borderRadius: 6, marginBottom: 12,
+          borderRadius: 0,
           display: "flex", alignItems: "center",
           padding: isMobile ? "8px 12px" : "10px 16px",
           gap: 12,
@@ -477,13 +442,15 @@ export default function HomePage() {
               </div>
             )}
           </div>
+          {/* ── pill-shaped Verify Age button ── */}
           <button
             style={{
               background: "linear-gradient(135deg, #f9a825, #f57f17)",
               border: "none", color: "#fff",
               fontWeight: 700, fontSize: isMobile ? 12 : 13, fontFamily: FONT,
-              padding: isMobile ? "6px 14px" : "9px 24px",
-              borderRadius: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
+              padding: isMobile ? "6px 18px" : "9px 28px",
+              borderRadius: 999,           /* pill */
+              cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap",
               boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
               transition: "opacity .15s",
             }}
@@ -498,8 +465,8 @@ export default function HomePage() {
         {showPromo && (
           <div style={{
             background: "linear-gradient(90deg,#b71c1c 0%,#e53935 30%,#e53935 70%,#b71c1c 100%)",
-            borderRadius: 6, padding: "9px 12px",
-            marginBottom: 20, display: "flex", alignItems: "center", gap: 12,
+            padding: "9px 12px",
+            display: "flex", alignItems: "center", gap: 12,
             boxShadow: "0 2px 8px rgba(229,57,53,0.22)",
           }}>
             <div style={{
@@ -540,8 +507,10 @@ export default function HomePage() {
             >✕</button>
           </div>
         )}
+      </div>
 
-        {/* Horizontal sections */}
+      {/* ── Scrollable content ── */}
+      <main style={{ padding: isMobile ? "12px 8px 16px" : "16px 24px 16px" }}>
         {sections.map(sec => (
           <HorizontalSection
             key={`${category}-${sec.key}-${sec.title}`}
@@ -549,10 +518,7 @@ export default function HomePage() {
             tag={sec.key}
           />
         ))}
-
-        {/* Vertical featured grid */}
         <FeaturedSection key={category} cols={isMobile ? 2 : 6} title={featuredTitle} />
-
       </main>
     </div>
   );

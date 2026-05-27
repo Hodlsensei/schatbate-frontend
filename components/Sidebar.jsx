@@ -4,13 +4,41 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AllCategoriesModal from "./AllCategoriesModal";
 
-const FONT   = "'Inter', Helvetica, Roboto, sans-serif";
-const BG     = "#EEEEF0";
-const HOVER  = "#E3E4E6";
-const ACTIVE_BG  = "#fdecea";
-const ACTIVE_CLR = "#e5192b";
-const MUTED  = "#999";
-const TEXT   = "#374151";
+const FONT        = 'Inter, "Helvetica Neue", Roboto, Arial, Helvetica, sans-serif';
+const BG          = "#EEEEF0";
+const HOVER       = "#E3E4E6";
+const ACTIVE_BG   = "#fdecea";
+const ACTIVE_CLR  = "#e5192b";
+const MUTED       = "#999";
+const TEXT        = "#374151";
+
+/* ── Font specs from reference ── */
+const FONT_SECTION = {
+  fontFamily:   FONT,
+  fontSize:     "12px",
+  fontWeight:   500,
+  fontStyle:    "normal",
+  color:        "rgb(0, 0, 0)",
+  lineHeight:   "14px",
+};
+
+const FONT_ROW = {
+  fontFamily:   FONT,
+  fontSize:     "13px",
+  fontWeight:   400,
+  fontStyle:    "normal",
+  color:        "rgb(0, 0, 0)",
+  lineHeight:   "16px",
+};
+
+const FONT_COUNT = {
+  fontFamily:   FONT,
+  fontSize:     "12px",
+  fontWeight:   500,
+  fontStyle:    "normal",
+  color:        "rgb(0, 0, 0)",
+  lineHeight:   "14px",
+};
 
 const Ico = ({ d, size = 17 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
@@ -47,23 +75,23 @@ const NAV_ICONS = {
 };
 
 const NAV = [
-  { label: "Home",              href: "/",              icon: "home"      },
-  { label: "Gallery",           href: "/gallery",       icon: "gallery"   },
-  { label: "Recommended",       href: "/recommended",   icon: "recommend" },
-  { label: "My Favorites",      href: "/favorites",     icon: "favorites" },
-  { label: "Shop",              href: "/shop",          icon: "shop"      },
-  { label: "Best for Privates", href: "/privates",      icon: "privates"  },
-  { label: "Watch History",     href: "/history",       icon: "history"   },
+  { label: "Home",              href: "/",            icon: "home"      },
+  { label: "Gallery",           href: "/gallery",     icon: "gallery"   },
+  { label: "Recommended",       href: "/recommended", icon: "recommend" },
+  { label: "My Favorites",      href: "/favorites",   icon: "favorites" },
+  { label: "Shop",              href: "/shop",        icon: "shop"      },
+  { label: "Best for Privates", href: "/privates",    icon: "privates"  },
+  { label: "Watch History",     href: "/history",     icon: "history"   },
 ];
 
 const SPECIALS = [
-  { label: "United State",   count: 120,  flagCode: "us"    },
-  { label: "United Kingdom", count: 120,  flagCode: "gb"    },
-  { label: "Ukrainian",      count: 120,  flagCode: "ua"    },
-  { label: "New Models",     count: 1110, icon: "bolt"      },
-  { label: "VR Cams",        count: 170,  vr: true          },
-  { label: "BDSM",           count: 69,   icon: "bdsm"      },
-  { label: "Ticket Shows",   count: 107,  icon: "ticket"    },
+  { label: "United State",   count: 120,  flagCode: "us"  },
+  { label: "United Kingdom", count: 120,  flagCode: "gb"  },
+  { label: "Ukrainian",      count: 120,  flagCode: "ua"  },
+  { label: "New Models",     count: 1110, icon: "bolt"    },
+  { label: "VR Cams",        count: 170,  vr: true        },
+  { label: "BDSM",           count: 69,   icon: "bdsm"    },
+  { label: "Ticket Shows",   count: 107,  icon: "ticket"  },
 ];
 const AGE = [
   { label: "Teen 18+",  count: 1325 }, { label: "Young 22+", count: 3720 },
@@ -147,13 +175,12 @@ const Divider = () => (
   <div style={{ height: 1, background: "#D1D3D4", margin: "20px 16px 18px" }} />
 );
 
+/* ── Section label: 12px / 500 / rgba(248,248,248,0.5) / lh 14px ── */
 function SecLabel({ text }) {
   return (
     <div style={{
       padding: "12px 16px 5px",
-      fontSize: 11, fontWeight: 700,
-      letterSpacing: ".1em", textTransform: "uppercase",
-      color: MUTED, fontFamily: FONT, lineHeight: 1.2,
+      ...FONT_SECTION,
     }}>
       {text}
     </div>
@@ -189,18 +216,18 @@ function SpecialIcon({ flagCode, vr, type }) {
   return null;
 }
 
-/* ── PlainRow ── */
+/* ── PlainRow: 13px / 400 / rgb(255,255,255) / lh 16px ── */
 function PlainRow({ label, count, hot, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
     <Link href={href} style={{
       display: "flex", alignItems: "center",
       padding: "7px 16px",
-      fontSize: 13, fontFamily: FONT, fontWeight: 400,
-      color: TEXT, textDecoration: "none",
+      ...FONT_ROW,
+      textDecoration: "none",
       background: hov ? HOVER : "transparent",
       transition: "background .12s",
-      marginLeft: 4, borderRadius: "4px 0 0 4px",
+      marginLeft: 8, borderRadius: "4px 0 0 4px",
     }}
     onMouseEnter={() => setHov(true)}
     onMouseLeave={() => setHov(false)}>
@@ -208,25 +235,25 @@ function PlainRow({ label, count, hot, href = "#" }) {
         {label}
         {hot && <span style={{ color: "#f472b6", fontSize: 11, marginLeft: 4 }}>✦✦</span>}
       </span>
-      <span style={{ fontSize: 12, color: MUTED, fontWeight: 500 }}>
+      <span style={{ ...FONT_COUNT }}>
         {count.toLocaleString()}
       </span>
     </Link>
   );
 }
 
-/* ── IconRow ── */
+/* ── IconRow: same row font spec ── */
 function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
   const [hov, setHov] = useState(false);
   return (
     <Link href={href} style={{
       display: "flex", alignItems: "center", gap: 8,
       padding: "7px 16px",
-      fontSize: 13, fontFamily: FONT, fontWeight: 400,
-      color: TEXT, textDecoration: "none",
+      ...FONT_ROW,
+      textDecoration: "none",
       background: hov ? HOVER : "transparent",
       transition: "background .12s",
-      marginLeft: 4, borderRadius: "4px 0 0 4px",
+      marginLeft: 8, borderRadius: "4px 0 0 4px",
     }}
     onMouseEnter={() => setHov(true)}
     onMouseLeave={() => setHov(false)}>
@@ -237,7 +264,7 @@ function IconRow({ label, count, flagCode, vr, icon, hot, href = "#" }) {
         {label}
         {hot && <span style={{ color: "#f472b6", fontSize: 11, marginLeft: 4 }}>✦✦</span>}
       </span>
-      <span style={{ fontSize: 12, color: MUTED, fontWeight: 500, flexShrink: 0 }}>
+      <span style={{ ...FONT_COUNT, flexShrink: 0 }}>
         {count.toLocaleString()}
       </span>
     </Link>
@@ -264,7 +291,8 @@ function NavItem({ item, active, collapsed }) {
       background: bg,
       position: "relative",
       marginLeft: collapsed ? 0 : 8,
-      borderRadius: collapsed ? 0 : "4px 0 0 4px",
+      marginRight: collapsed ? 0 : 8,
+      borderRadius: collapsed ? 0 : "6px",
       transition: "background .15s, color .15s",
     }}
     onMouseEnter={() => setHov(true)}
@@ -395,12 +423,13 @@ function LanguageSelector({ collapsed }) {
   );
 
   return (
-    <div ref={wrapRef} style={{ position: "relative", padding: "4px 12px 14px" }}>
+    <div ref={wrapRef} style={{ padding: "4px 0 14px" }}>
+      {/* Trigger */}
       <button onClick={() => setOpen(o => !o)} style={{
         display: "flex", alignItems: "center", gap: 8, width: "100%",
-        padding: "8px 10px",
-        background: open ? HOVER : "transparent",
-        border: "none", borderRadius: 6, cursor: "pointer",
+        padding: "10px 16px",
+        background: "transparent",
+        border: "none", cursor: "pointer",
         fontSize: 13, fontFamily: FONT, color: TEXT,
         transition: "background .15s",
       }}>
@@ -413,17 +442,11 @@ function LanguageSelector({ collapsed }) {
         </svg>
       </button>
 
+      {/* Seamless list — no box, no border, no shadow */}
       {open && (
         <div style={{
-          position: "absolute",
-          top: "calc(100% - 4px)",
-          left: 12, right: 12,
-          background: "#ffffff",
-          borderRadius: 8, zIndex: 200,
-          boxShadow: "0 6px 24px rgba(0,0,0,0.13)",
-          border: "1px solid #e5e7eb",
-          maxHeight: 260, overflowY: "auto",
-          scrollbarWidth: "thin", scrollbarColor: "#bbb transparent",
+          width: "100%",
+          background: "transparent",
         }}>
           {LANGUAGES.map(l => {
             const sel = l === lang;
@@ -431,20 +454,14 @@ function LanguageSelector({ collapsed }) {
               <button key={l} onClick={() => { setLang(l); setOpen(false); }} style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 width: "100%", textAlign: "left",
-                padding: "8px 14px", border: "none", cursor: "pointer",
+                padding: "11px 16px", border: "none", cursor: "pointer",
                 background: "transparent",
                 color: sel ? ACTIVE_CLR : TEXT,
                 fontWeight: sel ? 600 : 400,
-                fontSize: 13, fontFamily: FONT, transition: "background .1s",
+                fontSize: 13, fontFamily: FONT,
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "#f3f4f6";
-                e.currentTarget.style.textDecoration = "underline";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.textDecoration = "none";
-              }}>
+              onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }}
+              onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}>
                 <span>{l}</span>
                 {sel && (
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
@@ -569,7 +586,7 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
                 marginTop: 10,
               }}>
                 <AllCatsBtn collapsed={false} onClick={openCats}/>
-                <div style={{ height: 1, background: "#D1D3D4", marginTop: 60 }}/>
+                <div style={{ height: 73, width: 183 }}/>
               </div>
 
               <div style={{ marginTop: 20, paddingTop: 20 }}>

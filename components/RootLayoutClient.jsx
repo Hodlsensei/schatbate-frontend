@@ -4,27 +4,30 @@ import { usePathname } from "next/navigation";
 import Topbar from "./Topbar";
 import SidebarWrapper from "./SidebarWrapper";
 
-const FULLSCREEN_ROUTES = ["/watch"];
+const FULLSCREEN_ROUTES  = ["/watch"];
+const NO_SIDEBAR_ROUTES  = ["/top-models","/categories","/about","/shop","/dashboard/vip","/checkout"];
+
+/* Pages that get a permanent inline sidebar (like home) */
+const INLINE_SIDEBAR_ROUTES = ["/", "/gallery", "/recommended", "/favorites", "/privates", "/history"];
 
 const SIDEBAR_FULL = 220;
 const SIDEBAR_ICON = 58;
 
 export default function RootLayoutClient({ children }) {
   const pathname = usePathname();
+
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [ready, setReady]               = useState(false);
   const [isMobile, setIsMobile]         = useState(false);
-
-  const [collapsed, setCollapsed]           = useState(false);
+  const [collapsed, setCollapsed]       = useState(false);
+  const [mobileOpen, setMobileOpen]     = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [mobileOpen, setMobileOpen]         = useState(false);
 
-  const isFullscreen = FULLSCREEN_ROUTES.some(r => pathname?.startsWith(r));
-
-  const NO_SIDEBAR_ROUTES = ["/top-models","/categories","/about","/shop","/dashboard/vip","/checkout"];
-  const isNoSidebar = NO_SIDEBAR_ROUTES.some(r => pathname?.startsWith(r));
-
-  const isHome = pathname === "/";
+  const isFullscreen   = FULLSCREEN_ROUTES.some(r => pathname?.startsWith(r));
+  const isNoSidebar    = NO_SIDEBAR_ROUTES.some(r => pathname?.startsWith(r));
+  const isInlineSidebar = INLINE_SIDEBAR_ROUTES.some(r =>
+    r === "/" ? pathname === "/" : pathname?.startsWith(r)
+  );
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -34,10 +37,8 @@ export default function RootLayoutClient({ children }) {
   }, []);
 
   useEffect(() => {
-    const mobile = window.innerWidth < 768;
-    if (isHome && !mobile) setCollapsed(false);
-    if (!isHome) setSidebarVisible(false);
     setMobileOpen(false);
+    setSidebarVisible(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -55,16 +56,14 @@ export default function RootLayoutClient({ children }) {
   const handleMenuToggle = () => {
     if (isMobile) {
       setMobileOpen(o => !o);
+    } else if (isInlineSidebar) {
+      setCollapsed(c => !c);
     } else {
-      if (isHome) {
-        setCollapsed(c => !c);
-      } else {
-        setSidebarVisible(v => !v);
-      }
+      setSidebarVisible(v => !v);
     }
   };
 
-  /* ── Overlay sidebar (used on non-home pages + mobile) ── */
+  /* ── Overlay sidebar (non-inline pages + mobile) ── */
   const OverlaySidebar = ({ open, onClose }) => (
     <>
       {open && (
@@ -126,12 +125,13 @@ export default function RootLayoutClient({ children }) {
       <div style={{ display: "flex", flex: 1, overflow: "hidden", minHeight: 0 }}>
 
         {isMobile ? (
+          /* Mobile: always overlay */
           <OverlaySidebar
             open={mobileOpen}
             onClose={() => setMobileOpen(false)}
           />
-        ) : isHome ? (
-          /* Home: inline sidebar, collapses to icon-only */
+        ) : isInlineSidebar ? (
+          /* Inline sidebar pages: home, gallery, recommended, favorites, etc. */
           <div style={{
             width: collapsed ? SIDEBAR_ICON : SIDEBAR_FULL,
             minWidth: collapsed ? SIDEBAR_ICON : SIDEBAR_FULL,
@@ -147,7 +147,7 @@ export default function RootLayoutClient({ children }) {
             </div>
           </div>
         ) : (
-          /* Other pages: overlay sidebar triggered by hamburger */
+          /* All other pages: overlay sidebar */
           <OverlaySidebar
             open={sidebarVisible}
             onClose={() => setSidebarVisible(false)}

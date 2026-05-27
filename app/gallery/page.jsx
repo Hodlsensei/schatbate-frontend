@@ -59,30 +59,35 @@ function randomDuration() {
   return `${m}:${s}`;
 }
 
+/* Dimensions from spec */
+const TALL_W   = 254;
+const TALL_H   = 526;
+const SQ_W     = 256;
+const SQ_H     = 257;
+const GAP      = 8;
+const RADIUS   = 8;
+
 let photoCounter = 0;
 let videoCounter = 0;
-let groupCounter = 0;
 
 function makeCard() {
   const id = photoCounter++;
   return {
     id: `p-${id}`,
     src: REAL_IMAGES[id % REAL_IMAGES.length],
-    isLive: Math.random() > 0.55,
-    hasGridIcon: Math.random() > 0.5,
-    overlayText: Math.random() > 0.8 ? OVERLAY_TEXTS[id % OVERLAY_TEXTS.length] : null,
+    isLive: Math.random() > 0.6,
+    hasGridIcon: Math.random() > 0.55,
+    overlayText: Math.random() > 0.82 ? OVERLAY_TEXTS[id % OVERLAY_TEXTS.length] : null,
   };
 }
 
-function generatePatternA() { return { type: "A", cards: Array.from({ length: 8 }, makeCard) }; }
-function generatePatternB() { return { type: "B", cards: Array.from({ length: 7 }, makeCard) }; }
-function generatePatternC() { return { type: "C", cards: Array.from({ length: 7 }, makeCard) }; }
-function generatePatternD() { return { type: "D", cards: Array.from({ length: 7 }, makeCard) }; }
+/* Each "block" = 1 tall + 6 squares = 7 cards */
+function makeBlock() {
+  return Array.from({ length: 7 }, makeCard);
+}
 
-const PATTERN_FNS = [generatePatternB, generatePatternA, generatePatternC, generatePatternB, generatePatternD, generatePatternA];
-
-function generateGroups(count = 3) {
-  return Array.from({ length: count }, () => PATTERN_FNS[groupCounter++ % PATTERN_FNS.length]());
+function generateBlocks(count = 3) {
+  return Array.from({ length: count }, makeBlock);
 }
 
 function generateVideoBatch(count = 8) {
@@ -100,123 +105,38 @@ function generateVideoBatch(count = 8) {
   });
 }
 
-const ROW_H = 230;
-const GAP = 8;
-
-/* ── Special For You Banner ── */
-function SpecialBanner({ onClose }) {
-  const [visible, setVisible] = useState(true);
-  if (!visible) return null;
-  return (
-    <div style={{
-      display: "flex", alignItems: "center",
-      background: "linear-gradient(90deg, #c0392b, #e5192b)",
-      padding: "12px 20px", gap: 16, position: "relative",
-      margin: "0 0 0 0",
-    }}>
-      {/* Gift icon */}
-      <div style={{
-        width: 40, height: 40, borderRadius: 8,
-        background: "rgba(255,255,255,0.15)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        flexShrink: 0,
-      }}>
-        <span style={{ fontSize: 22 }}>🎁</span>
-      </div>
-
-      <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-        <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, fontFamily: FONT }}>
-          Special for You
-        </span>
-        <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 13, fontFamily: FONT }}>
-          Get tokens now with{" "}
-          <span style={{ color: "#ffd700", fontWeight: 700 }}>25% OFF!</span>
-        </span>
-      </div>
-
-      <button style={{
-        background: "#f5a623", color: "#fff",
-        border: "none", borderRadius: 6, cursor: "pointer",
-        padding: "8px 18px", fontSize: 13, fontWeight: 700, fontFamily: FONT,
-        flexShrink: 0,
-      }}>
-        GET TOKENS
-      </button>
-
-      <button
-        onClick={() => setVisible(false)}
-        style={{
-          background: "none", border: "none", cursor: "pointer",
-          color: "rgba(255,255,255,0.7)", fontSize: 20, lineHeight: 1,
-          padding: "0 4px", flexShrink: 0,
-        }}
-      >
-        ✕
-      </button>
-    </div>
-  );
-}
-
-/* ── Join Bar (fixed bottom) ── */
-function JoinBar() {
-  return (
-    <div style={{
-      position: "fixed", bottom: 0, left: 0, right: 0,
-      zIndex: 100,
-      background: "#e5192b",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      gap: 16, padding: "12px 20px",
-    }}>
-      {/* Chat bubble icon */}
-      <div style={{
-        width: 36, height: 36, borderRadius: "50%",
-        background: "rgba(255,255,255,0.2)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        flexShrink: 0,
-      }}>
-        <svg width={18} height={18} viewBox="0 0 24 24" fill="#fff">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-        </svg>
-      </div>
-      <span style={{
-        color: "#fff", fontWeight: 600, fontSize: 14, fontFamily: FONT,
-      }}>
-        Join Stripchatbate to interact with models!
-      </span>
-      <button style={{
-        background: "#fff", color: "#e5192b",
-        border: "none", borderRadius: 20, cursor: "pointer",
-        padding: "8px 20px", fontSize: 13, fontWeight: 700, fontFamily: FONT,
-        flexShrink: 0,
-      }}>
-        Join FREE
-      </button>
-    </div>
-  );
-}
-
 /* ── Photo Card ── */
-function PhotoCard({ item, style = {} }) {
+function PhotoCard({ item, width, height }) {
   const [hov, setHov] = useState(false);
   return (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        borderRadius: 10, overflow: "hidden", cursor: "pointer",
-        position: "relative", background: "#e8e8e8",
-        transform: hov ? "scale(1.015)" : "scale(1)",
-        transition: "transform .2s, box-shadow .2s",
+        width: width || "100%",
+        height,
+        borderRadius: RADIUS,
+        overflow: "hidden",
+        cursor: "pointer",
+        position: "relative",
+        background: "#ddd",
         boxShadow: hov ? "0 8px 24px rgba(0,0,0,0.18)" : "none",
-        ...style,
+        transition: "box-shadow .3s",
+        isolation: "isolate",
       }}
     >
-      <img src={item.src} alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}/>
+      <img
+        src={item.src} alt=""
+        className={hov ? "gallery-img-hov" : "gallery-img"}
+        style={{
+          width: "100%", height: "100%", objectFit: "cover", display: "block",
+        }}
+      />
 
+      {/* Hover overlay */}
       {hov && (
         <div style={{
-          position: "absolute", inset: 0, background: "rgba(0,0,0,0.2)",
+          position: "absolute", inset: 0, background: "rgba(0,0,0,0.22)",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           <div style={{
@@ -229,6 +149,7 @@ function PhotoCard({ item, style = {} }) {
         </div>
       )}
 
+      {/* LIVE badge */}
       {item.isLive && (
         <div style={{ position: "absolute", top: 8, left: 8 }}>
           <span style={{
@@ -239,6 +160,7 @@ function PhotoCard({ item, style = {} }) {
         </div>
       )}
 
+      {/* Grid icon */}
       {item.hasGridIcon && (
         <div style={{ position: "absolute", top: 8, right: 8 }}>
           <div style={{
@@ -255,6 +177,7 @@ function PhotoCard({ item, style = {} }) {
         </div>
       )}
 
+      {/* Overlay text */}
       {item.overlayText && (
         <div style={{
           position: "absolute", bottom: 0, left: 0, right: 0,
@@ -269,69 +192,56 @@ function PhotoCard({ item, style = {} }) {
   );
 }
 
-/* ── Pattern A: 4+4 equal ── */
-function GroupA({ cards }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: GAP, marginBottom: GAP }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: GAP }}>
-        {cards.slice(0,4).map(c => <PhotoCard key={c.id} item={c} style={{ height: ROW_H }}/>)}
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: GAP }}>
-        {cards.slice(4,8).map(c => <PhotoCard key={c.id} item={c} style={{ height: ROW_H }}/>)}
-      </div>
-    </div>
-  );
-}
+/*
+ * ── GalleryBlock ──
+ * Reference layout (each block, left→right):
+ *
+ * Col:   1 (sq)  |  2 (tall)  |  3 (sq)  |  4 (sq)
+ * Row 1: sq         tall         sq          sq
+ * Row 2: sq         tall         sq          sq
+ *
+ * cards[0] = top-left sq
+ * cards[1] = TALL (spans both rows, col 2)
+ * cards[2] = top col3 sq
+ * cards[3] = top col4 sq
+ * cards[4] = bottom-left sq
+ * cards[5] = bottom col3 sq
+ * cards[6] = bottom col4 sq
+ *
+ * The tall card is always in column 2. We alternate which column
+ * is tall per block so it doesn't look monotonous:
+ * block 0 → col 2, block 1 → col 3, block 2 → col 1, etc.
+ */
+function GalleryBlock({ cards, blockIndex }) {
+  const tallCol = blockIndex % 4; // rotate across all 4 columns
+  const tall    = cards[0];
+  const sqs     = cards.slice(1); // 6 squares
+  const sqCols  = [0,1,2,3].filter(c => c !== tallCol); // 3 cols × 2 rows = 6
 
-/* ── Pattern B: col2 tall spans both rows ── */
-function GroupB({ cards }) {
-  const totalH = ROW_H * 2 + GAP;
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: "repeat(4,1fr)",
-      gridTemplateRows: `${ROW_H}px ${ROW_H}px`,
-      gap: GAP, marginBottom: GAP,
+      gridTemplateColumns: "repeat(4, 1fr)",
+      gridTemplateRows: `${SQ_H}px ${SQ_H}px`,
+      gap: GAP,
+      marginBottom: GAP,
     }}>
-      <div style={{ gridColumn: 1, gridRow: 1 }}><PhotoCard item={cards[0]} style={{ height: ROW_H }}/></div>
-      <div style={{ gridColumn: 2, gridRow: "1 / span 2" }}><PhotoCard item={cards[1]} style={{ height: totalH }}/></div>
-      <div style={{ gridColumn: 3, gridRow: 1 }}><PhotoCard item={cards[2]} style={{ height: ROW_H }}/></div>
-      <div style={{ gridColumn: 4, gridRow: 1 }}><PhotoCard item={cards[3]} style={{ height: ROW_H }}/></div>
-      <div style={{ gridColumn: 1, gridRow: 2 }}><PhotoCard item={cards[4]} style={{ height: ROW_H }}/></div>
-      <div style={{ gridColumn: 3, gridRow: 2 }}><PhotoCard item={cards[5]} style={{ height: ROW_H }}/></div>
-      <div style={{ gridColumn: 4, gridRow: 2 }}><PhotoCard item={cards[6]} style={{ height: ROW_H }}/></div>
-    </div>
-  );
-}
+      {/* Tall card spans both rows */}
+      <div style={{ gridColumn: tallCol + 1, gridRow: "1 / span 2" }}>
+        <PhotoCard item={tall} width="100%" height={TALL_H} />
+      </div>
 
-/* ── Pattern C: 4 top + bottom [normal][WIDE][normal] ── */
-function GroupC({ cards }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: GAP, marginBottom: GAP }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: GAP }}>
-        {cards.slice(0,4).map(c => <PhotoCard key={c.id} item={c} style={{ height: ROW_H }}/>)}
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: GAP }}>
-        <PhotoCard item={cards[4]} style={{ height: ROW_H }}/>
-        <div style={{ gridColumn: "span 2" }}><PhotoCard item={cards[5]} style={{ height: ROW_H }}/></div>
-        <PhotoCard item={cards[6]} style={{ height: ROW_H }}/>
-      </div>
-    </div>
-  );
-}
-
-/* ── Pattern D: 4 top + bottom [normal][normal][WIDE] ── */
-function GroupD({ cards }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: GAP, marginBottom: GAP }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: GAP }}>
-        {cards.slice(0,4).map(c => <PhotoCard key={c.id} item={c} style={{ height: ROW_H }}/>)}
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: GAP }}>
-        <PhotoCard item={cards[4]} style={{ height: ROW_H }}/>
-        <PhotoCard item={cards[5]} style={{ height: ROW_H }}/>
-        <div style={{ gridColumn: "span 2" }}><PhotoCard item={cards[6]} style={{ height: ROW_H }}/></div>
-      </div>
+      {/* Square cards */}
+      {sqCols.map((col, ci) => (
+        <>
+          <div key={`${blockIndex}-${ci}-top`} style={{ gridColumn: col + 1, gridRow: 1 }}>
+            <PhotoCard item={sqs[ci * 2]}     width="100%" height={SQ_H} />
+          </div>
+          <div key={`${blockIndex}-${ci}-bot`} style={{ gridColumn: col + 1, gridRow: 2 }}>
+            <PhotoCard item={sqs[ci * 2 + 1]} width="100%" height={SQ_H} />
+          </div>
+        </>
+      ))}
     </div>
   );
 }
@@ -342,7 +252,7 @@ function VideoCard({ item }) {
   return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ cursor: "pointer" }}>
       <div style={{
-        borderRadius: 8, overflow: "hidden", position: "relative",
+        borderRadius: RADIUS, overflow: "hidden", position: "relative",
         paddingBottom: "56.25%", background: "#e8e8e8",
         transform: hov ? "scale(1.02)" : "scale(1)",
         transition: "transform .2s, box-shadow .2s",
@@ -384,25 +294,60 @@ function VideoCard({ item }) {
   );
 }
 
+/* ── Join Bar ── */
+function JoinBar() {
+  return (
+    <div style={{
+      position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
+      background: "#e5192b",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      gap: 16, padding: "12px 20px",
+    }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: "50%",
+        background: "rgba(255,255,255,0.2)",
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+      }}>
+        <svg width={18} height={18} viewBox="0 0 24 24" fill="#fff">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+      </div>
+      <span style={{ color: "#fff", fontWeight: 600, fontSize: 14, fontFamily: FONT }}>
+        Join Stripchatbate to interact with models!
+      </span>
+      <button style={{
+        background: "#fff", color: "#e5192b",
+        border: "none", borderRadius: 20, cursor: "pointer",
+        padding: "8px 20px", fontSize: 13, fontWeight: 700, fontFamily: FONT, flexShrink: 0,
+      }}>
+        Join FREE
+      </button>
+    </div>
+  );
+}
+
 /* ── Main Page ── */
 export default function GalleryPage() {
   const [activeTab, setActiveTab] = useState("Photos");
-  const [groups, setGroups] = useState(() => generateGroups(3));
-  const [videos, setVideos] = useState(() => generateVideoBatch(8));
-  const [loading, setLoading] = useState(false);
-  const loaderRef = useRef(null);
+  const [blocks,    setBlocks]    = useState(() => generateBlocks(3));
+  const [videos,    setVideos]    = useState(() => generateVideoBatch(8));
+  const [loading,   setLoading]   = useState(false);
+  const loaderRef  = useRef(null);
+  const blockCount = useRef(3);
 
   const loadMore = useCallback(() => {
     if (loading) return;
     setLoading(true);
     setTimeout(() => {
       if (activeTab === "Photos") {
-        setGroups(prev => [...prev, ...generateGroups(2)]);
+        const newBlocks = generateBlocks(2);
+        blockCount.current += 2;
+        setBlocks(prev => [...prev, ...newBlocks]);
       } else {
         setVideos(prev => [...prev, ...generateVideoBatch(8)]);
       }
       setLoading(false);
-    }, 700);
+    }, 600);
   }, [loading, activeTab]);
 
   useEffect(() => {
@@ -415,29 +360,32 @@ export default function GalleryPage() {
   }, [loadMore]);
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: FONT, paddingBottom: 64 }}>
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}`}</style>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: FONT, paddingBottom: 80 }}>
+      <style>{`
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .gallery-img {
+          transform: scale(1.12);
+          transition: transform .5s cubic-bezier(.4,0,.2,1);
+        }
+        .gallery-img-hov {
+          transform: scale(1);
+          transition: transform .5s cubic-bezier(.4,0,.2,1);
+        }
+      `}</style>
 
-      {/* Special For You Banner — top, not sticky */}
-      <SpecialBanner />
-
-      {/* Header: Title + separate tab buttons */}
+      {/* Sticky header */}
       <div style={{
         position: "sticky", top: 0, zIndex: 10,
-        background: "#fff",
-        borderBottom: "1px solid #eee",
-        padding: "16px 20px 12px",
+        background: "#fff", borderBottom: "1px solid #eee",
+        padding: "14px 20px 12px",
         textAlign: "center",
       }}>
-        {/* Title */}
         <h1 style={{
           fontSize: 20, fontWeight: 700, color: "#111",
-          margin: "0 0 14px", fontFamily: FONT, letterSpacing: "-.3px",
+          margin: "0 0 12px", fontFamily: FONT, letterSpacing: "-.3px",
         }}>
           Nude Sex Pics with Girls
         </h1>
-
-        {/* Two separate pill buttons — NOT a toggle switch */}
         <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
           {["Photos", "Videos"].map(tab => (
             <button
@@ -456,8 +404,6 @@ export default function GalleryPage() {
             </button>
           ))}
         </div>
-
-        {/* Grid icon top-right */}
         <div style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)" }}>
           <svg width={20} height={20} viewBox="0 0 24 24" fill="#666">
             <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -470,13 +416,10 @@ export default function GalleryPage() {
 
       {/* PHOTOS */}
       {activeTab === "Photos" && (
-        <div style={{ padding: 8, background: "#fff" }}>
-          {groups.map((g, i) =>
-            g.type === "A" ? <GroupA key={i} cards={g.cards} /> :
-            g.type === "B" ? <GroupB key={i} cards={g.cards} /> :
-            g.type === "C" ? <GroupC key={i} cards={g.cards} /> :
-                             <GroupD key={i} cards={g.cards} />
-          )}
+        <div style={{ padding: GAP, background: "#fff" }}>
+          {blocks.map((cards, i) => (
+            <GalleryBlock key={i} cards={cards} blockIndex={i} />
+          ))}
         </div>
       )}
 
@@ -504,7 +447,6 @@ export default function GalleryPage() {
         )}
       </div>
 
-      {/* Join Bar — fixed at bottom */}
       <JoinBar />
     </div>
   );
