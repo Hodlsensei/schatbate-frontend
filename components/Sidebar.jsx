@@ -180,6 +180,7 @@ function SecLabel({ text }) {
   return (
     <div style={{
       padding: "12px 16px 5px",
+      marginLeft: 8,
       ...FONT_SECTION,
     }}>
       {text}

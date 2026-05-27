@@ -294,7 +294,68 @@ function VideoCard({ item }) {
   );
 }
 
-/* ── Join Bar ── */
+/* ── Age Gate Overlay ── */
+function AgeGateOverlay({ onVerify }) {
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 500,
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      {/* Blurred backdrop */}
+      <div style={{
+        position: "absolute", inset: 0,
+        backdropFilter: "blur(12px)",
+        background: "rgba(0,0,0,0.55)",
+      }}/>
+
+      {/* Card */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        textAlign: "center",
+        padding: "40px 32px",
+        maxWidth: 420,
+      }}>
+        <div style={{ fontSize: 52, marginBottom: 8 }}>🔥</div>
+        <div style={{
+          fontSize: 48, fontWeight: 800, color: "#fff",
+          fontFamily: FONT, marginBottom: 16, lineHeight: 1,
+        }}>18+</div>
+        <p style={{
+          fontSize: 16, color: "#fff", fontFamily: FONT,
+          lineHeight: 1.6, marginBottom: 28,
+          textAlign: "center",
+        }}>
+          Watch the hottest livestreams, photos, and videos by verifying your age.
+        </p>
+        <button
+          onClick={onVerify}
+          style={{
+            background: "#2979ff",
+            border: "none", color: "#fff",
+            fontWeight: 700, fontSize: 16, fontFamily: FONT,
+            padding: "14px 48px",
+            borderRadius: 999, cursor: "pointer",
+            boxShadow: "0 4px 20px rgba(41,121,255,0.5)",
+            transition: "opacity .15s",
+            marginBottom: 14,
+          }}
+          onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+          onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+        >
+          Verify Age
+        </button>
+        <div style={{
+          fontSize: 12, color: "rgba(255,255,255,0.65)",
+          fontFamily: FONT, marginTop: 4,
+        }}>
+          ⚡ It takes just 30 seconds
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function JoinBar() {
   return (
     <div style={{
@@ -332,6 +393,7 @@ export default function GalleryPage() {
   const [blocks,    setBlocks]    = useState(() => generateBlocks(3));
   const [videos,    setVideos]    = useState(() => generateVideoBatch(8));
   const [loading,   setLoading]   = useState(false);
+  const [ageVerified, setAgeVerified] = useState(false);
   const loaderRef  = useRef(null);
   const blockCount = useRef(3);
 
@@ -364,14 +426,20 @@ export default function GalleryPage() {
       <style>{`
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
         .gallery-img {
-          transform: scale(1.12);
-          transition: transform .5s cubic-bezier(.4,0,.2,1);
-        }
-        .gallery-img-hov {
           transform: scale(1);
           transition: transform .5s cubic-bezier(.4,0,.2,1);
         }
+        .gallery-img-hov {
+          transform: scale(1.12);
+          transition: transform .5s cubic-bezier(.4,0,.2,1);
+        }
       `}</style>
+
+      {/* 18+ overlay */}
+      {!ageVerified && <AgeGateOverlay onVerify={() => setAgeVerified(true)} />}
+
+      {/* Page content — blurred until verified */}
+      <div style={{ filter: ageVerified ? "none" : "blur(10px)", transition: "filter .4s", pointerEvents: ageVerified ? "auto" : "none" }}>
 
       {/* Sticky header */}
       <div style={{
@@ -446,6 +514,8 @@ export default function GalleryPage() {
           </div>
         )}
       </div>
+
+      </div>{/* end blurred content */}
 
       <JoinBar />
     </div>
