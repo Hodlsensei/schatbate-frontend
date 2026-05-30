@@ -136,8 +136,8 @@ const POPULAR = [
   { label: "Fuck Machine",    count: 620,  hot: true },
   { label: "Hardcore",        count: 194  },
   { label: "Blowjob",         count: 4690, hot: true },
-  { label: "Pregnant",        count: 22   },
   { label: "Small Tits",      count: 1995 },
+  { label: "Pregnant",        count: 22   },
   { label: "Fisting",         count: 714  },
   { label: "Masturbation",    count: 5257 },
   { label: "Shaven",          count: 3348 },
@@ -587,7 +587,7 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
                 marginTop: 10,
               }}>
                 <AllCatsBtn collapsed={false} onClick={openCats}/>
-                <div style={{ height: 73, width: 183 }}/>
+                <div style={{ height: 73, width: 172 }}/>
               </div>
 
               <div style={{ marginTop: 20, paddingTop: 20 }}>
