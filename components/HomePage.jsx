@@ -181,7 +181,7 @@ function SectionHeader({ title, showSeeAll = true }) {
       marginBottom: 8, paddingBottom: 8,
       borderBottom: "2px solid #e8e8e8",
     }}>
-      <span style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", fontFamily: FONT }}>
+      <span style={{ fontSize: 29, fontWeight: 700, color: "#1a1a1a", fontFamily: FONT }}>
         {title}
       </span>
       {showSeeAll && (

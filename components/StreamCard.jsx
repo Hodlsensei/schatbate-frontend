@@ -33,7 +33,6 @@ const AFRICAN_PHOTOS = [
   "https://thumb-cdn77.xvideos-cdn.com/1e1fdc91-f540-4f72-acd2-58ce81d27730/0/xv_4_t.jpg",
 ];
 
-// Emoji flag → ISO 2-letter country code map
 const EMOJI_TO_CODE = {
   "🇿🇦": "za", "🇺🇸": "us", "🇧🇷": "br", "🇨🇴": "co",
   "🇷🇺": "ru", "🇺🇦": "ua", "🇯🇵": "jp", "🇫🇷": "fr",
@@ -46,9 +45,7 @@ const EMOJI_TO_CODE = {
 
 function getFlagCode(flag) {
   if (!flag) return "us";
-  // Already an ISO code (2 letters)
   if (typeof flag === "string" && flag.length === 2) return flag.toLowerCase();
-  // Emoji flag
   return EMOJI_TO_CODE[flag] || "us";
 }
 
@@ -171,38 +168,40 @@ export default function StreamCard({ streamer, index = 0, gridMode = false, card
           }}>NEW</div>
         )}
 
-        {/* BOTTOM: username on left, real flag image on right — matching reference */}
-        <div style={{
+        {/* BOTTOM LEFT: username — 10px from bottom and left */}
+        <span style={{
           position: "absolute",
-          bottom: 6,
-          left: 6,
-          right: 6,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 4,
+          bottom: 10,
+          left: 10,
+          fontSize: 13,
+          fontWeight: 600,
+          color: "#fff",
+          fontFamily: FONT,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "calc(100% - 40px)",
+          textShadow: "0 1px 4px rgba(0,0,0,0.9)",
         }}>
-          <span style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#fff",
-            fontFamily: FONT,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            textShadow: "0 1px 4px rgba(0,0,0,0.9)",
-          }}>
-            {name}
-          </span>
-          <img
-            src={`https://flagcdn.com/w20/${flagCode}.png`}
-            width={16}
-            height={11}
-            alt={flagCode}
-            style={{ borderRadius: 1, objectFit: "cover", flexShrink: 0, display: "block" }}
-          />
-        </div>
+          {name}
+        </span>
+
+        {/* BOTTOM RIGHT: flag — 10px from bottom and right */}
+        <img
+          src={`https://flagcdn.com/w20/${flagCode}.png`}
+          width={16}
+          height={11}
+          alt={flagCode}
+          style={{
+            position: "absolute",
+            bottom: 10,
+            right: 10,
+            borderRadius: 1,
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
       </div>
     </div>
   );
-}             
+}

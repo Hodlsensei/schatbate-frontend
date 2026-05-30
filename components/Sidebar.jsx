@@ -150,15 +150,14 @@ const FOOTER_LINKS = [
   { label: "Blog",                                     href: "#"      },
   { label: "Support & FAQ",                            href: "#"      },
   { label: "Billing Support",                          href: "#"      },
-  { label: "Become a Model",                           href: "#"      },
-  { label: "Affiliates",                               href: "#"      },
   { label: "Report Content",                           href: "#"      },
   { label: "Media Inquiries",                          href: "#"      },
+  { label: "Personalized Content",                     href: "#"      },
   { label: "Privacy Policy",                           href: "#"      },
-  { label: "Cookie Policy",                            href: "#"      },
   { label: "Terms of Use",                             href: "#"      },
+  { label: "Become a Model",                           href: "#"      },
+  { label: "Studio Signup",                            href: "#"      },
   { label: "All Models",                               href: "#"      },
-  { label: "Sitemap",                                  href: "#"      },
   { label: "18 U.S.C. 2257 Record-Keeping Statement", href: "#"      },
 ];
 
@@ -181,6 +180,7 @@ function SecLabel({ text }) {
     <div style={{
       padding: "12px 16px 5px",
       marginLeft: 8,
+      textTransform: "uppercase",
       ...FONT_SECTION,
     }}>
       {text}
