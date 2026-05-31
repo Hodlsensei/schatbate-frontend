@@ -7,8 +7,8 @@ import AllCategoriesModal from "./AllCategoriesModal";
 const FONT        = 'Inter, "Helvetica Neue", Roboto, Arial, Helvetica, sans-serif';
 const BG          = "#EEEEF0";
 const HOVER       = "#E3E4E6";
-const ACTIVE_BG   = "#fdecea";
-const ACTIVE_CLR  = "#e5192b";
+const ACTIVE_BG   = "#fdf0ea";
+const ACTIVE_CLR  = "#D4622A";
 const MUTED       = "#999";
 const TEXT        = "#374151";
 
@@ -587,7 +587,7 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
                 marginTop: 10,
               }}>
                 <AllCatsBtn collapsed={false} onClick={openCats}/>
-                <div style={{ height: 73, width: 172 }}/>
+                <div style={{ height: 70, width: 172 }}/>
               </div>
 
               <div style={{ marginTop: 20, paddingTop: 20 }}>

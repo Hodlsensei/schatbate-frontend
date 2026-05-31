@@ -51,7 +51,7 @@ const OVERLAY_TEXTS = [
   "Do you wish for me to be back or front for you?",
 ];
 
-const AVATAR_COLORS = ["#e5192b","#9b59b6","#3498db","#e67e22","#1abc9c","#e91e63","#ff5722","#607d8b"];
+const AVATAR_COLORS = ["#D4622A","#9b59b6","#3498db","#e67e22","#1abc9c","#e91e63","#ff5722","#607d8b"];
 
 function randomDuration() {
   const m = String(Math.floor(Math.random() * 12)).padStart(2,"0");
@@ -140,7 +140,7 @@ function PhotoCard({ item, width, height }) {
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           <div style={{
-            background: "#e5192b", color: "#fff",
+            background: "#D4622A", color: "#fff",
             padding: "7px 18px", borderRadius: 20,
             fontSize: 12, fontWeight: 700, fontFamily: FONT,
           }}>
@@ -153,7 +153,7 @@ function PhotoCard({ item, width, height }) {
       {item.isLive && (
         <div style={{ position: "absolute", top: 8, left: 8 }}>
           <span style={{
-            background: "#e5192b", color: "#fff",
+            background: "#D4622A", color: "#fff",
             fontSize: 10, fontWeight: 700, padding: "2px 7px",
             borderRadius: 3, fontFamily: FONT,
           }}>LIVE</span>
@@ -276,7 +276,7 @@ function VideoCard({ item }) {
           {item.isLive && (
             <div style={{
               position: "absolute", bottom: -3, left: "50%", transform: "translateX(-50%)",
-              background: "#e5192b", color: "#fff", fontSize: 7, fontWeight: 700,
+              background: "#D4622A", color: "#fff", fontSize: 7, fontWeight: 700,
               padding: "1px 3px", borderRadius: 3, fontFamily: FONT, whiteSpace: "nowrap",
             }}>LIVE</div>
           )}
@@ -360,7 +360,7 @@ function JoinBar() {
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
-      background: "#e5192b",
+      background: "#D4622A",
       display: "flex", alignItems: "center", justifyContent: "center",
       gap: 16, padding: "12px 20px",
     }}>
@@ -377,7 +377,7 @@ function JoinBar() {
         Join Stripchatbate to interact with models!
       </span>
       <button style={{
-        background: "#fff", color: "#e5192b",
+        background: "#fff", color: "#D4622A",
         border: "none", borderRadius: 20, cursor: "pointer",
         padding: "8px 20px", fontSize: 13, fontWeight: 700, fontFamily: FONT, flexShrink: 0,
       }}>
@@ -507,7 +507,7 @@ export default function GalleryPage() {
           <div style={{ display: "flex", gap: 6 }}>
             {[0,1,2].map(i => (
               <div key={i} style={{
-                width: 8, height: 8, borderRadius: "50%", background: "#e5192b",
+                width: 8, height: 8, borderRadius: "50%", background: "#D4622A",
                 animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
               }}/>
             ))}

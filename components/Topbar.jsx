@@ -78,10 +78,6 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           0%, 100% { transform: scale(1)   rotate(0deg);  }
           50%       { transform: scale(1.25) rotate(20deg); }
         }
-        @keyframes ageShimmer {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0.75; }
-        }
         .live-dot {
           width: 8px; height: 8px; border-radius: 50%;
           background: #4caf50; display: inline-block; flex-shrink: 0;
@@ -96,18 +92,11 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           background: #333; border-radius: 2px;
           transition: transform 0.22s ease, opacity 0.22s ease;
         }
-
-        /*
-         * KEY FIX: the button has zero horizontal padding so it's only
-         * as wide as the text. The border-bottom on the button therefore
-         * only underlines the text itself — matching the reference.
-         * Gap between tabs is handled by the parent flexbox gap instead.
-         */
         .gender-tab {
           background: none;
           border: none;
           border-bottom: 3px solid transparent;
-          padding: 0;                /* ← no side padding → underline = text width */
+          padding: 0;
           height: 100%;
           cursor: pointer;
           white-space: nowrap;
@@ -117,7 +106,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           align-items: center;
         }
         .gender-tab.active {
-          border-bottom-color: #e53935;
+          border-bottom-color: #D4622A;
         }
       `}</style>
 
@@ -189,7 +178,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           {isMobile ? (
             <>
               {showSearch ? (
-                <div style={{ flex: 1, display: "flex", alignItems: "center", background: "#7a1515",
+                <div style={{ flex: 1, display: "flex", alignItems: "center", background: "#C4571F",
                   borderRadius: 20, height: 32, marginLeft: 8, overflow: "hidden" }}>
                   <div style={{ padding: "0 6px 0 10px", display: "flex", alignItems: "center" }}>
                     <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -247,11 +236,11 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                   </svg>
                 </div>
                 <div
-                  style={{ display: "flex", alignItems: "center", gap: 5, background: "#e53935",
+                  style={{ display: "flex", alignItems: "center", gap: 5, background: "#D4622A",
                     borderRadius: 20, padding: "0 10px 0 9px", height: 28, margin: "0 5px",
                     cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", transition: "background .15s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#c62828"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#e53935"}
+                  onMouseEnter={e => e.currentTarget.style.background = "#C4571F"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#D4622A"}
                 >
                   <span className="magic-star">
                     <svg width={11} height={11} viewBox="0 0 24 24" fill="#fff">
@@ -274,7 +263,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{
                   width: isMobile ? 26 : 30, height: isMobile ? 26 : 30,
-                  borderRadius: "50%", background: "linear-gradient(135deg,#e53935,#8e24aa)",
+                  borderRadius: "50%", background: "linear-gradient(135deg,#D4622A,#8e24aa)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: isMobile ? 10 : 12, fontWeight: 700, color: "#fff", flexShrink: 0,
                 }}>
@@ -291,12 +280,12 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
               <>
                 {!isMobile && (
                   <button onClick={openRegister} style={{
-                    background: "#e53935", border: "none", color: "#fff", fontSize: 12,
+                    background: "#D4622A", border: "none", color: "#fff", fontSize: 12,
                     padding: "6px 16px", borderRadius: 20, cursor: "pointer", fontFamily: FONT,
                     whiteSpace: "nowrap", fontWeight: 700, transition: "background .15s",
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#c62828"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#e53935"}>
+                  onMouseEnter={e => e.currentTarget.style.background = "#C4571F"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#D4622A"}>
                     Create Free Account
                   </button>
                 )}
@@ -310,41 +299,37 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           </div>
         </header>
 
-{/* ── GENDER TABS ── */}
-{!hideGenderTabs && (
-  <div style={{
-    width: "100%",
-    boxSizing: "border-box",
-    background: "#fff",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
-    display: "flex",
-    alignItems: "center",
-    height: 42,
-    padding: "0 12px",
-    gap: isMobile ? 20 : 45,
-  }}>
-    {GENDER_TABS.map(tab => {
-      const key    = tab.toLowerCase();
-      const active = category === key;
-      return (
-        <button
-          key={tab}
-          onClick={() => setCategory(key)}
-          className={`gender-tab${active ? " active" : ""}`}
-          style={{
-            color: active ? "#e53935" : "#555",
-            fontSize: isMobile ? 13 : 14,
-            fontWeight: active ? 700 : 500,
-          }}
-          onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#222"; }}
-          onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
-        >
-          {tab}
-        </button>
-      );
-    })}
-  </div>
-)}
+        {/* ── GENDER TABS ── */}
+        {!hideGenderTabs && (
+          <div style={{
+            width: "100%", boxSizing: "border-box",
+            background: "#fff", boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
+            display: "flex", alignItems: "center",
+            height: 42, padding: "0 12px",
+            gap: isMobile ? 20 : 45,
+          }}>
+            {GENDER_TABS.map(tab => {
+              const key    = tab.toLowerCase();
+              const active = category === key;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setCategory(key)}
+                  className={`gender-tab${active ? " active" : ""}`}
+                  style={{
+                    color: active ? "#D4622A" : "#555",
+                    fontSize: isMobile ? 13 : 14,
+                    fontWeight: active ? 700 : 500,
+                  }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#222"; }}
+                  onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
       </div>
 

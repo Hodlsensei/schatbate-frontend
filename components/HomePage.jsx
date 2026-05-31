@@ -188,11 +188,11 @@ function SectionHeader({ title, showSeeAll = true }) {
         <button
           style={{
             background: "none", border: "1px solid #ddd", cursor: "pointer",
-            color: "#e53935", fontSize: 12, fontFamily: FONT,
+            color: "#D4622A", fontSize: 12, fontFamily: FONT,
             padding: "3px 12px", borderRadius: 20, fontWeight: 600,
             transition: "border-color .15s, background .15s",
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#fdecea"; e.currentTarget.style.borderColor = "#e53935"; }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#fdf0ea"; e.currentTarget.style.borderColor = "#D4622A"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.borderColor = "#ddd"; }}
         >
           See All
@@ -464,7 +464,7 @@ export default function HomePage() {
         {/* Promo Banner */}
         {showPromo && (
           <div style={{
-            background: "linear-gradient(90deg,#b71c1c 0%,#e53935 30%,#e53935 70%,#b71c1c 100%)",
+            background: "linear-gradient(90deg,#B34E18 0%,#D4622A 30%,#D4622A 70%,#B34E18 100%)",
             padding: "9px 12px",
             display: "flex", alignItems: "center", gap: 12,
             boxShadow: "0 2px 8px rgba(229,57,53,0.22)",
