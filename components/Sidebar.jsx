@@ -587,7 +587,7 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
                 marginTop: 10,
               }}>
                 <AllCatsBtn collapsed={false} onClick={openCats}/>
-                <div style={{ height: 50, width: 172 }}/>
+                <div style={{ height: 0, width: 172 }}/>
               </div>
 
               <div style={{ marginTop: 20, paddingTop: 20 }}>
