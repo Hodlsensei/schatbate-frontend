@@ -64,7 +64,8 @@ const TALL_W   = 254;
 const TALL_H   = 526;
 const SQ_W     = 256;
 const SQ_H     = 257;
-const GAP      = 8;
+const GAP_V    = 15;
+const GAP_H    = 16;
 const RADIUS   = 8;
 
 let photoCounter = 0;
@@ -223,12 +224,13 @@ function GalleryBlock({ cards, blockIndex }) {
       display: "grid",
       gridTemplateColumns: "repeat(4, 1fr)",
       gridTemplateRows: `${SQ_H}px ${SQ_H}px`,
-      gap: GAP,
-      marginBottom: GAP,
+      columnGap: GAP_H,
+      rowGap: GAP_V,
+      marginBottom: GAP_V,
     }}>
       {/* Tall card spans both rows */}
       <div style={{ gridColumn: tallCol + 1, gridRow: "1 / span 2" }}>
-        <PhotoCard item={tall} width="100%" height={TALL_H} />
+        <PhotoCard item={tall} width="100%" height={SQ_H * 2 + GAP_V} />
       </div>
 
       {/* Square cards */}
@@ -484,7 +486,7 @@ export default function GalleryPage() {
 
       {/* PHOTOS */}
       {activeTab === "Photos" && (
-        <div style={{ padding: GAP, background: "#fff" }}>
+        <div style={{ padding: `${GAP_V}px 35px`, background: "#fff" }}>
           {blocks.map((cards, i) => (
             <GalleryBlock key={i} cards={cards} blockIndex={i} />
           ))}
