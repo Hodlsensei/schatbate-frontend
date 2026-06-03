@@ -610,4 +610,4 @@ export default function Sidebar({ onOpenAuth, collapsed = false }) {
       </aside>
     </>
   );
-}
+}    
