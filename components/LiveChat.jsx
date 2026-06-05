@@ -313,5 +313,5 @@ export default function LiveChat({ username, viewers, onTipClick }) {
       </div>
 
     </div>
-  );
+  );   
 }
