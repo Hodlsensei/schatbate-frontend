@@ -1,153 +1,303 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import StreamPlayer from "./StreamPlayer";
 import LiveChat from "./LiveChat";
 import TipModal from "./TipModal";
 import PrivateShowModal from "./PrivateShowModal";
 import BuyTokensModal from "./BuyTokensModal";
-import ModelStorefront from "./ModelStorefront";
-import ProductDetailPage from "./ProductDetailPage";
-import CheckoutPage from "./CheckoutPage";
-import { MdOutlineUnfoldLessDouble } from "react-icons/md";
-import { DiVim } from "react-icons/di";
 
-/* ─── constants ─────────────────────────────────────── */
-const FONT   = "'DM Sans', 'Helvetica Neue', Helvetica, sans-serif";
+/* ── constants ── */
+const FONT = "'DM Sans', 'Helvetica Neue', Helvetica, sans-serif";
 const COLORS = ["#c0392b","#8e24aa","#1e88e5","#00acc1","#43a047","#fb8c00"];
-const FLAGS  = ["🇿🇦","🇺🇸","🇧🇷","🇺🇦","🇯🇵","🇫🇷","🇩🇪","🇬🇧"];
+const FLAGS = ["🇬🇧","🇺🇸","🇧🇷","🇺🇦","🇯🇵","🇫🇷"];
 
-const RELATED  = ["Molliexo","Lwhite1","Amy01112","Catababa67","Scarlett_girlnextdoor","misstroubleme","siennadiamond","MelisaSwan611","MONA_W","MissLolly92"];
-const FEATURED = ["Nisha_102","Lisabrown_","PervyboyXX","CurvyDesire1","Nimah_","Recura","michellycherryxx24","BonnyMolhada","SexyPetitex25","Freaky_CardiXX"];
+const RELATED = ["Molliexo","Lwhite1","Amy01112","Catababa67","Scarlett_girlnextdoor","misstroubleme","siennadiamond","MelisaSwan611","MONA_W","MissLolly92","Nimah_","Recura","michellycherryxx24","BonnyMolhada","SexyPetitex25","Freaky_CardiXX"];
+const FEATURED = ["Nisha_102","Lisabrown_","PervyboyXX","CurvyDesire1","Nimah_","Recura","michellycherryxx24","BonnyMolhada","SexyPetitex25","Freaky_CardiXX","Molliexo","Lwhite1","Amy01112","Catababa67","Scarlett_girlnextdoor","misstroubleme"];
 
-const MY_SPECIFICS        = ["Mature","White","Medium","Blonde","Medium Hair","Leather","Jerk-off Instruction","Role Play","Cuckold","Mistress","Yoga","Foot Fetish","Nylon","Heels","Cock Rating"];
-const I_DO_IN_SHOWS       = ["Topless","Twerk","Oil Show","Smoking","69 Position","Upskirt","Spanking","Handjob","Humiliation","Masturbation","Massage","Yoga"];
+const MY_SPECIFICS = ["UK Models","Mature","White","Medium","Blonde","Leather","Jerk-off Instruction","Role Play","Cuckold","Mistress","Yoga","Foot Fetish","Nylon","Heels","Cock Rating"];
+const I_DO_IN_SHOWS = ["Topless","Twerk","Oil Show","Smoking","69 Position","Upskirt","Spanking","Handjob","Humiliation","Masturbation","Massage","Yoga"];
 const EXCLUSIVELY_PRIVATE = ["Dirty Talk","Tittyfuck","Flashing","Foot Fetish","Footjob"];
+const RELATED_MIXED = ["Interactive Toys with Mature","Mature HD","Mature Topless","Mature Spanking","Mature Facesitting","Mature Mistress","Mature Nylon","White Mature","Blonde Mature","Blonde Blowjob","Blonde Doggy Style","Blonde Upskirt","Blonde Handjob","Blonde Cuckold","Dirty Talk Blowjob"];
 
 const REVIEWS = [
-  { stars:1, text:"she didn't do what I asked, not good use of my tokens",                                                                 date:"Apr 29, 2026", type:"Private"          },
-  { stars:5, text:"fantastic love",                                                                                                         date:"Apr 25, 2026", type:"Exclusive Private" },
-  { stars:5, text:"She was so hot and sexy, lovely lady, very responsive",                                                                  date:"Apr 18, 2026", type:"Private"          },
-  { stars:1, text:"model hangs out in the chat and avoids tips — also uses a BOT to reply to DMs",                                         date:"Apr 14, 2026", type:"Private"          },
+  { stars:5, text:"sweet, hot, so much fun", date:"Jun 12, 2026", type:"Exclusive Private" },
+  { stars:5, text:"Absolutely incredible woman 😍!!!", date:"Jun 11, 2026", type:"Exclusive Private" },
+  { stars:5, text:"Amazing private with this stunning, sexy lady...WOW.", date:"Jun 5, 2026", type:"Private" },
+  { stars:5, text:"so sexy and beautiful I love role playing with you xx", date:"May 30, 2026", type:"Exclusive Private" },
+  { stars:5, text:"superb", date:"May 27, 2026", type:"Exclusive Private" },
 ];
 
 const SCHEDULE = [
-  { day:"Monday",    slots:[]                                           },
-  { day:"Tuesday",   slots:["8:30 AM – 12:30 PM"]                      },
-  { day:"Wednesday", slots:["2:00 AM – 4:30 AM","10:00 AM – 11:45 AM"] },
-  { day:"Thursday",  slots:[]                                           },
-  { day:"Friday",    slots:["2:00 AM – 4:30 AM","9:45 AM – 12:30 PM"]  },
-  { day:"Saturday",  slots:["2:00 AM – 4:30 AM","9:30 AM – 12:00 PM"]  },
-  { day:"Sunday",    slots:["2:00 AM – 4:30 AM","9:00 AM – 12:00 PM"]  },
+  { day:"Monday", slots:["8:00 AM – 9:30 AM","3:00 PM – 5:30 PM"], today:false },
+  { day:"Tuesday", slots:["7:00 AM – 10:00 AM","6:45 PM – 8:30 PM"], today:true },
+  { day:"Wednesday", slots:["7:00 AM – 10:30 AM","4:00 PM – 6:00 PM"], today:false },
+  { day:"Thursday", slots:["7:00 AM – 10:00 AM"], today:false },
+  { day:"Friday", slots:["6:30 AM – 10:00 AM","1:30 PM – 4:00 PM"], today:false },
+  { day:"Saturday", slots:["6:30 AM – 9:00 AM","8:30 PM – 10:15 PM"], today:false },
+  { day:"Sunday", slots:["6:30 AM – 10:30 AM","3:00 PM – 6:00 PM","6:15 PM – 8:45 PM"], today:false },
 ];
 
 const TIP_MENU = [
-  { label:"Hi Beautiful 💋",              tokens:3  },
-  { label:"Hi Sexy 🥰",                   tokens:4  },
-  { label:"Blow a Kiss 🤩",               tokens:7  },
-  { label:"Love Your Outfit 🤩",          tokens:10 },
-  { label:"💗 Appreciation Tip",          tokens:10 },
-  { label:"Make Me Smile 😀",             tokens:11 },
-  { label:"Lets see you Twirl 🥰",        tokens:15 },
+  { label:"HI", tokens:1 },
+  { label:"Hi Beautiful 💋", tokens:3 },
+  { label:"Ask a personal Question ?", tokens:4 },
+  { label:"Hi SEXY 🤩", tokens:7 },
+  { label:"Blow A Kiss 😘", tokens:7 },
+  { label:"WOW 😛", tokens:8 },
+  { label:"YOURE HOT 👌🏻", tokens:8 },
+  { label:"Private Message 📩📩", tokens:10 },
+  { label:"Love Your OutFit 🤩", tokens:10 },
+  { label:"💝 Appreciation Tip", tokens:12 },
+  { label:"Make Me Smile 😃", tokens:15 },
+  { label:"Lets see you Twirl for me 😍", tokens:15 },
+  { label:"Slow Lip Tease UPCLOSE 💋", tokens:17 },
+  { label:"Don't Stop Monica 🥰🥰", tokens:20 },
+  { label:"Close Up Tongue Tease 😝", tokens:20 },
+  { label:"💝 Appreciation Tip", tokens:25 },
+  { label:"YOURE HORNY 🤩", tokens:20 },
+  { label:"Fap Tax", tokens:20 },
+  { label:"YOU MAKE ME HORNY", tokens:25 },
+  { label:"BIG Dick Tax 🍆", tokens:25 },
+  { label:"SMALL Dick Tax 🤣", tokens:25 },
+  { label:"Turn Around And TEASE 🥰", tokens:25 },
+  { label:"Spanking TEASE x 5", tokens:30 },
+  { label:"SlowBodyTease Reveal Something", tokens:50 },
+  { label:"Ass To Cam TEASE", tokens:50 },
+  { label:"Show Me Those Feet Monica 👀", tokens:50 },
+  { label:"SHOW Those Legs Monica 👀", tokens:50 },
+  { label:"Hands up Armpits up close 😛", tokens:55 },
+  { label:"Naughty Licking on Toy 😛", tokens:65 },
+  { label:"Quick Flash lingerie 👙", tokens:70 },
+  { label:"Full Body TEASE", tokens:99 },
+  { label:"Go out for Cappuccino ☕️", tokens:100 },
+  { label:"Slow Squeeze BREASTS UP Close", tokens:100 },
+  { label:"Dick Rating Out Loud 🍆", tokens:100 },
+  { label:"Oil TEASE Bottom", tokens:110 },
+  { label:"Remove Top Slooooowly 👙", tokens:120 },
+  { label:"JOI HandJob Worship 🍆", tokens:150 },
+  { label:"👙 SHOW OFF THOSE BIG BREASTS 👀", tokens:200 },
+  { label:"Apero Spritz For You 🥂", tokens:200 },
+  { label:"Heels on off guys", tokens:200 },
+  { label:"CONTROL You Lead ME", tokens:200 },
+  { label:"VIP Fantasy Moment 🥰", tokens:230 },
+  { label:"Outfit Change 👙", tokens:250 },
+  { label:"GO BUY THE LILLIES 💐", tokens:350 },
+  { label:"Full control lovense 5 mins ☺️", tokens:500 },
+  { label:"FULL Control 10 mins ☺️☺️☺️", tokens:999 },
+  { label:"Snapchat 🔥", tokens:888 },
+  { label:"Snapchat 10 mins video call", tokens:1000 },
+  { label:"🥂 Spoil Me 🥰", tokens:1000 },
+  { label:"TAKE A SPA DAY MONICA 🥰", tokens:2000 },
 ];
 
-/* layout dimensions */
-const TOPBAR_H  = 52;
-const NAVBAR_H  = 48;
-const CHAT_TOP  = TOPBAR_H + NAVBAR_H;
+const KNIGHTS = [
+  { name:"SXSAARFEND", level:87, league:"royal" },
+  { name:"prankman1", level:39, league:"gold" },
+  { name:"bat21Lubricant", level:85, league:"royal" },
+  { name:"Stanley_the_m", level:85, league:"royal" },
+  { name:"hammers1266", level:62, league:"diamond" },
+  { name:"w1ldheart", level:83, league:"royal" },
+];
 
-/* ─── tiny helpers ──────────────────────────────────── */
+const ALBUMS = [
+  { label:"Public", likes:264, count:1, free:true, img:"📷" },
+  { label:"Just me", likes:36, count:9, price:99, locked:true },
+  { label:"BLACK FRIDAY BUNDLE 2", likes:1, count:5, price:99, locked:true },
+  { label:"BLACK FRIDAY! DRESS UP BUNDLE", likes:2, count:5, price:99, locked:true },
+  { label:"Hot bikini day", likes:3, count:5, price:99, locked:true },
+  { label:"Naughty!", likes:84, count:1, free:true, img:"🖼️" },
+  { label:"Happy Feet video", likes:2, count:1, price:99, locked:true },
+  { label:"Foot show", likes:2, count:5, price:66, locked:true },
+  { label:"Get ready with me!", likes:6, count:5, price:66, locked:true },
+];
+
+const PANELS = [
+  { col:0, title:"My schedule\n7 am to 10 am\nI'm a morning gal\n4pm to 7pm\nAnd sometimes MORE", body:"Just saying!\nI looooooove Flowers 🌺 especially Lillie's", hasImg:true },
+  { col:1, title:"Love summer Days Poolside", body:"One day I will take you to the lake or beach with me, Lush & Domi", hasImg:true },
+  { col:0, title:"Do You Like A Foot Show or Nylons too ?", hasImg:true },
+  { col:1, title:"Things I love & like ❤️", body:"Things I like, Cappuccino, apéro Spritz, flowers!\nRunning, 3 times London marathon 1 x Robin Hood but now I love trail running.\nAnd of course I love to be here with you !" },
+  { col:0, title:"Always love a morning with you! But I try to find you later in the day too 😍😘" },
+  { col:1, title:"See you tomorrow gorgeous guys 😍", body:"Can't wait!", hasImg:true },
+];
+
+/* ── colours ── */
+const BG = "#111111";
+const CARD = "#1e1e1e";
+const CARD2 = "#252525";
+const BORDER = "#2e2e2e";
+const TEXT = "#f0f0f0";
+const MUTED = "#888";
+const SUBTLE = "#555";
+const RED = "#e53935";
+const GOLD = "#f5a623";
+const GREEN = "#4caf50";
+const PURPLE = "#8e24aa";
+
+const LEAGUE_COLORS = {
+  royal: "#e53935",
+  diamond: "#8e24aa",
+  gold: "#f5a623",
+  silver: "#b0bec5",
+};
+
+/* ── helpers ── */
 function Stars({ n, size = 13 }) {
   return (
-    <div style={{ display:"flex", gap:2 }}>
+    <span style={{ display:"flex", gap:1 }}>
       {[1,2,3,4,5].map(i => (
-        <svg key={i} width={size} height={size} viewBox="0 0 24 24"
-          fill={i<=n?"#f5a623":"none"} stroke={i<=n?"#f5a623":"#ddd"} strokeWidth="2">
+        <svg key={i} width={size} height={size} viewBox="0 0 24 24" fill={i<=n?GOLD:"none"} stroke={i<=n?GOLD:SUBTLE} strokeWidth="2">
           <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
         </svg>
       ))}
+    </span>
+  );
+}
+
+function HexBadge({ level, league, size = 44 }) {
+  const color = LEAGUE_COLORS[league] || "#888";
+  return (
+    <div style={{ position:"relative", width:size, height:size }}>
+      <svg width={size} height={size} viewBox="0 0 100 100">
+        <path
+          d="M43.7 2.9a12.7 12.7 0 0112.6 0l15.9 9.1 15.8 9a12.7 12.7 0 016.4 11.1L94.4 50l.04 18a12.7 12.7 0 01-6.4 11.1l-15.8 9-15.9 9.1a12.7 12.7 0 01-12.6 0l-15.9-9.1-15.8-9A12.7 12.7 0 015.6 68L5.6 50l-.04-18A12.7 12.7 0 0112 21l15.8-9 15.9-9.1z"
+          fill={color}
+          fillOpacity="0.9"
+        />
+        <text x="50" y="50" textAnchor="middle" dy="0.35em" fill="#fff" fontSize={level > 9 ? "30" : "36"} fontWeight="700" fontFamily="sans-serif">
+          {level}
+        </text>
+      </svg>
     </div>
   );
 }
 
-function Tag({ label }) {
+function DiamondIcon({ size=18 }) {
   return (
-    <span style={{
-      background:"#f5f5f5", border:"1px solid #e8e8e8",
-      color:"#666", fontSize:11, padding:"3px 10px",
-      borderRadius:20, cursor:"pointer", fontFamily:FONT,
-      transition:"border-color .15s, color .15s",
-      display:"inline-block",
-    }}
-      onMouseEnter={e=>{ e.currentTarget.style.borderColor="#bbb"; e.currentTarget.style.color="#222"; }}
-      onMouseLeave={e=>{ e.currentTarget.style.borderColor="#e8e8e8"; e.currentTarget.style.color="#666"; }}
-    >{label}</span>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 23L0 11L4.5 2H19.5L24 11L12 23ZM20.3 10.4L17.6 5H6.4L3.7 10.4L12 18.8L20.3 10.4ZM12 14.5L7.3 9.8L8.2 8H10.9L12 9.9L13.1 8H15.8L16.7 9.8L12 14.5Z"/>
+    </svg>
   );
 }
 
-function SectionCard({ children, style }) {
+function Tag({ label, onClick }) {
   return (
-    <div style={{
-      background:"#ffffff",
-      border:"1px solid #f0f0f0",
-      borderRadius:10,
-      padding:"18px 20px",
-      ...style,
-    }}>{children}</div>
+    <a
+      href="#"
+      onClick={e => { e.preventDefault(); onClick && onClick(); }}
+      style={{
+        display:"inline-block",
+        background:"transparent",
+        border:`1px solid ${BORDER}`,
+        color:"#ccc",
+        fontSize:12,
+        padding:"4px 12px",
+        borderRadius:20,
+        cursor:"pointer",
+        fontFamily:FONT,
+        textDecoration:"none",
+        transition:"border-color .15s",
+      }}
+      onMouseEnter={e=>e.currentTarget.style.borderColor="#555"}
+      onMouseLeave={e=>e.currentTarget.style.borderColor=BORDER}
+    >{label}</a>
+  );
+}
+
+function Card({ children, style }) {
+  return (
+    <div style={{ background:CARD, borderRadius:8, padding:"16px 18px", ...style }}>
+      {children}
+    </div>
   );
 }
 
 function SectionTitle({ children }) {
   return (
-    <div style={{
-      fontSize:13, fontWeight:700, color:"#111",
-      letterSpacing:".01em", marginBottom:14,
-      display:"flex", alignItems:"center", gap:8,
-    }}>{children}</div>
+    <div style={{ fontSize:15, fontWeight:700, color:TEXT, marginBottom:14, display:"flex", alignItems:"center", gap:8 }}>
+      {children}
+    </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════
-   MAIN
-═══════════════════════════════════════════════════════ */
+function HeartIcon({ filled, size=16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 22" fill={filled?"#e53935":"none"} stroke={filled?"#e53935":"currentColor"} strokeWidth="1.5">
+      <path d="M15.5 3a4.5 4.5 0 014.5 4.5C20 12 11 19 11 19S2 12 2 7.5A4.5 4.5 0 016.5 3c1.74 0 3.41.81 4.5 2.08A5.48 5.48 0 0115.5 3z"/>
+    </svg>
+  );
+}
+
+function BellIcon({ size=16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="currentColor">
+      <path d="M50.7 2.54a5.89 5.89 0 00-5.91 5.92c0 .28.19.48.19.76a23.86 23.86 0 00-18.15 23.2c0 12.51.1 23.97-10.02 31.7-4.87 4.11-7.93 10.03-7.93 16.05h83.55c0-5.92-3.05-11.84-7.83-16.04-10.12-7.74-10.12-19.2-10.12-31.7A23.87 23.87 0 0056.43 9.32c0-.29.2-.48.2-.77a5.97 5.97 0 00-5.92-6.01zM38.78 86.09a11.94 11.94 0 0023.87 0H38.77z"/>
+    </svg>
+  );
+}
+
+function UserPlusIcon({ size=16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor">
+      <path fillRule="evenodd" d="M10.18 8.22A2.91 2.91 0 1010.18 2.4a2.91 2.91 0 000 5.82zM3.64 6.76V4.58H2.18v2.18H0v1.46h2.18v2.18h1.46V8.22h2.18V6.76H3.64zM4.36 12.58c0-1.93 3.88-2.91 5.82-2.91 1.94 0 5.82.98 5.82 2.91V14H4.36v-1.42z"/>
+    </svg>
+  );
+}
+
+function MessageIcon({ size=16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="currentColor">
+      <path d="M35.6 37.5L6.4 64.3l33.8-22.2 6.2 5 3.5 2.3 3.1-2.3 6.9-5.2 33.7 22.5-29.2-26.7 33.8-27.6.5 5.2v49.2c0 6.4-4.9 11.5-10.9 11.5H35.8L11.9 98.9V75.9C5.9 75.9 1 70.7 1 64.3V14.8l.5-4.6 35-27.4zM4.3 4.2C6.3 2.2 8.9 1 11.9 1h76.1c3 0 5.8 1.3 7.8 3.5L49.9 41.4 4.3 4.2z"/>
+    </svg>
+  );
+}
+
+function CalendarAddIcon({ size=14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 17 17" fill="currentColor">
+      <path fillRule="evenodd" d="M14.1 2.4h-.8V.8h-1.6v1.6H5.3V.8H3.7v1.6h-.8C2 2.4 1.3 3.1 1.3 4l-.01 9.6c0 .88.71 1.6 1.6 1.6H8.14A5.15 5.15 0 017.6 13.6H2.9V5.6H14.1v.93A5.14 5.14 0 0115.7 6.9V4c0-.88-.7-1.6-1.6-1.6z" clipRule="evenodd"/>
+      <path d="M14.05 11.73V9H12.23v2.73H9.5v1.82h2.73v2.73h1.82v-2.73H16.77v-1.82h-2.72z"/>
+    </svg>
+  );
+}
+
+const NAVBAR_H = 48;
+
+/* ══ MAIN ══ */
 export default function WatchPage({ username }) {
-  const router    = useRouter();
+  const router = useRouter();
   const scrollRef = useRef(null);
 
-  const [viewers,       setViewers]       = useState(Math.floor(Math.random()*15000)+2000);
-  const [showTip,       setShowTip]       = useState(false);
-  const [showPrivate,   setShowPrivate]   = useState(false);
+  const [viewers, setViewers] = useState(Math.floor(Math.random()*8000)+2000);
+  const [showTip, setShowTip] = useState(false);
+  const [showPrivate, setShowPrivate] = useState(false);
   const [showBuyTokens, setShowBuyTokens] = useState(false);
-  const [following,     setFollowing]     = useState(false);
-  const [notifyLive,    setNotifyLive]    = useState(false);
-  const [tokens,        setTokens]        = useState(0);
-  const [activeTab,     setActiveTab]     = useState("Profile");
-  const [profileTab,    setProfileTab]    = useState("Profile");
-  const [goalAmount]                      = useState(Math.floor(Math.random()*300)+100);
-  const [goalCurrent,   setGoalCurrent]   = useState(Math.floor(Math.random()*100)+10);
-  const [goalText]                        = useState("keep going, fuck anal very hard 🔥");
-  const [privatePrice]                    = useState([8,16,32,60][Math.floor(Math.random()*4)]);
-  const [showPip,       setShowPip]       = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [cartItems,     setCartItems]     = useState([]);
-  const [epicGoal]                        = useState({ text:"Pay for my Car!", current:5, total:50000 });
-  const [relatedPage,   setRelatedPage]   = useState(1);
-  const [featuredPage,  setFeaturedPage]  = useState(1);
+  const [following, setFollowing] = useState(false);
+  const [notifyLive, setNotifyLive] = useState(false);
+  const [tokens, setTokens] = useState(0);
+  const [activeTab, setActiveTab] = useState("Profile");
+  const [profileTab, setProfileTab] = useState("Profile");
+  const [goalAmount] = useState(288);
+  const [goalCurrent, setGoalCurrent] = useState(112);
+  const [goalText] = useState("BEND OVER SPANK ASS X5");
+  const [privatePrice] = useState(60);
+  const [showPip, setShowPip] = useState(false);
+  const [chatTab, setChatTab] = useState("Private");
+  const [lotteryTime, setLotteryTime] = useState("16:30");
+  const [tipMenuExpanded, setTipMenuExpanded] = useState(false);
+  const [relatedPage, setRelatedPage] = useState(1);
+  const [featuredPage, setFeaturedPage] = useState(1);
+  const [epicGoal] = useState({ text:"Pay for my Car!", current:7, total:50000 });
 
-  const color   = COLORS[username?.charCodeAt(0) % COLORS.length] || "#c0392b";
-  const flag    = FLAGS[username?.charCodeAt(0)  % FLAGS.length]   || "🇺🇸";
+  const color = COLORS[username?.charCodeAt(0) % COLORS.length] || RED;
   const goalPct = Math.min(100, Math.round((goalCurrent / goalAmount) * 100));
   const epicPct = Math.min(100, Math.round((epicGoal.current / epicGoal.total) * 100));
-
-  const STORE_TABS = ["Store","ProductDetail","Checkout"];
-
   const openBuyTokens = () => { setShowTip(false); setShowPrivate(false); setShowBuyTokens(true); };
 
   useEffect(() => {
     const id = setInterval(() => {
       setViewers(v => Math.max(100, v + Math.floor(Math.random()*20)-9));
-      setGoalCurrent(v => Math.min(goalAmount, v + Math.floor(Math.random()*3)));
+      setGoalCurrent(v => Math.min(goalAmount, v + Math.floor(Math.random()*2)));
     }, 3000);
     return () => clearInterval(id);
   }, [goalAmount]);
@@ -155,917 +305,822 @@ export default function WatchPage({ username }) {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const fn = () => setShowPip(el.scrollTop > window.innerHeight - CHAT_TOP);
+    const fn = () => setShowPip(el.scrollTop > window.innerHeight - NAVBAR_H);
     el.addEventListener("scroll", fn);
     return () => el.removeEventListener("scroll", fn);
   }, []);
 
   useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = 0; }, [activeTab]);
 
-  const mainTabs = ["Profile","Videos","Photos","Feed","Store"];
+  const mainTabs = ["Profile","Videos 1","Photos 47","Feed"];
 
-  /* ── button helpers ── */
-  const ghostBtn = (active, ac="#e53935") => ({
-    background: active ? `${ac}12` : "transparent",
-    border: `1px solid ${active ? ac : "#ddd"}`,
-    color: active ? ac : "#666",
-    fontSize:12, fontWeight:600, padding:"6px 14px", borderRadius:6,
-    cursor:"pointer", fontFamily:FONT, flexShrink:0,
-    display:"flex", alignItems:"center", gap:6, transition:"all .15s",
-  });
-
-  const iconBtn = (active, ac="#f5a623") => ({
-    background: active ? `${ac}12` : "transparent",
-    border: `1px solid ${active ? ac : "#ddd"}`,
-    color: active ? ac : "#aaa",
-    width:34, height:34, borderRadius:8, cursor:"pointer",
-    display:"flex", alignItems:"center", justifyContent:"center",
-    fontSize:15, fontFamily:FONT, transition:"all .15s", flexShrink:0,
-  });
+  const visibleTipMenu = tipMenuExpanded ? TIP_MENU : TIP_MENU.slice(0, 16);
 
   return (
-    <div style={{
-      height:"100%",
-      background:"#ffffff",
-      display:"flex",
-      flexDirection:"column",
-      overflow:"hidden",
-      position:"relative",
-      fontFamily:FONT,
-    }}>
+    <div style={{ height:"100%", background:BG, display:"flex", flexDirection:"column", overflow:"hidden", fontFamily:FONT, color:TEXT }}>
 
-      {/* ══════════════════════════════
-          MODEL SUB-NAV
-      ══════════════════════════════ */}
+      {/* ══ TOP NAV ══ */}
       <div style={{
-        height: NAVBAR_H, background:"#ffffff",
-        borderBottom:"1px solid #eeeeee",
+        height:NAVBAR_H, background:"#0d0d0d",
+        borderBottom:`1px solid ${BORDER}`,
         display:"flex", alignItems:"center",
-        padding:"0 16px", gap:10, flexShrink:0,
+        padding:"0 12px", gap:8, flexShrink:0, position:"relative", zIndex:100,
       }}>
         {/* Back */}
-        <button onClick={()=>router.back()} style={{
-          background:"none", border:"none", color:"#aaa",
-          cursor:"pointer", fontSize:18, lineHeight:1, padding:"4px 6px",
-        }}>‹</button>
+        <button onClick={()=>router.back()} style={{ background:"none", border:"none", color:MUTED, cursor:"pointer", fontSize:22, padding:"0 6px", lineHeight:1 }}>‹</button>
 
-        {/* Avatar + name + badge */}
-        <div style={{ display:"flex", alignItems:"center", gap:10, flexShrink:0 }}>
-          <div style={{
-            width:30, height:30, borderRadius:"50%",
-            background:color, display:"flex", alignItems:"center",
-            justifyContent:"center", fontSize:12, fontWeight:800, color:"#fff",
-            border:"2px solid #eee",
-          }}>
-            {username?.[0]?.toUpperCase()}
+        {/* Avatar + name dropdown */}
+        <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0, cursor:"pointer" }}>
+          <div style={{ position:"relative" }}>
+            <div style={{ width:26, height:26, borderRadius:"50%", background:color, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:800, color:"#fff" }}>
+              {username?.[0]?.toUpperCase()}
+            </div>
+            <div style={{ position:"absolute", bottom:0, right:0, width:7, height:7, borderRadius:"50%", background:GREEN, border:"1.5px solid #0d0d0d" }}/>
           </div>
-          <span style={{ fontSize:14, fontWeight:700, color:"#111" }}>{username}</span>
-          <span style={{ fontSize:13 }}>{flag}</span>
-          <span style={{
-            background:"#e53935", color:"#fff", fontSize:9,
-            fontWeight:800, padding:"2px 7px", borderRadius:4,
-            letterSpacing:".06em",
-          }}>LIVE</span>
+          <span style={{ fontSize:13, fontWeight:700, color:TEXT }}>{username}</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill={MUTED}><path d="M7 10l5 5 5-5z"/></svg>
         </div>
 
-        {/* Divider */}
-        <div style={{ width:1, height:20, background:"#eee", flexShrink:0 }}/>
+        <div style={{ width:1, height:18, background:BORDER, flexShrink:0 }}/>
 
         {/* Page tabs */}
-        <div style={{ display:"flex", alignItems:"center", height:"100%", gap:2 }}>
-          {mainTabs.map(tab => (
-            <button key={tab} onClick={()=>setActiveTab(tab)} style={{
-              background:"none", border:"none", cursor:"pointer",
-              padding:"0 14px", height:"100%", fontSize:13,
-              color: activeTab===tab||(tab==="Store"&&STORE_TABS.includes(activeTab)) ? "#111" : "#aaa",
-              borderBottom: activeTab===tab||(tab==="Store"&&STORE_TABS.includes(activeTab))
-                ? "2px solid #e53935" : "2px solid transparent",
-              fontFamily:"inherit", fontWeight:activeTab===tab?600:400,
-              transition:"color .15s", letterSpacing:".01em",
-            }}>{tab==="Store"?"🛍 Store":tab}</button>
-          ))}
+        <div style={{ display:"flex", alignItems:"center", height:"100%", gap:0 }}>
+          {mainTabs.map(tab => {
+            const base = tab.split(" ")[0];
+            const active = activeTab === base || activeTab === tab;
+            const count = tab.includes(" ") ? tab.split(" ")[1] : null;
+            return (
+              <button key={tab} onClick={()=>setActiveTab(base)} style={{
+                background:"none", border:"none", cursor:"pointer",
+                padding:"0 14px", height:"100%", fontSize:13,
+                color:active ? TEXT : MUTED,
+                borderBottom:active ? `2px solid ${RED}` : "2px solid transparent",
+                fontFamily:FONT, fontWeight:active?600:400,
+                display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap",
+              }}>
+                {base}
+                {count && <span style={{ fontSize:11, color:MUTED }}>{count}</span>}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Fan Club */}
-        <button style={{
-          marginLeft:4, background:"transparent",
-          border:"1px solid #e53935", color:"#e53935",
-          fontSize:12, fontWeight:700, padding:"5px 14px",
-          borderRadius:20, cursor:"pointer", fontFamily:"inherit",
-          display:"flex", alignItems:"center", gap:6, flexShrink:0,
-          transition:"background .15s",
-        }}
-          onMouseEnter={e=>e.currentTarget.style.background="rgba(229,57,53,0.06)"}
-          onMouseLeave={e=>e.currentTarget.style.background="transparent"}
-        >🤍 Join Fan Club</button>
+        {/* Fan Club center */}
+        <div style={{ flex:1, display:"flex", justifyContent:"center" }}>
+          <button style={{
+            background:"transparent", border:`1px solid #444`,
+            color:TEXT, fontSize:12, fontWeight:600,
+            padding:"5px 16px", borderRadius:20, cursor:"pointer",
+            fontFamily:FONT, display:"flex", alignItems:"center", gap:6,
+          }}>
+            <DiamondIcon size={14}/> Join Fan Club
+          </button>
+        </div>
 
-        {/* VIP */}
-        <Link href="/dashboard/vip" style={{
-          background:"linear-gradient(135deg,#a67700,#f5a623)",
-          border:"none", color:"#fff", fontSize:12, fontWeight:700,
-          padding:"5px 14px", borderRadius:20, cursor:"pointer",
-          fontFamily:"inherit", display:"flex", alignItems:"center",
-          gap:6, flexShrink:0, textDecoration:"none",
-          boxShadow:"0 2px 10px rgba(245,166,35,0.25)",
-        }}>
-          ⭐ VIP
-          <span style={{
-            fontSize:9, fontWeight:800, padding:"1px 5px",
-            borderRadius:3, background:"rgba(0,0,0,0.2)",
-            color:"#fff", letterSpacing:".05em",
-          }}>GOLD</span>
-        </Link>
-
-        <div style={{ flex:1 }}/>
-
-        <button onClick={()=>setFollowing(f=>!f)} style={ghostBtn(following)}>
-          {following ? "❤️ Following" : "🤍 Follow"}
+        {/* Right */}
+        <button onClick={()=>router.back()} style={{ background:"none", border:"none", color:MUTED, fontSize:12, cursor:"pointer", fontFamily:FONT, display:"flex", alignItems:"center", gap:3, flexShrink:0, whiteSpace:"nowrap" }}>
+          Next Model <span style={{ fontSize:14 }}>›</span>
         </button>
-
-        <button onClick={()=>router.back()} style={{
-          background:"none", border:"none", color:"#aaa",
-          fontSize:13, cursor:"pointer", fontFamily:"inherit",
-          display:"flex", alignItems:"center", gap:4, flexShrink:0,
-        }}>
-          Next Model <span style={{ fontSize:16 }}>›</span>
-        </button>
-
-        <button style={{
-          background:"none", border:"none", color:"#aaa",
-          fontSize:13, cursor:"pointer", fontFamily:"inherit",
-          display:"flex", alignItems:"center", gap:5, flexShrink:0,
-        }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="#bbb">
-            <path d="M4 6h16v2H4zm3 5h10v2H7zm3 5h4v2h-4z"/>
+        <button style={{ background:"none", border:"none", color:MUTED, fontSize:12, cursor:"pointer", fontFamily:FONT, display:"flex", alignItems:"center", gap:5, flexShrink:0, marginLeft:6 }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill={MUTED}>
+            <rect width="6" height="6" rx="2"/><rect y="8" width="6" height="6" rx="2"/>
+            <rect x="8" width="6" height="6" rx="2"/><rect x="8" y="8" width="6" height="6" rx="2"/>
           </svg>
           Categories
         </button>
       </div>
 
-      {/* ══════════════════════════════
-          STORE OVERLAY
-      ══════════════════════════════ */}
-      {STORE_TABS.includes(activeTab) && (
-        <div style={{
-          position:"fixed", top:CHAT_TOP, left:0, right:0, bottom:0,
-          zIndex:300, overflowY:"auto", background:"#ffffff",
-        }}>
-          {activeTab==="Store" && (
-            <ModelStorefront username={username} color={color}
-              onBack={()=>setActiveTab("Profile")}
-              onBuy={p=>{setSelectedProduct(p);setActiveTab("ProductDetail");}}/>
-          )}
-          {activeTab==="ProductDetail" && selectedProduct && (
-            <ProductDetailPage product={selectedProduct}
-              onBack={()=>setActiveTab("Store")}
-              onViewStorefront={()=>setActiveTab("Store")}
-              onSelectProduct={p=>setSelectedProduct(p)}
-              onAddToCart={item=>setCartItems(prev=>[...prev,item])}
-              onViewCart={()=>setActiveTab("Checkout")}/>
-          )}
-          {activeTab==="Checkout" && (
-            <CheckoutPage orderItems={cartItems.length>0?cartItems:undefined}
-              onBack={()=>setActiveTab("Store")}/>
-          )}
-        </div>
-      )}
+      {/* ══ SCROLL AREA ══ */}
+      <div ref={scrollRef} style={{ flex:1, overflowY:"auto", overflowX:"hidden", scrollbarWidth:"thin", scrollbarColor:"#333 transparent" }}>
 
-      {/* ══════════════════════════════════════════════════════
-          MAIN AREA — ONE scroll container
-      ══════════════════════════════════════════════════════ */}
-      <div ref={scrollRef} style={{
-        flex:1,
-        overflowY:"auto",
-        overflowX:"hidden",
-        scrollbarWidth:"thin",
-        scrollbarColor:"#eee transparent",
-        visibility:STORE_TABS.includes(activeTab)?"hidden":"visible",
-      }}>
+        {/* ── VIDEO + CHAT ROW ── */}
+        <div style={{ display:"flex", height:`calc(100vh - ${NAVBAR_H}px)`, background:"#000", minHeight:400 }}>
 
-        {/* ── TOP ROW: Video (left) + Chat (right) — EQUAL 50/50 split ── */}
-        <div style={{
-          display:"flex",
-          height:`calc(100vh - ${CHAT_TOP}px)`,
-          background:"#ffffff",
-        }}>
-
-          {/* Video — flex:1 (50%) */}
-          <div style={{ flex:1, position:"relative", background:"#000", minWidth:0 }}>
+          {/* Video — 60% */}
+          <div style={{ flex:"0 0 60%", position:"relative", background:"#000", minWidth:0 }}>
             <StreamPlayer username={username} color={color} emoji="😍" viewers={viewers}/>
-          </div>
 
-          {/* Chat panel — flex:1 (50%) for equal split */}
-          <div style={{
-            flex:1,
-            display:"flex",
-            flexDirection:"column",
-            background:"#ffffff",
-            borderLeft:"1px solid #eeeeee",
-            overflow:"hidden",
-            height:"100%",
-          }}>
-            <LiveChat username={username} viewers={viewers} onTipClick={()=>setShowTip(true)}/>
-          </div>
-
-        </div>
-
-        {/* ════ ACTION BAR ════ */}
-        <div style={{
-          background:"#ffffff", borderTop:"1px solid #eeeeee",
-          borderBottom:"1px solid #eeeeee",
-          display:"flex", alignItems:"center",
-          padding:"0 16px", gap:12, height:54, flexShrink:0,
-        }}>
-          {/* Viewers */}
-          <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
-            <div style={{ width:7, height:7, borderRadius:"50%", background:"#e53935" }}/>
-            <span style={{ fontSize:13, color:"#555", fontWeight:500 }}>
-              {viewers.toLocaleString()}
-            </span>
-          </div>
-
-          {/* Goal */}
-          <div style={{ flex:1, minWidth:0 }}>
+            {/* Goal bar overlay above video bottom */}
             <div style={{
-              display:"flex", alignItems:"center",
-              justifyContent:"space-between", marginBottom:4,
+              position:"absolute", top:0, left:0, right:0,
+              background:"rgba(0,0,0,0.75)",
+              display:"flex", alignItems:"center", padding:"6px 12px", gap:8,
+              borderBottom:`1px solid rgba(255,255,255,0.05)`,
             }}>
-              <span style={{ fontSize:11, color:"#aaa", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                🎯 {goalText}
-              </span>
-              <span style={{ fontSize:11, color:"#bbb", flexShrink:0, marginLeft:8 }}>
-                <span style={{ color:"#f5a623", fontWeight:700 }}>{goalCurrent}</span>
-                <span style={{ color:"#bbb" }}> / {goalAmount} tk · {goalPct}%</span>
-              </span>
-            </div>
-            <div style={{ width:"100%", height:3, background:"#eee", borderRadius:4, overflow:"hidden" }}>
-              <div style={{
-                width:`${goalPct}%`, height:"100%",
-                background:"linear-gradient(90deg,#1e88e5,#00acc1)",
-                borderRadius:4, transition:"width .5s",
-              }}/>
-            </div>
-          </div>
-
-          {/* King */}
-          <div style={{
-            display:"flex", flexDirection:"column",
-            alignItems:"flex-end", flexShrink:0,
-          }}>
-            <span style={{ fontSize:10, color:"#bbb" }}>King of the room</span>
-            <span style={{ fontSize:12, color:"#f5a623", fontWeight:700 }}>🔥 TopFan</span>
-          </div>
-
-          {/* Private show */}
-          <button onClick={()=>setShowPrivate(true)} style={{
-            background:"transparent",
-            border:"1px solid #ddd",
-            color:"#444", fontSize:12, fontWeight:600,
-            padding:"7px 14px", borderRadius:8,
-            cursor:"pointer", fontFamily:"inherit", flexShrink:0,
-            display:"flex", alignItems:"center", gap:6,
-            transition:"border-color .15s",
-          }}
-            onMouseEnter={e=>e.currentTarget.style.borderColor="#aaa"}
-            onMouseLeave={e=>e.currentTarget.style.borderColor="#ddd"}
-          >
-            Private Show
-            <span style={{ color:"#f5a623", fontWeight:800 }}>{privatePrice} tk</span>
-            <span style={{ fontSize:10, color:"#bbb" }}>▼</span>
-          </button>
-
-          {/* Send Tip */}
-          <button onClick={()=>setShowTip(true)} style={{
-            background:"#1a6b2a",
-            border:"1px solid #2d9c42",
-            color:"#fff", fontSize:13, fontWeight:700,
-            padding:"8px 20px", borderRadius:8,
-            cursor:"pointer", fontFamily:"inherit", flexShrink:0,
-            display:"flex", alignItems:"center", gap:8,
-            transition:"opacity .15s",
-          }}
-            onMouseEnter={e=>e.currentTarget.style.opacity=".85"}
-            onMouseLeave={e=>e.currentTarget.style.opacity="1"}
-          >
-            Send Tip
-            <div style={{
-              width:24, height:24, borderRadius:"50%",
-              background:"rgba(255,255,255,0.15)",
-              display:"flex", alignItems:"center",
-              justifyContent:"center", fontSize:13,
-            }}>🪙</div>
-          </button>
-        </div>
-
-        {/* ════ PROFILE BANNER ════ */}
-        <div style={{ background:"#ffffff" }}>
-
-          {/* Cover photo area */}
-          <div style={{
-            width:"100%", height:140, position:"relative",
-            background:`linear-gradient(135deg,${color}18 0%,#f8f8f8 100%)`,
-            overflow:"hidden",
-          }}>
-            <div style={{
-              position:"absolute", inset:0,
-              background:"linear-gradient(to bottom, transparent 30%, rgba(255,255,255,0.9) 100%)",
-            }}/>
-          </div>
-
-          {/* Avatar + info row */}
-          <div style={{
-            display:"flex", alignItems:"flex-end", gap:16,
-            padding:"0 24px 20px", marginTop:-50,
-            position:"relative", zIndex:2,
-          }}>
-            {/* Avatar */}
-            <div style={{
-              width:88, height:88, borderRadius:"50%",
-              background:color, flexShrink:0,
-              border:"3px solid #ffffff",
-              display:"flex", alignItems:"center",
-              justifyContent:"center", fontSize:34,
-              fontWeight:800, color:"#fff",
-              boxShadow:`0 0 0 1px ${color}33, 0 8px 24px rgba(0,0,0,0.12)`,
-            }}>
-              {username?.[0]?.toUpperCase()}
-            </div>
-
-            {/* Name + stats */}
-            <div style={{ flex:1, paddingBottom:4 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
-                <span style={{ fontSize:22, fontWeight:800, color:"#111" }}>{username}</span>
-                <span style={{ fontSize:14, color:"#bbb" }}>♀</span>
-                <span style={{ fontSize:14 }}>{flag}</span>
+              <div style={{ display:"flex", alignItems:"center", gap:5, flexShrink:0 }}>
+                <svg width="16" height="16" viewBox="0 0 22 22" fill={GREEN}><path d="M11 1C5.477 1 1 5.477 1 11a10 10 0 0020 0c0-1.16-.21-2.31-.61-3.39l-1.6 1.6c.14.59.21 1.19.21 1.79a8 8 0 11-8-8c.6 0 1.2.07 1.79.21L14.4 1.6C13.31 1.21 12.16 1 11 1zm7 0l-4 4v1.5l-2.55 2.55C11.3 9 11.15 9 11 9a2 2 0 102 2c0-.15 0-.3-.05-.45L15.5 8H17l4-4h-3V1zm-7 4a6 6 0 106 6h-2a4 4 0 11-4-4V5z"/></svg>
+                <span style={{ fontSize:12, color:GREEN, fontWeight:700 }}>Goal:</span>
+                <span style={{ fontSize:12, color:GOLD, fontWeight:700 }}>{goalCurrent} tk</span>
+                <span style={{ fontSize:12, color:TEXT }}>{goalText}</span>
               </div>
-              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                <div style={{
-                  display:"flex", alignItems:"center", gap:5,
-                  background:"#f5f5f5", border:"1px solid #eee",
-                  borderRadius:20, padding:"3px 12px",
-                }}>
-                  <span style={{ fontSize:12, color:"#f5a623" }}>⚙</span>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#111" }}>353</span>
+              <div style={{ flex:1, height:4, background:"#333", borderRadius:4, overflow:"hidden", maxWidth:160 }}>
+                <div style={{ width:`${goalPct}%`, height:"100%", background:GREEN, borderRadius:4, transition:"width .5s" }}/>
+              </div>
+              <span style={{ fontSize:11, color:MUTED }}>{goalPct}%</span>
+              <div style={{ flex:1 }}/>
+              <div style={{ fontSize:10, color:MUTED, textAlign:"right", flexShrink:0 }}>
+                <div>King of the room:</div>
+                <div style={{ color:GOLD, fontSize:11, fontWeight:700 }}>👑 Deleted Account</div>
+              </div>
+              <button style={{ background:"none", border:"none", color:MUTED, cursor:"pointer", fontSize:14, marginLeft:4 }}>∧</button>
+            </div>
+
+            {/* Topic bar */}
+            <div style={{ position:"absolute", bottom:52, left:0, right:0, padding:"4px 12px", background:"rgba(0,0,0,0.6)" }}>
+              <span style={{ fontSize:12, color:"rgba(255,255,255,0.7)" }}>New Model, Stream Virgin 💋 35 degrees of HOT!</span>
+            </div>
+
+            {/* Bottom controls */}
+            <div style={{
+              position:"absolute", bottom:0, left:0, right:0,
+              display:"flex", alignItems:"center", padding:"10px 12px", gap:10,
+              background:"linear-gradient(transparent, rgba(0,0,0,0.8))",
+            }}>
+              <button onClick={()=>setFollowing(f=>!f)} style={{
+                width:34, height:34, borderRadius:"50%",
+                background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)",
+                cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
+                color:following?RED:"#fff",
+              }}>
+                <HeartIcon filled={following} size={16}/>
+              </button>
+              <span style={{ fontSize:12, color:"#fff", fontWeight:600 }}>{viewers.toLocaleString()}</span>
+              <div style={{ flex:1 }}/>
+              <button onClick={()=>setShowTip(true)} style={{
+                background:GOLD, border:"none", color:"#000",
+                fontWeight:800, fontSize:13, padding:"9px 24px",
+                borderRadius:24, cursor:"pointer", fontFamily:FONT,
+              }}>Send Private Tip</button>
+            </div>
+          </div>
+
+          {/* Chat — 40% */}
+          <div style={{
+            flex:"0 0 40%", display:"flex", flexDirection:"column",
+            background:"#111", borderLeft:`1px solid ${BORDER}`,
+            overflow:"hidden", height:"100%",
+          }}>
+            {/* Chat nav */}
+            <div style={{
+              display:"flex", alignItems:"center",
+              borderBottom:`1px solid ${BORDER}`,
+              height:44, flexShrink:0, background:"#111",
+            }}>
+              {/* Public tab */}
+              <button onClick={()=>setChatTab("Public")} style={{
+                background:"none", border:"none", cursor:"pointer",
+                padding:"0 14px", height:"100%", fontSize:12,
+                color:chatTab==="Public"?TEXT:MUTED,
+                borderBottom:chatTab==="Public"?`2px solid ${RED}`:"2px solid transparent",
+                fontFamily:FONT, fontWeight:chatTab==="Public"?600:400,
+                display:"flex", alignItems:"center", gap:5,
+              }}>
+                <svg width="13" height="13" viewBox="0 0 100 100" fill="currentColor">
+                  <path d="M85.5 0h-71A14.5 14.5 0 000 14.5v53.3a14.5 14.5 0 0014.5 14.5H25v17.2l23.5-17.2h37A14.5 14.5 0 00100 67.8V14.5A14.5 14.5 0 0085.5 0z"/>
+                </svg>
+                Public
+              </button>
+
+              {/* Private tab */}
+              <button onClick={()=>setChatTab("Private")} style={{
+                background:"none", border:"none", cursor:"pointer",
+                padding:"0 14px", height:"100%", fontSize:12,
+                color:chatTab==="Private"?TEXT:MUTED,
+                borderBottom:chatTab==="Private"?`2px solid ${RED}`:"2px solid transparent",
+                fontFamily:FONT, fontWeight:chatTab==="Private"?600:400,
+                display:"flex", alignItems:"center", gap:5,
+              }}>
+                <svg width="13" height="13" viewBox="0 0 19 13" fill="currentColor">
+                  <path fillRule="evenodd" d="M7.7 0c3.7 0 6.8 2.57 6.8 5.72s-3 5.72-6.8 5.72c-1.16 0-2.3-.26-3.35-.76-2.41.97-3.64 1.43-3.68 1.4-.07-.06.39-1.11 1.4-3.14C1.3 8.04.9 6.9.9 5.72.9 2.57 3.94 0 7.7 0z" clipRule="evenodd"/>
+                </svg>
+                Private
+              </button>
+
+              {/* Users count */}
+              <button style={{
+                background:"none", border:"none", cursor:"pointer",
+                padding:"0 10px", height:"100%", fontSize:12,
+                color:MUTED, fontFamily:FONT,
+                display:"flex", alignItems:"center", gap:4,
+              }}>
+                <svg width="14" height="14" viewBox="0 0 100 100" fill={MUTED}>
+                  <path d="M92.6 77.4c-5.4-4.6-24.4-12.2-24.4-12.2s-12.1-6-6-12.2c2.4-2.4 3.9-6.9 4.7-11.7 1.4 0 3.3-3 4.3-7.2 1.1-4.3.8-8.1-.6-8.5-.7-.2-1.6.5-2.4 1.8v-4.8c0-6-6-18.2-18.2-18.2S31.8 16.6 31.8 22.6v4.8c-.8-1.3-1.7-2-2.4-1.8-1.4.4-1.7 4.2-.6 8.5 1 4.1 2.9 7.2 4.3 7.2.9 4.8 2.3 9.3 4.8 11.7 6 6.1-6.1 12.2-6.1 12.2s-19 7.6-24.3 12.2C2 81.9 1.4 95.6 1.4 95.6h97.2s-.7-13.7-6-18.2z"/>
+                </svg>
+                <span>10</span>
+              </button>
+
+              {/* Fan club compact */}
+              <button style={{
+                background:"none", border:"none", cursor:"pointer",
+                padding:"0 8px", height:"100%", color:MUTED, display:"flex", alignItems:"center",
+              }}>
+                <DiamondIcon size={16}/>
+              </button>
+
+              <div style={{ flex:1 }}/>
+
+              {/* Settings */}
+              <button style={{ background:"none", border:"none", color:MUTED, cursor:"pointer", padding:"0 12px", fontSize:18, display:"flex", alignItems:"center" }}>⋮</button>
+            </div>
+
+            {/* Chat content */}
+            {chatTab === "Public" ? (
+              <LiveChat username={username} viewers={viewers} onTipClick={()=>setShowTip(true)} dark/>
+            ) : (
+              <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:20, overflowY:"auto" }}>
+                <div style={{ textAlign:"center", maxWidth:300 }}>
+                  <div style={{
+                    width:76, height:76, borderRadius:"50%", margin:"0 auto 16px",
+                    background:"radial-gradient(circle, #ff6b35 0%, #e53935 100%)",
+                    display:"flex", alignItems:"center", justifyContent:"center", fontSize:32,
+                  }}>⭐</div>
+                  <div style={{ fontSize:18, fontWeight:800, color:GOLD, marginBottom:4 }}>Go Ultimate</div>
+                  <div style={{ fontSize:13, color:TEXT, marginBottom:18 }}>to chat privately with any model</div>
+                  <div style={{ background:"#1a1a1a", borderRadius:8, padding:"14px 16px", marginBottom:16, textAlign:"left" }}>
+                    {[
+                      { icon:"💬", text:"Unlimited Private messages" },
+                      { icon:"🔤", text:"Chat auto-translation", badge:"NEW" },
+                      { icon:"📷", text:"Send photos to models" },
+                      { icon:"😍", text:"Fun and naughty emoji" },
+                    ].map((item,i) => (
+                      <div key={i} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:i<3?10:0 }}>
+                        <span style={{ fontSize:16 }}>{item.icon}</span>
+                        <span style={{ fontSize:12, color:TEXT }}>{item.text}</span>
+                        {item.badge && (
+                          <span style={{ background:GOLD, color:"#000", fontSize:8, fontWeight:800, padding:"2px 5px", borderRadius:3 }}>{item.badge}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontSize:11, color:MUTED, marginBottom:14 }}>
+                    And many <span style={{ color:GOLD, cursor:"pointer" }}>other benefits!</span>
+                  </div>
+                  <button style={{
+                    background:"transparent", border:`1px solid #555`,
+                    color:TEXT, fontWeight:600, fontSize:13,
+                    padding:"9px 28px", borderRadius:24, cursor:"pointer", fontFamily:FONT,
+                  }}>Register to Chat</button>
                 </div>
-                <div style={{
-                  display:"flex", alignItems:"center", gap:5,
-                  background:"#f5f5f5", border:"1px solid #eee",
-                  borderRadius:20, padding:"3px 12px",
-                }}>
-                  <span style={{ fontSize:12, color:"#aaa" }}>👁</span>
-                  <span style={{ fontSize:12, color:"#888" }}>{viewers.toLocaleString()}</span>
+              </div>
+            )}
+
+            {/* Lottery banner */}
+            <div style={{ borderTop:`1px solid ${BORDER}`, background:"#111", flexShrink:0 }}>
+              <button style={{
+                width:"100%", background:"none", border:"none", cursor:"pointer",
+                padding:"8px 12px", display:"flex", alignItems:"center", gap:8,
+              }}>
+                <svg width="26" height="26" viewBox="0 0 32 27" fill={GOLD}>
+                  <path d="M11.16.57c-2.78 0-5.3.5-7.23 1.4C2.13 2.8.76 4.04.6 5.63L.57 17.37v3.76c0 1.73 1.45 3.08 3.36 3.97 1.92.89 4.45 1.4 7.23 1.4 2.57 0 4.91-.44 6.77-1.21 1.08.38 2.25.58 3.48.58 5.46 0 9.9-4.11 9.9-9.17 0-4.95-4.26-9-9.56-9.16v-1.9h-.02c-.17-1.6-1.55-2.84-3.34-3.67a17.54 17.54 0 00-7.23-1.4zm0 1.9c2.5 0 4.76.48 6.3 1.2 1.55.71 2.24 1.57 2.24 2.28S19 7.52 17.47 8.23c-1.54.72-3.8 1.2-6.31 1.2-2.5 0-4.76-.48-6.3-1.2-1.05-.59-2.14-1.32-2.23-2.37.06-.7.74-1.5 2.22-2.2 1.55-.71 3.8-1.2 6.31-1.2zM2.63 9.2c.4.27.84.52 1.3.73 1.92.89 4.45 1.4 7.23 1.4.8 0 1.58-.05 2.34-.13a9.05 9.05 0 00-1.24 1.98 15.63 15.63 0 01-7.4-1.16c-1.5-.69-2.19-1.51-2.23-2.2V9.2zm18.78.23c4.35 0 7.85 3.24 7.85 7.27 0 4.03-3.5 7.28-7.85 7.28s-7.86-3.25-7.86-7.28 3.5-7.27 7.86-7.27z"/>
+                </svg>
+                <div style={{ textAlign:"left", flex:1 }}>
+                  <div style={{ fontSize:12, color:TEXT }}>
+                    <span style={{ color:GREEN, fontWeight:600 }}>Get 50 free tokens</span> in the hourly draw
+                  </div>
+                  <div style={{ fontSize:11, color:MUTED }}>
+                    Winners will be announced in <span style={{ color:TEXT, fontWeight:700, background:"#222", padding:"1px 6px", borderRadius:3 }}>{lotteryTime}</span>
+                  </div>
                 </div>
+                <svg width="12" height="12" viewBox="0 0 100 100" fill={MUTED}><path d="M90 21l10 10.2-50 50L0 31l10-10 40 39.7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── PROFILE COVER ── */}
+        <div style={{ background:"#111", position:"relative" }}>
+          {/* Cover image */}
+          <div style={{ width:"100%", height:180, position:"relative", overflow:"hidden", background:`linear-gradient(135deg, ${color}44 0%, #1a1a1a 100%)` }}>
+            <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, transparent 40%, #111 100%)" }}/>
+            <button style={{ position:"absolute", top:10, right:10, background:"rgba(0,0,0,0.5)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:4, color:"#fff", padding:"4px 8px", cursor:"pointer", fontSize:11, display:"flex", alignItems:"center", gap:4 }}>
+              <svg width="14" height="14" viewBox="0 0 100 100" fill="currentColor"><path d="M0 0v39h11V11h28V0H11zm11 61H0v39h39V89H11zm78 28H61v11h39V61H89zm0-89H61v11h28v28h11V0z"/></svg>
+            </button>
+          </div>
+
+          {/* Avatar + info */}
+          <div style={{ display:"flex", alignItems:"flex-end", gap:14, padding:"0 20px 14px", marginTop:-56, position:"relative", zIndex:2 }}>
+            <div style={{ position:"relative", flexShrink:0 }}>
+              <div style={{
+                width:96, height:96, borderRadius:"50%",
+                background:color, border:"3px solid #111",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:36, fontWeight:800, color:"#fff",
+                cursor:"pointer",
+              }}>{username?.[0]?.toUpperCase()}</div>
+              <div style={{ position:"absolute", bottom:4, left:4, width:12, height:12, borderRadius:"50%", background:GREEN, border:"2px solid #111" }}/>
+            </div>
+
+            <div style={{ flex:1, paddingBottom:4 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
+                <h2 style={{ fontSize:20, fontWeight:800, color:TEXT, margin:0 }}>{username}</h2>
+                {/* Female icon */}
+                <svg width="18" height="18" viewBox="0 0 100 100" fill="#d63f9b">
+                  <path d="m50 24.1c14.3 0 26 11.6 26 25.9 0 13.2-9.8 24-22.5 25.7v5.7h5.5v5.5h-5.5v5.5h-6.8v-5.5h-5.5v-5.5h5.5v-5.7c-12.8-1.7-22.6-12.5-22.6-25.7 0-14.3 11.6-25.9 25.9-25.9zm0 6.8c-10.6 0-19.1 8.5-19.1 19.1s8.5 19.1 19.1 19.1 19.1-8.5 19.1-19.1-8.5-19.1-19.1-19.1z"/>
+                </svg>
+                {/* Top rank badge */}
+                <a href="#" style={{ display:"flex", alignItems:"center", gap:4, textDecoration:"none" }}>
+                  <div style={{
+                    display:"flex", alignItems:"center", gap:4,
+                    background:"#1a1a1a", border:`1px solid ${BORDER}`,
+                    borderRadius:20, padding:"2px 10px",
+                  }}>
+                    <HexBadge level={713} league="silver" size={22}/>
+                    <span style={{ fontSize:11, color:TEXT, fontWeight:600 }}>713</span>
+                  </div>
+                </a>
               </div>
             </div>
 
             {/* Action buttons */}
-            <div style={{ display:"flex", alignItems:"center", gap:8, paddingBottom:4 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:6, paddingBottom:4, flexWrap:"wrap", justifyContent:"flex-end" }}>
               <button style={{
-                background:"transparent", border:"1px solid #e53935",
-                color:"#e53935", fontSize:12, fontWeight:700,
-                padding:"7px 16px", borderRadius:20,
-                cursor:"pointer", fontFamily:"inherit",
-                display:"flex", alignItems:"center", gap:6,
-                transition:"background .15s",
-              }}
-                onMouseEnter={e=>e.currentTarget.style.background="rgba(229,57,53,0.06)"}
-                onMouseLeave={e=>e.currentTarget.style.background="transparent"}
-              >🤍 Join Fan Club</button>
-
-              <button onClick={()=>setFollowing(f=>!f)} style={iconBtn(following,"#e53935")}>
-                {following?"❤️":"🤍"}
+                background:"transparent", border:`1px solid #444`,
+                color:TEXT, fontSize:12, fontWeight:600,
+                padding:"6px 14px", borderRadius:20,
+                cursor:"pointer", fontFamily:FONT,
+                display:"flex", alignItems:"center", gap:5,
+              }}>
+                <DiamondIcon size={13}/> Join Fan Club
               </button>
-              <button onClick={()=>setNotifyLive(n=>!n)} style={iconBtn(notifyLive,"#f5a623")}>
-                🔔
+              <button onClick={()=>setFollowing(f=>!f)} style={{
+                width:34, height:34, borderRadius:6,
+                background:"transparent", border:`1px solid #444`,
+                color:following?RED:MUTED, cursor:"pointer",
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}>
+                <HeartIcon filled={following} size={16}/>
               </button>
-              <button style={iconBtn(false)}>👤</button>
-              <button style={iconBtn(false)}>✉️</button>
+              <button onClick={()=>setNotifyLive(n=>!n)} style={{
+                width:34, height:34, borderRadius:6,
+                background:"transparent", border:`1px solid #444`,
+                color:notifyLive?RED:MUTED, cursor:"pointer",
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}>
+                <BellIcon size={15}/>
+              </button>
+              <button style={{
+                width:34, height:34, borderRadius:6,
+                background:"transparent", border:`1px solid #444`,
+                color:MUTED, cursor:"pointer",
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}>
+                <UserPlusIcon size={14}/>
+              </button>
+              <div style={{ width:1, height:20, background:BORDER }}/>
+              <button style={{
+                width:34, height:34, borderRadius:6,
+                background:"transparent", border:`1px solid #444`,
+                color:MUTED, cursor:"pointer",
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}>
+                <MessageIcon size={14}/>
+              </button>
             </div>
           </div>
 
           {/* Profile sub-tabs */}
-          <div style={{
-            display:"flex", padding:"0 24px",
-            borderBottom:"1px solid #eeeeee", gap:0,
-          }}>
-            {["Profile","Photos 27","Fan Club & Feed"].map(t => (
-              <button key={t} onClick={()=>setProfileTab(t)} style={{
-                background:"none", border:"none", cursor:"pointer",
-                padding:"11px 18px", fontSize:13, fontFamily:"inherit",
-                color:profileTab===t?"#111":"#aaa",
-                borderBottom:profileTab===t?"2px solid #e53935":"2px solid transparent",
-                fontWeight:profileTab===t?700:400, transition:"color .15s",
-                letterSpacing:".01em",
-              }}>{t}</button>
-            ))}
+          <div style={{ display:"flex", padding:"0 20px", borderBottom:`1px solid ${BORDER}` }}>
+            {[
+              {label:"Profile", key:"Profile"},
+              {label:"Videos", count:1, key:"Videos"},
+              {label:"Photos", count:47, key:"Photos"},
+              {label:"Fan Club & Feed", key:"Fan Club"},
+            ].map(t => {
+              const active = profileTab === t.key;
+              return (
+                <button key={t.key} onClick={()=>setProfileTab(t.key)} style={{
+                  background:"none", border:"none", cursor:"pointer",
+                  padding:"10px 16px", fontSize:13, fontFamily:FONT,
+                  color:active?TEXT:MUTED,
+                  borderBottom:active?`2px solid ${RED}`:"2px solid transparent",
+                  fontWeight:active?700:400,
+                  display:"flex", alignItems:"center", gap:4,
+                }}>
+                  {t.label}
+                  {t.count && <span style={{ fontSize:11, color:MUTED }}>{t.count}</span>}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* ════ PROFILE BODY ════ */}
-        <div style={{
-          background:"#f7f7f7", padding:"20px 24px",
-          display:"grid", gridTemplateColumns:"3fr 2fr",
-          gap:20, alignItems:"start",
-        }}>
+        {/* ── PROFILE BODY ── */}
+        <div style={{ background:BG, padding:"18px 20px", display:"grid", gridTemplateColumns:"3fr 2fr", gap:16, alignItems:"start" }}>
 
-          {/* ── LEFT COLUMN ── */}
-          <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          {/* LEFT */}
+          <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
 
             {/* Bio */}
-            <SectionCard>
-              <SectionTitle>Welcome to {username}'s room!</SectionTitle>
-              <div style={{
-                display:"grid", gridTemplateColumns:"120px 1fr",
-                gap:"10px 0", fontSize:13,
-              }}>
+            <Card>
+              <SectionTitle>Welcome to {username}'s webcam room!</SectionTitle>
+              <div style={{ display:"grid", gridTemplateColumns:"120px 1fr", gap:"8px 0", fontSize:13 }}>
                 {[
-                  ["Languages:","English, French"],
-                  ["Age:","58 years old"],
-                  ["Interested in:","Everybody"],
-                  ["Body type:","Medium Build"],
-                  ["Ethnicity:","White"],
-                  ["Eye color:","Blue"],
+                  ["Languages:", "English, French"],
+                  ["Age:", "58 years old"],
+                  ["Interested in:", "Everybody"],
+                  ["Body type:", "Medium Build"],
+                  ["Ethnicity:", "White"],
+                  ["Eye color:", "Blue"],
                 ].map(([l,v],i) => (
                   <div key={i} style={{ display:"contents" }}>
-                    <span style={{ color:"#aaa", alignSelf:"center", fontSize:12 }}>{l}</span>
-                    <span style={{ color:"#333", fontSize:13 }}>{v}</span>
+                    <span style={{ color:MUTED, fontSize:12 }}>{l}</span>
+                    <span style={{ color:"#ccc", fontSize:12 }}>{v}</span>
                   </div>
                 ))}
-                <span style={{ color:"#aaa", alignSelf:"start", paddingTop:6, fontSize:12 }}>Interests:</span>
-                <div style={{ display:"flex", flexWrap:"wrap", gap:5, paddingTop:4 }}>
-                  {["Action","Adventure","Bars","Beach","Coffee","Comedy","Concerts","Documentary","Drama","Gin","Meditation","Picnics","Seafood","Shopping"].map(i=>(
+                <span style={{ color:MUTED, fontSize:12, paddingTop:4 }}>Interests:</span>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:5, paddingTop:3 }}>
+                  {["Action","Adventure","Bars","Beach","Cafes, Restaurants","Coffee","Comedy","Concerts","Documentary","Drama","Gin","Meditation","Picnics","Seafood","Shopping"].map(i=>(
                     <Tag key={i} label={i}/>
                   ))}
                 </div>
               </div>
-            </SectionCard>
+            </Card>
 
-            {/* Private shows info */}
-            <SectionCard>
-              {/* Header row: title + rating */}
-              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:14 }}>
+            {/* Private Shows */}
+            <Card>
+              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12 }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2 }}>
-                    <span style={{ fontSize:18 }}>🪙</span>
-                    <span style={{ fontSize:14, fontWeight:700, color:"#111" }}>My Private Shows</span>
+                    <svg width="18" height="18" viewBox="0 0 35 34" fill={GOLD}><path fillRule="evenodd" clipRule="evenodd" d="M1.63 17.39C1.63 10.76 7.03 5.38 13.67 5.38S25.71 10.76 25.71 17.39c0 6.23-4.77 11.36-10.85 11.96v-8.2l5.16-5.17c.31-.32.09-.86-.36-.86H7.65c-.45 0-.68.54-.4.86l5.16 5.17v8.2C6.39 28.74 1.63 23.62 1.63 17.39z" fill={GOLD}/></svg>
+                    <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>My Private Shows</span>
                   </div>
-                  <span style={{ fontSize:12, color:"#f5a623", fontWeight:600 }}>from {privatePrice} tk/min</span>
+                  <span style={{ fontSize:12, color:GOLD, fontWeight:600 }}>from {privatePrice} tk/min</span>
                 </div>
                 <div style={{ textAlign:"right" }}>
-                  <div style={{ fontSize:11, color:"#aaa", marginBottom:4 }}>35 ratings</div>
+                  <div style={{ fontSize:11, color:MUTED, marginBottom:4 }}>59 ratings</div>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                    <span style={{ fontSize:18, fontWeight:800, color:"#111" }}>4.3</span>
-                    <Stars n={4}/>
+                    <span style={{ fontSize:20, fontWeight:800, color:TEXT }}>4.4</span>
+                    <Stars n={4} size={12}/>
                   </div>
                 </div>
               </div>
-              {/* Best for Privates badge */}
-              <div style={{
-                display:"flex", alignItems:"flex-start", gap:10,
-                background:"#fffbf0", border:"1px solid #f0e0a0",
-                borderRadius:8, padding:"10px 14px", marginBottom:12,
-              }}>
-                <span style={{ fontSize:20, flexShrink:0 }}>💎</span>
+              {/* Best for Privates */}
+              <div style={{ display:"flex", alignItems:"center", gap:10, background:"#1e1800", border:"1px solid #3a2e00", borderRadius:8, padding:"10px 12px", marginBottom:12 }}>
+                <span style={{ fontSize:18 }}>💎</span>
                 <div>
-                  <div style={{ fontSize:13, fontWeight:700, color:"#f5a623", marginBottom:2 }}>Best for Privates</div>
-                  <div style={{ fontSize:12, color:"#888" }}>One of the highest-rated models for Private shows</div>
+                  <div style={{ fontSize:13, fontWeight:700, color:GOLD, marginBottom:2 }}>Best for Privates</div>
+                  <div style={{ fontSize:12, color:MUTED }}>One of the highest-rated models for Private shows</div>
                 </div>
               </div>
-              {/* I Do in Private Shows */}
-              <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
-                <span style={{ fontSize:15 }}>🔥</span>
-                <span style={{ fontSize:13, fontWeight:700, color:"#111" }}>I Do in Private Shows</span>
+              <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:7 }}>
+                <span style={{ fontSize:14 }}>🔥</span>
+                <span style={{ fontSize:13, fontWeight:700, color:TEXT }}>I Do in Private Shows</span>
               </div>
-              <p style={{ color:"#888", fontSize:12, lineHeight:2, margin:0 }}>
-                69 Position, Yoga, Upskirt, Twerk, Topless, Spanking, Smoking, Oil Show, Nylon, Handjob,
-                Humiliation, Heels, Jerk-off Instruction, Massage, Masturbation, Cuckold, Flashing,
-                Foot Fetish, Footjob, Tittyfuck, Mistress, Leather, Dirty Talk, Cock Rating,
-                Blowjob, Doggy Style, Facesitting, Role Play, Striptease
+              <p style={{ color:MUTED, fontSize:12, lineHeight:1.9, margin:0 }}>
+                69 Position, Yoga, Upskirt, Twerk, Topless, Spanking, Smoking, Oil Show, Nylon, Handjob, Humiliation, Heels, Jerk-off Instruction, Massage, Masturbation, Cuckold, Flashing, Foot Fetish, Footjob, Tittyfuck, Mistress, Leather, Dirty Talk, Cock Rating, Blowjob, Doggy Style, Facesitting, Role Play, Striptease
               </p>
-            </SectionCard>
+            </Card>
 
             {/* Reviews */}
-            <SectionCard>
+            <Card>
               <SectionTitle>
-                Users' Reviews
-                <span style={{ color:"#bbb", fontWeight:400, fontSize:12 }}>4</span>
+                Users' Reviews <span style={{ color:MUTED, fontWeight:400, fontSize:13 }}>10</span>
               </SectionTitle>
               {REVIEWS.map((r,i) => (
-                <div key={i} style={{
-                  paddingBottom:14, marginBottom:i<REVIEWS.length-1?14:0,
-                  borderBottom:i<REVIEWS.length-1?"1px solid #f5f5f5":"none",
-                }}>
-                  <Stars n={r.stars}/>
-                  <p style={{ color:"#333", fontSize:13, margin:"7px 0 4px", lineHeight:1.6 }}>
-                    {r.text}
-                  </p>
-                  <span style={{ color:"#bbb", fontSize:11 }}>
-                    {r.date} · <span style={{ color:"#aaa" }}>{r.type}</span>
-                  </span>
+                <div key={i} style={{ paddingBottom:12, marginBottom:i<REVIEWS.length-1?12:0, borderBottom:i<REVIEWS.length-1?`1px solid ${BORDER}`:"none" }}>
+                  <Stars n={r.stars} size={12}/>
+                  <p style={{ color:"#ccc", fontSize:12, margin:"6px 0 3px", lineHeight:1.6 }}>{r.text}</p>
+                  <span style={{ color:SUBTLE, fontSize:11 }}>{r.date} • <span style={{ color:MUTED }}>{r.type}</span></span>
                 </div>
               ))}
-            </SectionCard>
+              <div style={{ display:"flex", alignItems:"center", margin:"12px 0 0" }}>
+                <div style={{ flex:1, height:"1px", background:BORDER }}/>
+                <button style={{
+                  background:"transparent", border:"none", color:MUTED, fontSize:12,
+                  cursor:"pointer", fontFamily:FONT, padding:"0 14px",
+                  display:"flex", alignItems:"center", gap:4,
+                }}>
+                  See More
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill={MUTED}><path d="m0 0 5 5 5-5z" opacity=".6"/></svg>
+                </button>
+                <div style={{ flex:1, height:"1px", background:BORDER }}/>
+              </div>
+            </Card>
 
             {/* Epic Goal */}
-            <SectionCard>
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-                <SectionTitle style={{ marginBottom:0 }}>{username}'s Epic Goal</SectionTitle>
-                <span style={{ color:"#bbb", cursor:"pointer", fontSize:13, marginTop:-1 }}>ⓘ</span>
+            <Card>
+              <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4 }}>
+                <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>{username}'s Epic Goal</span>
+                <span style={{ color:MUTED, cursor:"pointer", fontSize:12 }}>ⓘ</span>
               </div>
-              <p style={{ color:"#8e24aa", fontSize:14, fontWeight:700, margin:"0 0 14px" }}>
-                {epicGoal.text}
-              </p>
-              <div style={{
-                background:"#f9f9f9", border:"1px solid #f0f0f0",
-                borderRadius:8, padding:"12px 16px", marginBottom:14,
-              }}>
-                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:7 }}>
-                  <span style={{ color:"#888", fontSize:12 }}>
-                    {epicGoal.current} tk / {epicGoal.total.toLocaleString()} tk
-                  </span>
-                  <span style={{ color:"#bbb", fontSize:12 }}>{epicPct}%</span>
+              <p style={{ color:PURPLE, fontSize:14, fontWeight:700, margin:"0 0 12px" }}>{epicGoal.text}</p>
+              <div style={{ background:CARD2, border:`1px solid ${BORDER}`, borderRadius:8, padding:"10px 14px", marginBottom:12 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                  <span style={{ color:MUTED, fontSize:12 }}>{epicGoal.current} tk / {epicGoal.total.toLocaleString()} tk</span>
+                  <span style={{ color:MUTED, fontSize:12 }}>{epicPct}%</span>
                 </div>
-                <div style={{ height:5, background:"#eee", borderRadius:4, overflow:"hidden" }}>
-                  <div style={{
-                    width:`${epicPct}%`, height:"100%",
-                    background:"#8e24aa", borderRadius:4,
-                  }}/>
+                <div style={{ height:4, background:"#333", borderRadius:4, overflow:"hidden" }}>
+                  <div style={{ width:`${epicPct}%`, height:"100%", background:PURPLE, borderRadius:4 }}/>
                 </div>
               </div>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                <span style={{ color:"#bbb", fontSize:12 }}>1 contributor</span>
+                <span style={{ color:MUTED, fontSize:12 }}>2 contributors</span>
                 <button style={{
-                  background:"#f5a623", border:"none",
-                  color:"#000", fontWeight:800, fontSize:13,
-                  padding:"8px 22px", borderRadius:20,
-                  cursor:"pointer", fontFamily:"inherit",
+                  background:GOLD, border:"none", color:"#000",
+                  fontWeight:800, fontSize:12, padding:"7px 20px",
+                  borderRadius:20, cursor:"pointer", fontFamily:FONT,
                 }}>Contribute</button>
               </div>
-            </SectionCard>
+            </Card>
+
+            {/* Profile Panels (Feed posts) */}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+              {PANELS.map((p, i) => (
+                <div key={i} style={{ background:CARD, borderRadius:8, overflow:"hidden", cursor:"pointer" }}>
+                  {p.hasImg && (
+                    <div style={{ width:"100%", aspectRatio:"4/3", background:"#2a2a2a", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <span style={{ color:SUBTLE, fontSize:28 }}>📷</span>
+                    </div>
+                  )}
+                  <div style={{ padding:"10px 12px" }}>
+                    <p style={{ color:TEXT, fontSize:12, fontWeight:p.hasImg?400:600, margin:0, lineHeight:1.5, whiteSpace:"pre-line" }}>{p.title}</p>
+                    {p.body && <p style={{ color:MUTED, fontSize:11, margin:"7px 0 0", lineHeight:1.7, whiteSpace:"pre-line" }}>{p.body}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
 
             {/* Categories */}
-            <SectionCard>
+            <Card>
               <SectionTitle>{username}'s Categories</SectionTitle>
               {[
-                { label:"My Specifics:",                tags:MY_SPECIFICS        },
-                { label:"I Do in My Shows:",            tags:I_DO_IN_SHOWS       },
+                { label:"My Specifics:", tags:MY_SPECIFICS },
+                { label:"I Do in My Shows:", tags:I_DO_IN_SHOWS },
                 { label:"I Exclusively Do in Private:", tags:EXCLUSIVELY_PRIVATE },
               ].map(({label,tags}) => (
-                <div key={label} style={{ marginBottom:14 }}>
-                  <span style={{ color:"#aaa", fontSize:11, display:"block", marginBottom:8 }}>
-                    {label}
-                  </span>
+                <div key={label} style={{ marginBottom:12 }}>
+                  <span style={{ color:MUTED, fontSize:11, display:"block", marginBottom:6 }}>{label}</span>
                   <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
                     {tags.map(t => <Tag key={t} label={t}/>)}
                   </div>
                 </div>
               ))}
-            </SectionCard>
-
+              {/* Related mixed categories */}
+              <div style={{ marginTop:4 }}>
+                <p style={{ color:TEXT, fontSize:13, fontWeight:600, marginBottom:8 }}>Related Mixed Categories</p>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
+                  {RELATED_MIXED.map(t => <Tag key={t} label={t}/>)}
+                  <a href="#" style={{
+                    display:"inline-block", background:"transparent",
+                    border:`1px solid ${BORDER}`, color:MUTED,
+                    fontSize:12, padding:"4px 12px", borderRadius:20,
+                    cursor:"pointer", textDecoration:"none",
+                  }}>ALL CATEGORIES +</a>
+                </div>
+              </div>
+            </Card>
           </div>
 
-          {/* ── RIGHT COLUMN ── */}
-          <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          {/* RIGHT */}
+          <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+
+            {/* Videos */}
+            <Card>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>Videos</span>
+                  <span style={{ color:MUTED, fontSize:12 }}>1</span>
+                </div>
+                <a href="#" style={{ background:"transparent", border:`1px solid ${BORDER}`, color:MUTED, fontSize:11, cursor:"pointer", padding:"3px 10px", borderRadius:20, fontFamily:FONT, textDecoration:"none", display:"flex", alignItems:"center", gap:2 }}>
+                  See all <svg width="8" height="12" viewBox="0 0 8 13" fill={MUTED}><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
+                </a>
+              </div>
+              <div style={{ borderRadius:8, overflow:"hidden", position:"relative", aspectRatio:"16/9", background:"#222", marginBottom:8, cursor:"pointer" }}>
+                <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.15)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <span style={{ color:"#fff", fontSize:16, marginLeft:3 }}>▶</span>
+                  </div>
+                </div>
+                <span style={{ position:"absolute", bottom:5, right:6, background:"rgba(0,0,0,0.75)", color:"#fff", fontSize:10, padding:"2px 5px", borderRadius:3 }}>00:14</span>
+              </div>
+              <div style={{ fontSize:12, color:"#ccc", marginBottom:4 }}>I celebrate Me !</div>
+              <div style={{ display:"flex", alignItems:"center", gap:3 }}>
+                <HeartIcon size={13}/>
+                <span style={{ fontSize:11, color:MUTED }}>50</span>
+              </div>
+            </Card>
 
             {/* Albums */}
-            <SectionCard>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <span style={{ fontSize:15, fontWeight:700, color:"#111" }}>Albums</span>
-                  <span style={{ fontSize:13, color:"#bbb" }}>6</span>
+            <Card>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>Albums</span>
+                  <span style={{ color:MUTED, fontSize:12 }}>11</span>
                 </div>
-                <button style={{
-                  background:"none", border:"1px solid #eee", color:"#555",
-                  fontSize:12, cursor:"pointer", fontFamily:"inherit",
-                  padding:"4px 12px", borderRadius:20,
-                  display:"flex", alignItems:"center", gap:3,
-                }}>See All ›</button>
+                <a href="#" style={{ background:"transparent", border:`1px solid ${BORDER}`, color:MUTED, fontSize:11, padding:"3px 10px", borderRadius:20, fontFamily:FONT, textDecoration:"none", display:"flex", alignItems:"center", gap:2 }}>
+                  See all <svg width="8" height="12" viewBox="0 0 8 13" fill={MUTED}><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
+                </a>
               </div>
-              {/* Row 1 */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:8 }}>
-                {[
-                  { label:"Public", count:6, likes:191, free:true },
-                  { label:"Happy Feet video", count:1, likes:1, price:99 },
-                  { label:"Foot show", count:5, likes:1, price:66 },
-                ].map((album, i) => (
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:7 }}>
+                {ALBUMS.map((album, i) => (
                   <div key={i} style={{ cursor:"pointer" }}>
                     <div style={{
-                      borderRadius:8, overflow:"hidden",
+                      borderRadius:6, overflow:"hidden",
                       position:"relative", aspectRatio:"4/3",
-                      background: album.free
-                        ? `linear-gradient(135deg,${color}22,#e8e8e8)`
-                        : "#1a1a1a",
-                      display:"flex", alignItems:"center", justifyContent:"center",
-                      marginBottom:6,
+                      background:album.free ? "#2a2a2a" : "#1a1a1a",
+                      display:"flex", alignItems:"center", justifyContent:"center", marginBottom:5,
                     }}>
                       {album.free ? (
-                        <span style={{ fontSize:32, opacity:0.4 }}>📷</span>
+                        <span style={{ fontSize:22, opacity:0.3 }}>{album.img || "📷"}</span>
                       ) : (
-                        <div style={{
-                          display:"flex", flexDirection:"column",
-                          alignItems:"center", gap:5, padding:10,
-                        }}>
-                          <div style={{ display:"flex", gap:4 }}>
-                            {["#1565c0","#8e24aa","#e53935"].map((c,j) => (
-                              <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill={c}>
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                              </svg>
-                            ))}
+                        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, padding:6 }}>
+                          <div style={{ display:"flex", gap:2, marginBottom:2 }}>
+                            <DiamondIcon size={11}/>
                           </div>
-                          <span style={{ color:"#aaa", fontSize:10, textAlign:"center" }}>Join Fan Club</span>
-                          <span style={{ color:"#666", fontSize:9 }}>or</span>
-                          <div style={{ display:"flex", alignItems:"center", gap:3 }}>
-                            <span style={{ fontSize:12 }}>🪙</span>
-                            <span style={{ color:"#f5a623", fontSize:12, fontWeight:800 }}>{album.price} tk</span>
+                          <span style={{ color:MUTED, fontSize:9, textAlign:"center" }}>Join Fan Club</span>
+                          <span style={{ color:SUBTLE, fontSize:8 }}>or</span>
+                          <div style={{ display:"flex", alignItems:"center", gap:2 }}>
+                            <span style={{ fontSize:9 }}>🪙</span>
+                            <span style={{ color:GOLD, fontSize:10, fontWeight:800 }}>{album.price} tk</span>
                           </div>
                         </div>
                       )}
-                      {/* count badge */}
-                      <span style={{
-                        position:"absolute", bottom:5, right:7,
-                        color: album.free ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.4)",
-                        fontSize:10, fontWeight:600,
-                      }}>{album.count}</span>
+                      <span style={{ position:"absolute", bottom:3, right:4, color:"rgba(255,255,255,0.3)", fontSize:9, fontWeight:600 }}>{album.count}</span>
                     </div>
-                    {/* label + likes */}
-                    <div style={{ fontSize:11, color:"#333", fontWeight:500, marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{album.label}</div>
-                    <div style={{ display:"flex", alignItems:"center", gap:4 }}>
-                      <span style={{ color:"#e53935", fontSize:11 }}>♥</span>
-                      <span style={{ fontSize:11, color:"#aaa" }}>{album.likes}</span>
+                    <div style={{ fontSize:10, color:"#ccc", fontWeight:500, marginBottom:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{album.label}</div>
+                    <div style={{ display:"flex", alignItems:"center", gap:2 }}>
+                      <HeartIcon size={11}/>
+                      <span style={{ fontSize:10, color:MUTED }}>{album.likes}</span>
                     </div>
                   </div>
                 ))}
               </div>
-              {/* Row 2 */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
-                {[
-                  { label:"Get ready with me!", likes:1, price:66 },
-                  { label:"Morning Wake Up", likes:2, price:66 },
-                  { label:"Sunday morning breakfast", likes:2, price:60 },
-                ].map((album, i) => (
-                  <div key={i} style={{ cursor:"pointer" }}>
-                    <div style={{
-                      borderRadius:8, overflow:"hidden",
-                      position:"relative", aspectRatio:"4/3",
-                      background:"#1a1a1a",
-                      display:"flex", alignItems:"center", justifyContent:"center",
-                      marginBottom:6,
-                    }}>
-                      <div style={{
-                        display:"flex", flexDirection:"column",
-                        alignItems:"center", gap:5, padding:10,
-                      }}>
-                        <div style={{ display:"flex", gap:4 }}>
-                          {["#1565c0","#8e24aa","#e53935"].map((c,j) => (
-                            <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill={c}>
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                          ))}
-                        </div>
-                        <span style={{ color:"#aaa", fontSize:10, textAlign:"center" }}>Join Fan Club</span>
-                        <span style={{ color:"#666", fontSize:9 }}>or</span>
-                        <div style={{ display:"flex", alignItems:"center", gap:3 }}>
-                          <span style={{ fontSize:12 }}>🪙</span>
-                          <span style={{ color:"#f5a623", fontSize:12, fontWeight:800 }}>{album.price} tk</span>
-                        </div>
-                      </div>
-                      <span style={{
-                        position:"absolute", bottom:5, right:7,
-                        color:"rgba(255,255,255,0.4)", fontSize:10, fontWeight:600,
-                      }}>5</span>
-                    </div>
-                    <div style={{ fontSize:11, color:"#333", fontWeight:500, marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{album.label}</div>
-                    <div style={{ display:"flex", alignItems:"center", gap:4 }}>
-                      <span style={{ color:"#e53935", fontSize:11 }}>♥</span>
-                      <span style={{ fontSize:11, color:"#aaa" }}>{album.likes}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </SectionCard>
+              <button style={{
+                width:"100%", marginTop:12,
+                background:GREEN, border:"none", color:"#fff",
+                fontWeight:700, fontSize:12, padding:"10px",
+                borderRadius:8, cursor:"pointer", fontFamily:FONT,
+              }}>See all 47 photos</button>
+            </Card>
 
             {/* Broadcast Schedule */}
-            <SectionCard>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <span style={{ fontSize:15 }}>📅</span>
-                  <span style={{ fontSize:14, fontWeight:700, color:"#111" }}>Broadcast Schedule</span>
+            <Card>
+              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:3 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill={TEXT}><path d="M12 14h2v-2h-2zm-4 0h2v-2H8zm-4 0h2v-2H4zm8-4h2V8h-2zm-4 0h2V8H8zm-4 0h2V8H4zm12 6H2V6h14zm0-14h-1V0h-2v2H5V0H3v2H2C.89 2 .01 2.9.01 4L0 16a2 2 0 002 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                  <span style={{ fontSize:13, fontWeight:700, color:TEXT }}>Broadcast Schedule</span>
                 </div>
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <span style={{ fontSize:11, color:"#bbb" }}>Notify live:</span>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <span style={{ fontSize:10, color:MUTED }}>Notify when live:</span>
                   <div onClick={()=>setNotifyLive(n=>!n)} style={{
-                    width:36, height:20, borderRadius:10,
-                    cursor:"pointer", position:"relative",
-                    background:notifyLive?"#e53935":"#e0e0e0",
+                    width:34, height:18, borderRadius:9, cursor:"pointer",
+                    position:"relative", background:notifyLive?RED:"#444",
                     transition:"background .2s", flexShrink:0,
                   }}>
                     <div style={{
-                      position:"absolute", top:3,
-                      left:notifyLive?17:3,
-                      width:14, height:14,
-                      borderRadius:"50%", background:"#fff",
+                      position:"absolute", top:2, left:notifyLive?16:2,
+                      width:14, height:14, borderRadius:"50%", background:"#fff",
                       transition:"left .2s",
-                      boxShadow:"0 1px 3px rgba(0,0,0,0.2)",
                     }}/>
                   </div>
                 </div>
               </div>
-              <p style={{ color:"#bbb", fontSize:11, margin:"0 0 14px" }}>
-                All times in your timezone — GMT-07:00
-              </p>
-              {SCHEDULE.map(({day,slots},i) => (
+              <p style={{ color:SUBTLE, fontSize:10, margin:"0 0 10px" }}>All slots are in your time zone — GMT+01:00 12:32 AM</p>
+              {SCHEDULE.map(({day,slots,today},i) => (
                 <div key={day} style={{
-                  display:"flex", alignItems:"center",
-                  justifyContent:"space-between",
-                  padding:"8px 0",
-                  borderBottom:i<SCHEDULE.length-1?"1px solid #f5f5f5":"none",
+                  display:"flex", alignItems:"flex-start", justifyContent:"space-between",
+                  padding:"7px 0", borderBottom:i<SCHEDULE.length-1?`1px solid ${BORDER}`:"none",
+                  gap:8,
                 }}>
                   <span style={{
-                    fontSize:13,
-                    color:day==="Friday"?"#e53935":"#555",
-                    fontWeight:day==="Friday"?700:400, minWidth:100,
-                  }}>{day}</span>
-                  <div style={{ display:"flex", gap:5, flexWrap:"wrap", justifyContent:"flex-end" }}>
-                    {slots.length===0
-                      ? <span style={{ fontSize:12, color:"#ccc" }}>No broadcasts</span>
-                      : slots.map(s => (
-                          <span key={s} style={{
-                            background:"#f5f5f5", border:"1px solid #eee",
-                            color:"#666", fontSize:11, padding:"3px 8px", borderRadius:4,
-                          }}>{s}</span>
-                        ))
-                    }
+                    fontSize:12, minWidth:78,
+                    color:today?"#4caf50":"#ccc",
+                    fontWeight:today?700:400, flexShrink:0,
+                  }}>
+                    {today && <span style={{ fontSize:9, color:GREEN, display:"block" }}>TODAY</span>}
+                    {day}
+                  </span>
+                  <div style={{ display:"flex", flexDirection:"column", gap:4, alignItems:"flex-end" }}>
+                    {slots.map(s => (
+                      <button key={s} style={{
+                        background:today?"rgba(76,175,80,0.08)":CARD2,
+                        border:`1px solid ${today?"rgba(76,175,80,0.3)":BORDER}`,
+                        color:today?GREEN:"#ccc", fontSize:10, padding:"2px 7px", borderRadius:4,
+                        display:"flex", alignItems:"center", gap:4, cursor:"pointer", fontFamily:FONT,
+                        whiteSpace:"nowrap",
+                      }}>
+                        {s}
+                        <CalendarAddIcon size={11}/>
+                      </button>
+                    ))}
                   </div>
                 </div>
               ))}
-            </SectionCard>
+            </Card>
 
             {/* Knights */}
-            <SectionCard>
+            <Card>
               <SectionTitle>Knights</SectionTitle>
-              <div style={{ display:"flex", gap:20 }}>
-                {[
-                  { name:"SXSAARFEND", count:86, ring:"#e53935" },
-                  { name:"prankman1",  count:39, ring:"#f5a623" },
-                ].map(k => (
-                  <div key={k.name} style={{
-                    display:"flex", flexDirection:"column",
-                    alignItems:"center", gap:8,
-                  }}>
-                    <div style={{ position:"relative" }}>
-                      <div style={{
-                        width:56, height:56, borderRadius:"50%",
-                        border:`2px solid ${k.ring}`,
-                        background:"#f5f5f5",
-                        display:"flex", alignItems:"center",
-                        justifyContent:"center", fontSize:20,
-                        fontWeight:800, color:"#333",
-                      }}>{k.name[0]}</div>
-                      <div style={{
-                        position:"absolute", bottom:-2, right:-2,
-                        background:k.ring, borderRadius:"50%",
-                        width:20, height:20,
-                        display:"flex", alignItems:"center",
-                        justifyContent:"center", fontSize:9,
-                        fontWeight:800, color:"#fff",
-                        border:"2px solid #fff",
-                      }}>{k.count}</div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }}>
+                {KNIGHTS.map(k => (
+                  <div key={k.name} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6, cursor:"pointer" }}>
+                    <HexBadge level={k.level} league={k.league} size={56}/>
+                    <div style={{ display:"flex", alignItems:"center", gap:3 }}>
+                      <span style={{ color:GOLD, fontSize:10 }}>⭐</span>
+                      <span style={{ color:MUTED, fontSize:10, textAlign:"center", maxWidth:70, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{k.name}</span>
                     </div>
-                    <span style={{ color:"#aaa", fontSize:11 }}>{k.name}</span>
                   </div>
                 ))}
               </div>
-            </SectionCard>
+            </Card>
 
             {/* Tip Menu */}
-            <SectionCard>
-              <SectionTitle>🎰 {username}'s Tip Menu</SectionTitle>
-              {TIP_MENU.map((item,i) => (
-                <div key={i} style={{
-                  display:"flex", alignItems:"center",
-                  justifyContent:"space-between",
-                  padding:"9px 0",
-                  borderBottom:i<TIP_MENU.length-1?"1px solid #f5f5f5":"none",
-                }}>
-                  <span style={{ color:"#444", fontSize:13 }}>{item.label}</span>
-                  <span style={{
-                    color:"#f5a623", fontSize:13, fontWeight:800,
-                    background:"#fffbf0", border:"1px solid #f0e0a0",
-                    borderRadius:20, padding:"2px 10px",
-                  }}>{item.tokens} tk</span>
-                </div>
-              ))}
-            </SectionCard>
-
-          </div>
-        </div>
-
-        {/* ════ RELATED GIRLS ════ */}
-        <ModelGrid
-          title="Related Girls"
-          models={RELATED}
-          page={relatedPage}
-          setPage={setRelatedPage}
-          onModel={name=>router.push(`/watch/${name}`)}
-        />
-
-        {/* ════ FEATURED GIRLS ════ */}
-        <ModelGrid
-          title="Featured Girls"
-          models={FEATURED}
-          page={featuredPage}
-          setPage={setFeaturedPage}
-          onModel={name=>router.push(`/watch/${name}`)}
-          showDots
-        />
-
-        {/* ── FOOTER ── */}
-        <div style={{
-          background:"#f5f5f5", borderTop:"1px solid #eee",
-          padding:"36px 24px",
-          display:"grid",
-          gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",
-          gap:32,
-        }}>
-          <div>
-            <div style={{ fontSize:17, fontWeight:900, marginBottom:12 }}>
-              <span style={{ color:"#e53935" }}>STRIP</span>
-              <span style={{ color:"#111" }}>CHATBATE</span>
-            </div>
-            <p style={{ fontSize:12, color:"#aaa", lineHeight:1.8, margin:"0 0 16px" }}>
-              The world's premier 18+ LIVE adult entertainment destination.
-            </p>
-            <p style={{ fontSize:11, color:"#ccc", margin:0 }}>
-              All models are 18 years of age or older.
-            </p>
-          </div>
-          {[
-            { title:"STRIPCHATBATE",  links:["About","Blog","Media Inquiries"] },
-            { title:"LEGAL & SAFETY", links:["Privacy Policy","Terms of Use","DMCA Policy","Cookies"] },
-            { title:"WORK WITH US",   links:["Webcam Affiliate Program"] },
-            { title:"HELP",           links:["Support & FAQ","Billing Support","DMCA Protection"] },
-          ].map(col => (
-            <div key={col.title}>
-              <div style={{ fontSize:10, fontWeight:800, color:"#ccc", letterSpacing:".1em", marginBottom:12 }}>
-                {col.title}
+            <Card>
+              <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:12 }}>
+                <svg width="16" height="16" viewBox="0 0 22 24" fill={TEXT}>
+                  <path d="M7 4a4 4 0 108 0 4 4 0 00-8 0z"/>
+                  <path fill="currentColor" fillOpacity=".6" d="M22 14c.003.218-.102.381-.316.491L11.608 18.27a1.97 1.97 0 01-.608.094v5.486c.5 0 1.5-.35 1.5-.35l9.133-3.845a.6.6 0 00.367-.553V14z"/>
+                  <path fill="currentColor" fillOpacity=".4" d="M0 14c-.003.218.102.381.316.491l10.076 3.779c.195.063.397.094.608.094v5.486c-.5 0-1.5-.35-1.5-.35L.367 19.655A.6.6 0 010 19.102V14z"/>
+                  <path fill="#D4D4D4" d="M.35 13.494l9.652-3.619V14a1 1 0 102 0V9.875l9.652 3.62a.54.54 0 010 1.01l-9.95 3.732a1.54 1.54 0 01-1.404 0L.35 14.506a.54.54 0 010-1.012zm5.4 1.406c.966 0 1.75-.403 1.75-.9s-.784-.9-1.75-.9S4 13.503 4 14s.784.9 1.75.9z"/>
+                </svg>
+                <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>{username}'s Tip Menu</span>
               </div>
-              {col.links.map(link => (
-                <div key={link} style={{
-                  fontSize:12, color:"#ccc", marginBottom:8,
-                  cursor:"pointer", transition:"color .15s",
-                }}
-                  onMouseEnter={e=>e.currentTarget.style.color="#666"}
-                  onMouseLeave={e=>e.currentTarget.style.color="#ccc"}
-                >{link}</div>
-              ))}
-            </div>
-          ))}
+              <div style={{ position:"relative" }}>
+                {visibleTipMenu.map((item,i) => (
+                  <div key={i} style={{
+                    display:"flex", alignItems:"center", justifyContent:"space-between",
+                    padding:"8px 0",
+                    borderBottom:i<visibleTipMenu.length-1?`1px solid ${BORDER}`:"none",
+                  }}>
+                    <span style={{ color:"#ccc", fontSize:12 }}>{item.label}</span>
+                    <span style={{ color:TEXT, fontSize:12, fontWeight:700 }}>{item.tokens}</span>
+                  </div>
+                ))}
+              </div>
+              {!tipMenuExpanded && (
+                <button onClick={()=>setTipMenuExpanded(true)} style={{
+                  width:"100%", marginTop:10, background:"transparent",
+                  border:"none", color:MUTED, fontSize:12, cursor:"pointer",
+                  fontFamily:FONT, display:"flex", alignItems:"center", justifyContent:"center", gap:4,
+                  padding:"6px 0",
+                }}>
+                  Show More
+                  <svg width="8" height="12" viewBox="0 0 8 13" fill={MUTED}><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
+                </button>
+              )}
+            </Card>
+          </div>
         </div>
 
-        <div style={{
-          background:"#f5f5f5", borderTop:"1px solid #eee",
-          padding:"14px 24px",
-          display:"flex", alignItems:"center", justifyContent:"space-between",
-        }}>
-          <span style={{ fontSize:10, color:"#ccc" }}>
-            18 U.S.C. 2257 Record-Keeping Requirements Compliance Statement
-          </span>
-          <span style={{ fontSize:10, color:"#ccc" }}>© 2025 Stripchatbate</span>
-        </div>
+        {/* ── RELATED GIRLS ── */}
+        <ModelGrid title="Related Girls" models={RELATED} page={relatedPage} setPage={setRelatedPage} onModel={name=>router.push(`/watch/${name}`)}/>
 
-      </div>{/* ── end scrollRef ── */}
+        {/* ── FEATURED GIRLS ── */}
+        <ModelGrid title="Featured Girls" models={FEATURED} page={featuredPage} setPage={setFeaturedPage} onModel={name=>router.push(`/watch/${name}`)} showDots/>
 
-
-      {/* ── PiP ── */}
-      {showPip && !STORE_TABS.includes(activeTab) && (
-        <div style={{
-          position:"fixed", bottom:80, left:16, zIndex:999,
-          width:260, borderRadius:10, overflow:"hidden",
-          boxShadow:"0 8px 40px rgba(0,0,0,0.15)",
-          border:"1px solid #eee", background:"#fff",
-        }}>
-          <div style={{
-            display:"flex", alignItems:"center",
-            justifyContent:"space-between",
-            padding:"6px 10px", background:"#fff",
-            borderBottom:"1px solid #f0f0f0",
-          }}>
-            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-              <div style={{
-                width:18, height:18, borderRadius:"50%",
-                background:color, display:"flex", alignItems:"center",
-                justifyContent:"center", fontSize:8, fontWeight:800, color:"#fff",
-              }}>{username?.[0]?.toUpperCase()}</div>
-              <span style={{ fontSize:11, fontWeight:700, color:"#111" }}>{username}</span>
-              <span style={{
-                background:"#e53935", color:"#fff",
-                fontSize:8, fontWeight:800, padding:"1px 5px", borderRadius:3,
-              }}>LIVE</span>
+        {/* FOOTER */}
+        <footer style={{ background:"#0d0d0d", borderTop:`1px solid ${BORDER}`, padding:"32px 24px 0" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr", gap:32, marginBottom:28 }}>
+            <div>
+              <div style={{ fontSize:16, fontWeight:900, marginBottom:10, display:"flex", alignItems:"center", gap:2 }}>
+                <span style={{ color:RED }}>STRIP</span><span style={{ color:TEXT }}>CHATBATE</span>
+              </div>
+              <p style={{ fontSize:12, color:MUTED, lineHeight:1.8, margin:"0 0 12px" }}>
+                The world's premier 18+ LIVE adult entertainment destination for real connection and adult play.
+              </p>
+              <p style={{ fontSize:10, color:SUBTLE, margin:0 }}>All models are 18 years of age or older.</p>
             </div>
-            <button onClick={()=>setShowPip(false)} style={{
-              background:"none", border:"none", color:"#bbb",
-              cursor:"pointer", fontSize:15, lineHeight:1, padding:2,
-            }}>✕</button>
+            {[
+              { title:"STRIPCHATBATE", links:["About","Blog","Media Inquiries"] },
+              { title:"LEGAL & SAFETY", links:["Privacy Policy","Terms of Use","DMCA Policy","Cookies Policy"] },
+              { title:"WORK WITH US", links:["Become a Model","Studio Signup","Webcam Affiliate Program"] },
+              { title:"HELP & SUPPORT", links:["Support & FAQ","Billing Support","DMCA Protection"] },
+            ].map(col => (
+              <div key={col.title}>
+                <div style={{ fontSize:9, fontWeight:800, color:SUBTLE, letterSpacing:".1em", marginBottom:10 }}>{col.title}</div>
+                {col.links.map(link => (
+                  <div key={link} style={{ fontSize:12, color:SUBTLE, marginBottom:7, cursor:"pointer" }}
+                    onMouseEnter={e=>e.currentTarget.style.color="#aaa"}
+                    onMouseLeave={e=>e.currentTarget.style.color=SUBTLE}
+                  >{link}</div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div style={{ borderTop:`1px solid ${BORDER}`, padding:"14px 0", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            <span style={{ fontSize:10, color:SUBTLE }}>18 U.S.C. 2257 Record-Keeping Requirements Compliance Statement</span>
+            <span style={{ fontSize:10, color:SUBTLE }}>© 2026 Stripchatbate.com</span>
+          </div>
+        </footer>
+      </div>
+
+      {/* PiP */}
+      {showPip && (
+        <div style={{
+          position:"fixed", bottom:80, left:14, zIndex:999,
+          width:240, borderRadius:8, overflow:"hidden",
+          boxShadow:"0 8px 32px rgba(0,0,0,0.5)",
+          border:`1px solid ${BORDER}`, background:"#111",
+        }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"5px 10px", background:"#0d0d0d", borderBottom:`1px solid ${BORDER}` }}>
+            <div style={{ display:"flex", alignItems:"center", gap:5 }}>
+              <div style={{ width:16, height:16, borderRadius:"50%", background:color, display:"flex", alignItems:"center", justifyContent:"center", fontSize:7, fontWeight:800, color:"#fff" }}>
+                {username?.[0]?.toUpperCase()}
+              </div>
+              <span style={{ fontSize:11, fontWeight:700, color:TEXT }}>{username}</span>
+              <span style={{ background:RED, color:"#fff", fontSize:7, fontWeight:800, padding:"1px 4px", borderRadius:2 }}>LIVE</span>
+            </div>
+            <button onClick={()=>setShowPip(false)} style={{ background:"none", border:"none", color:MUTED, cursor:"pointer", fontSize:13 }}>✕</button>
           </div>
           <div style={{ aspectRatio:"16/9" }}>
             <StreamPlayer username={username} color={color} emoji="😍" viewers={viewers}/>
@@ -1073,7 +1128,7 @@ export default function WatchPage({ username }) {
         </div>
       )}
 
-      {/* ── MODALS ── */}
+      {/* MODALS */}
       {showPrivate && (
         <PrivateShowModal username={username} privatePrice={privatePrice}
           onClose={()=>setShowPrivate(false)} onBuyTokens={openBuyTokens}
@@ -1087,97 +1142,74 @@ export default function WatchPage({ username }) {
           onClose={()=>setShowTip(false)} onBuyTokens={openBuyTokens}
           onTip={amount=>{ setTokens(t=>Math.max(0,t-amount)); setShowTip(false); }}/>
       )}
-
     </div>
   );
 }
 
-/* ─── ModelGrid sub-component ─────────────────────── */
+/* ── ModelGrid ── */
 function ModelGrid({ title, models, page, setPage, onModel, showDots }) {
+  const perPage = 8;
+  const visible = models.slice(0, perPage);
+
   return (
-    <div style={{
-      padding:"24px",
-      background:"#f9f9f9",
-      borderTop:"1px solid #eee",
-    }}>
-      <div style={{
-        fontSize:14, fontWeight:800, color:"#111",
-        letterSpacing:".01em", marginBottom:14,
-      }}>{title}</div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:4 }}>
-        {models.map((name,i) => (
+    <div style={{ padding:"20px", background:"#0d0d0d", borderTop:`1px solid ${BORDER}` }}>
+      <div style={{ fontSize:13, fontWeight:800, color:TEXT, marginBottom:12, textTransform:"none" }}>{title}</div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(8,1fr)", gap:4 }}>
+        {visible.map((name,i) => (
           <div key={name} onClick={()=>onModel(name)} style={{
             cursor:"pointer", overflow:"hidden", borderRadius:6,
-            border:"1px solid #eee", transition:"border-color .15s",
-            background:"#fff",
+            border:`1px solid ${BORDER}`, background:"#1a1a1a",
           }}
-            onMouseEnter={e=>e.currentTarget.style.borderColor="#ccc"}
-            onMouseLeave={e=>e.currentTarget.style.borderColor="#eee"}
+            onMouseEnter={e=>e.currentTarget.style.borderColor="#555"}
+            onMouseLeave={e=>e.currentTarget.style.borderColor=BORDER}
           >
             <div style={{
               aspectRatio:"3/4",
-              background:`hsl(${i*37+i*13},8%,94%)`,
-              display:"flex", alignItems:"center",
-              justifyContent:"center", position:"relative",
+              background:`hsl(${i*37+20},14%,16%)`,
+              display:"flex", alignItems:"center", justifyContent:"center", position:"relative",
             }}>
-              <span style={{ color:"rgba(0,0,0,0.08)", fontSize:34 }}>👤</span>
+              <span style={{ color:"rgba(255,255,255,0.05)", fontSize:24 }}>👤</span>
               {i===1 && (
                 <div style={{
-                  position:"absolute", top:6, left:6,
+                  position:"absolute", top:4, left:4,
                   background:"#1565c0", color:"#fff",
-                  fontSize:8, fontWeight:800, padding:"2px 6px",
-                  borderRadius:3, display:"flex", alignItems:"center", gap:3,
+                  fontSize:7, fontWeight:800, padding:"2px 5px",
+                  borderRadius:3, display:"flex", alignItems:"center", gap:2,
                 }}>
-                  <span style={{ fontSize:7 }}>👥</span> Group Show
+                  👥 Group
                 </div>
               )}
             </div>
-            <div style={{ padding:"6px 8px", background:"#fff" }}>
-              <span style={{
-                fontSize:11, color:"#555", fontWeight:600,
-                overflow:"hidden", textOverflow:"ellipsis",
-                whiteSpace:"nowrap", display:"block",
-              }}>{name}</span>
+            <div style={{ padding:"4px 6px" }}>
+              <span style={{ fontSize:10, color:"#999", display:"block", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{name}</span>
             </div>
           </div>
         ))}
       </div>
-      {/* Pagination */}
-      <div style={{
-        display:"flex", alignItems:"center",
-        justifyContent:"center", gap:5, marginTop:18,
-      }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:14 }}>
         {[1,2,3,4,5].map(n => (
           <button key={n} onClick={()=>setPage(n)} style={{
-            width:30, height:30, borderRadius:6,
-            border:"1px solid #eee",
-            cursor:"pointer",
-            background:page===n?"#e53935":"#fff",
-            color:page===n?"#fff":"#aaa",
+            width:28, height:28, borderRadius:5,
+            border:`1px solid ${BORDER}`, cursor:"pointer",
+            background:page===n?RED:"#1a1a1a",
+            color:page===n?"#fff":MUTED,
             fontSize:12, fontWeight:page===n?700:400,
-            fontFamily:"'DM Sans',sans-serif",
-            transition:"all .15s",
+            fontFamily:FONT,
           }}>{n}</button>
         ))}
-        {showDots && (
-          <>
-            <span style={{ color:"#ddd", fontSize:13, padding:"0 2px" }}>…</span>
-            <button style={{
-              width:30, height:30, borderRadius:6,
-              border:"1px solid #eee", cursor:"pointer",
-              background:"#fff", color:"#aaa", fontSize:12,
-              fontFamily:"'DM Sans',sans-serif",
-            }}>100</button>
-          </>
-        )}
+        {showDots && <>
+          <span style={{ color:SUBTLE, fontSize:12, padding:"0 2px" }}>…</span>
+          <button style={{ width:28, height:28, borderRadius:5, border:`1px solid ${BORDER}`, cursor:"pointer", background:"#1a1a1a", color:MUTED, fontSize:11, fontFamily:FONT }}>100</button>
+        </>}
         <button style={{
-          background:"#fff", border:"1px solid #eee",
-          color:"#888", fontSize:12, padding:"6px 14px",
-          borderRadius:6, cursor:"pointer",
-          fontFamily:"'DM Sans',sans-serif",
-          display:"flex", alignItems:"center", gap:4,
-        }}>Next ›</button>
+          background:"#1a1a1a", border:`1px solid ${BORDER}`,
+          color:MUTED, fontSize:11, padding:"5px 12px",
+          borderRadius:5, cursor:"pointer", fontFamily:FONT,
+          display:"flex", alignItems:"center", gap:3,
+        }}>
+          Next <svg width="8" height="12" viewBox="0 0 8 13" fill={MUTED}><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
+        </button>
       </div>
     </div>
   );
-}     
+}
