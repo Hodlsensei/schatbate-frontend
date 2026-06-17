@@ -20,6 +20,13 @@ const I_DO_IN_SHOWS = ["Topless","Twerk","Oil Show","Smoking","69 Position","Ups
 const EXCLUSIVELY_PRIVATE = ["Dirty Talk","Tittyfuck","Flashing","Foot Fetish","Footjob"];
 const RELATED_MIXED = ["Interactive Toys with Mature","Mature HD","Mature Topless","Mature Spanking","Mature Facesitting","Mature Mistress","Mature Nylon","White Mature","Blonde Mature","Blonde Blowjob","Blonde Doggy Style","Blonde Upskirt","Blonde Handjob","Blonde Cuckold","Dirty Talk Blowjob"];
 
+/* Emoji map for "Interests" tags — matches reference styling */
+const INTEREST_EMOJI = {
+  "Action":"🎬","Adventure":"✈️","Bars":"🍻","Beach":"🏖️","Cafes, Restaurants":"☕",
+  "Coffee":"☕","Comedy":"🎭","Concerts":"🎤","Documentary":"🎬","Drama":"🎭",
+  "Gin":"🍸","Meditation":"🧘","Picnics":"🧺","Seafood":"🦐","Shopping":"🛍️",
+};
+
 const REVIEWS = [
   { stars:5, text:"sweet, hot, so much fun", date:"Jun 12, 2026", type:"Exclusive Private" },
   { stars:5, text:"Absolutely incredible woman 😍!!!", date:"Jun 11, 2026", type:"Exclusive Private" },
@@ -100,25 +107,26 @@ const KNIGHTS = [
   { name:"w1ldheart", level:83, league:"royal" },
 ];
 
+/* Albums — `thumb` holds a CSS gradient standing in for a real photo (free albums show real imagery in the reference) */
 const ALBUMS = [
-  { label:"Public", likes:264, count:1, free:true, img:"📷" },
+  { label:"Public", likes:264, count:1, free:true, thumb:"linear-gradient(135deg,#4a6fa5,#2c4770)" },
   { label:"Just me", likes:36, count:9, price:99, locked:true },
   { label:"BLACK FRIDAY BUNDLE 2", likes:1, count:5, price:99, locked:true },
   { label:"BLACK FRIDAY! DRESS UP BUNDLE", likes:2, count:5, price:99, locked:true },
   { label:"Hot bikini day", likes:3, count:5, price:99, locked:true },
-  { label:"Naughty!", likes:84, count:1, free:true, img:"🖼️" },
+  { label:"Naughty!", likes:84, count:1, free:true, thumb:"linear-gradient(135deg,#5a5a4a,#33332a)" },
   { label:"Happy Feet video", likes:2, count:1, price:99, locked:true },
   { label:"Foot show", likes:2, count:5, price:66, locked:true },
   { label:"Get ready with me!", likes:6, count:5, price:66, locked:true },
 ];
 
 const PANELS = [
-  { col:0, title:"My schedule\n7 am to 10 am\nI'm a morning gal\n4pm to 7pm\nAnd sometimes MORE", body:"Just saying!\nI looooooove Flowers 🌺 especially Lillie's", hasImg:true },
-  { col:1, title:"Love summer Days Poolside", body:"One day I will take you to the lake or beach with me, Lush & Domi", hasImg:true },
-  { col:0, title:"Do You Like A Foot Show or Nylons too ?", hasImg:true },
+  { col:0, title:"My schedule\n7 am to 10 am\nI'm a morning gal\n4pm to 7pm\nAnd sometimes MORE", body:"Just saying!\nI looooooove Flowers 🌺 especially Lillie's", thumb:"linear-gradient(135deg,#6a7a4a,#3a4a2a)" },
+  { col:1, title:"Love summer Days Poolside", body:"One day I will take you to the lake or beach with me, Lush & Domi", thumb:"linear-gradient(135deg,#4a8aa5,#2a5570)" },
+  { col:0, title:"Do You Like A Foot Show or Nylons too ?", thumb:"linear-gradient(135deg,#4a4a4a,#2a2a2a)" },
   { col:1, title:"Things I love & like ❤️", body:"Things I like, Cappuccino, apéro Spritz, flowers!\nRunning, 3 times London marathon 1 x Robin Hood but now I love trail running.\nAnd of course I love to be here with you !" },
   { col:0, title:"Always love a morning with you! But I try to find you later in the day too 😍😘" },
-  { col:1, title:"See you tomorrow gorgeous guys 😍", body:"Can't wait!", hasImg:true },
+  { col:1, title:"See you tomorrow gorgeous guys 😍", body:"Can't wait!", thumb:"linear-gradient(135deg,#5a4a5a,#332a33)" },
 ];
 
 /* ── colours ── */
@@ -180,13 +188,29 @@ function DiamondIcon({ size=18 }) {
   );
 }
 
-function Tag({ label, onClick }) {
+/* Two-diamond "locked album" icon, matching the reference's stacked diamonds look */
+function LockedAlbumIcons({ size=15 }) {
+  return (
+    <div style={{ display:"flex", gap:2 }}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="#d63f9b">
+        <path d="M12 23L0 11L4.5 2H19.5L24 11L12 23Z"/>
+      </svg>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="#e53935">
+        <path d="M12 23L0 11L4.5 2H19.5L24 11L12 23Z"/>
+      </svg>
+    </div>
+  );
+}
+
+function Tag({ label, emoji, onClick }) {
   return (
     <a
       href="#"
       onClick={e => { e.preventDefault(); onClick && onClick(); }}
       style={{
-        display:"inline-block",
+        display:"inline-flex",
+        alignItems:"center",
+        gap:6,
         background:"transparent",
         border:`1px solid ${BORDER}`,
         color:"#ccc",
@@ -200,7 +224,10 @@ function Tag({ label, onClick }) {
       }}
       onMouseEnter={e=>e.currentTarget.style.borderColor="#555"}
       onMouseLeave={e=>e.currentTarget.style.borderColor=BORDER}
-    >{label}</a>
+    >
+      {emoji && <span style={{ fontSize:13 }}>{emoji}</span>}
+      {label}
+    </a>
   );
 }
 
@@ -223,6 +250,14 @@ function SectionTitle({ children }) {
 function HeartIcon({ filled, size=16 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 22 22" fill={filled?"#e53935":"none"} stroke={filled?"#e53935":"currentColor"} strokeWidth="1.5">
+      <path d="M15.5 3a4.5 4.5 0 014.5 4.5C20 12 11 19 11 19S2 12 2 7.5A4.5 4.5 0 016.5 3c1.74 0 3.41.81 4.5 2.08A5.48 5.48 0 0115.5 3z"/>
+    </svg>
+  );
+}
+
+function OrangeHeartIcon({ size=18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 22" fill={GOLD}>
       <path d="M15.5 3a4.5 4.5 0 014.5 4.5C20 12 11 19 11 19S2 12 2 7.5A4.5 4.5 0 016.5 3c1.74 0 3.41.81 4.5 2.08A5.48 5.48 0 0115.5 3z"/>
     </svg>
   );
@@ -261,6 +296,33 @@ function CalendarAddIcon({ size=14 }) {
   );
 }
 
+function MegaphoneIcon({ size=13 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.06A4.48 4.48 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06a9 9 0 000-17.54z"/>
+    </svg>
+  );
+}
+
+function PlayThumb({ thumb, duration }) {
+  return (
+    <div style={{
+      borderRadius:8, overflow:"hidden", position:"relative",
+      aspectRatio:"16/9", background:thumb || "#222",
+      marginBottom:8, cursor:"pointer",
+    }}>
+      <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.18)", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(2px)" }}>
+          <span style={{ color:"#fff", fontSize:16, marginLeft:3 }}>▶</span>
+        </div>
+      </div>
+      {duration && (
+        <span style={{ position:"absolute", bottom:5, right:6, background:"rgba(0,0,0,0.75)", color:"#fff", fontSize:10, padding:"2px 5px", borderRadius:3 }}>{duration}</span>
+      )}
+    </div>
+  );
+}
+
 const NAVBAR_H = 48;
 
 /* ══ MAIN ══ */
@@ -288,6 +350,10 @@ export default function WatchPage({ username }) {
   const [relatedPage, setRelatedPage] = useState(1);
   const [featuredPage, setFeaturedPage] = useState(1);
   const [epicGoal] = useState({ text:"Pay for my Car!", current:7, total:50000 });
+
+  /* Offline-state specific data */
+  const [isLive] = useState(false); // toggle this to true once the model actually goes live
+  const [lastOnline] = useState("about 1 hour ago");
 
   const color = COLORS[username?.charCodeAt(0) % COLORS.length] || RED;
   const goalPct = Math.min(100, Math.round((goalCurrent / goalAmount) * 100));
@@ -397,44 +463,81 @@ export default function WatchPage({ username }) {
         <div style={{ display:"flex", height:`calc(100vh - ${NAVBAR_H}px)`, background:"#000", minHeight:400 }}>
 
           {/* Video — 60% */}
-          <div style={{ flex:"0 0 60%", position:"relative", background:"#000", minWidth:0 }}>
-            <StreamPlayer username={username} color={color} emoji="😍" viewers={viewers}/>
+          <div style={{ flex:"0 0 60%", display:"flex", flexDirection:"column", position:"relative", background:"#000", minWidth:0 }}>
 
-            {/* Goal bar overlay above video bottom */}
-            <div style={{
-              position:"absolute", top:0, left:0, right:0,
-              background:"rgba(0,0,0,0.75)",
-              display:"flex", alignItems:"center", padding:"6px 12px", gap:8,
-              borderBottom:`1px solid rgba(255,255,255,0.05)`,
-            }}>
-              <div style={{ display:"flex", alignItems:"center", gap:5, flexShrink:0 }}>
-                <svg width="16" height="16" viewBox="0 0 22 22" fill={GREEN}><path d="M11 1C5.477 1 1 5.477 1 11a10 10 0 0020 0c0-1.16-.21-2.31-.61-3.39l-1.6 1.6c.14.59.21 1.19.21 1.79a8 8 0 11-8-8c.6 0 1.2.07 1.79.21L14.4 1.6C13.31 1.21 12.16 1 11 1zm7 0l-4 4v1.5l-2.55 2.55C11.3 9 11.15 9 11 9a2 2 0 102 2c0-.15 0-.3-.05-.45L15.5 8H17l4-4h-3V1zm-7 4a6 6 0 106 6h-2a4 4 0 11-4-4V5z"/></svg>
-                <span style={{ fontSize:12, color:GREEN, fontWeight:700 }}>Goal:</span>
-                <span style={{ fontSize:12, color:GOLD, fontWeight:700 }}>{goalCurrent} tk</span>
-                <span style={{ fontSize:12, color:TEXT }}>{goalText}</span>
-              </div>
-              <div style={{ flex:1, height:4, background:"#333", borderRadius:4, overflow:"hidden", maxWidth:160 }}>
-                <div style={{ width:`${goalPct}%`, height:"100%", background:GREEN, borderRadius:4, transition:"width .5s" }}/>
-              </div>
-              <span style={{ fontSize:11, color:MUTED }}>{goalPct}%</span>
-              <div style={{ flex:1 }}/>
-              <div style={{ fontSize:10, color:MUTED, textAlign:"right", flexShrink:0 }}>
-                <div>King of the room:</div>
-                <div style={{ color:GOLD, fontSize:11, fontWeight:700 }}>👑 Deleted Account</div>
-              </div>
-              <button style={{ background:"none", border:"none", color:MUTED, cursor:"pointer", fontSize:14, marginLeft:4 }}>∧</button>
+            {/* Video surface (fills remaining space above bottom bars) */}
+            <div style={{ flex:1, position:"relative", minHeight:0 }}>
+              {isLive ? (
+                <StreamPlayer username={username} color={color} emoji="😍" viewers={viewers}/>
+              ) : (
+                /* ── Viewer-facing OFFLINE state ── */
+                <div style={{
+                  position:"absolute", inset:0,
+                  background:`radial-gradient(circle at 50% 35%, ${color}22, #050505 75%)`,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  overflow:"hidden",
+                }}>
+                  {/* Dimmed backdrop image stand-in */}
+                  <div style={{
+                    position:"absolute", inset:0,
+                    background:`linear-gradient(160deg, ${color}18, #0a0a0a 70%)`,
+                    filter:"brightness(0.55)",
+                  }}/>
+
+                  <div style={{ position:"relative", zIndex:1, textAlign:"center", padding:24 }}>
+                    {/* OFFLINE pill */}
+                    <span style={{
+                      display:"inline-block", background:"#fff", color:"#111",
+                      fontSize:11, fontWeight:800, letterSpacing:".05em",
+                      padding:"4px 14px", borderRadius:4, marginBottom:14,
+                    }}>OFFLINE</span>
+
+                    <div style={{ fontSize:14, color:"rgba(255,255,255,0.65)", marginBottom:16 }}>
+                      Was online {lastOnline}
+                    </div>
+
+                    {/* Thinking about you pill */}
+                    <div style={{
+                      display:"inline-flex", alignItems:"center", gap:8,
+                      background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.12)",
+                      borderRadius:24, padding:"8px 18px", marginBottom:14,
+                      fontStyle:"italic", fontSize:13, color:"#fff",
+                    }}>
+                      <MegaphoneIcon size={13}/>
+                      Thinking about you 😊
+                    </div>
+                    <br/>
+
+                    {/* Notify toggle */}
+                    <div style={{
+                      display:"inline-flex", alignItems:"center", gap:10,
+                      background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)",
+                      borderRadius:24, padding:"7px 16px",
+                    }}>
+                      <BellIcon size={14}/>
+                      <span style={{ fontSize:13, color:"#fff" }}>Notify when live:</span>
+                      <div onClick={()=>setNotifyLive(n=>!n)} style={{
+                        width:34, height:18, borderRadius:9, cursor:"pointer",
+                        position:"relative", background:notifyLive?RED:"rgba(255,255,255,0.2)",
+                        transition:"background .2s",
+                      }}>
+                        <div style={{
+                          position:"absolute", top:2, left:notifyLive?16:2,
+                          width:14, height:14, borderRadius:"50%", background:"#fff",
+                          transition:"left .2s",
+                        }}/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Topic bar */}
-            <div style={{ position:"absolute", bottom:52, left:0, right:0, padding:"4px 12px", background:"rgba(0,0,0,0.6)" }}>
-              <span style={{ fontSize:12, color:"rgba(255,255,255,0.7)" }}>New Model, Stream Virgin 💋 35 degrees of HOT!</span>
-            </div>
-
-            {/* Bottom controls */}
+            {/* Bottom controls — heart + viewers + Send Private Tip */}
             <div style={{
-              position:"absolute", bottom:0, left:0, right:0,
+              position:"relative", zIndex:2,
               display:"flex", alignItems:"center", padding:"10px 12px", gap:10,
-              background:"linear-gradient(transparent, rgba(0,0,0,0.8))",
+              background: isLive ? "linear-gradient(transparent, rgba(0,0,0,0.8))" : "#0d0d0d",
             }}>
               <button onClick={()=>setFollowing(f=>!f)} style={{
                 width:34, height:34, borderRadius:"50%",
@@ -444,13 +547,43 @@ export default function WatchPage({ username }) {
               }}>
                 <HeartIcon filled={following} size={16}/>
               </button>
-              <span style={{ fontSize:12, color:"#fff", fontWeight:600 }}>{viewers.toLocaleString()}</span>
+              <span style={{ fontSize:12, color:"#fff", fontWeight:600 }}>{viewers > 999 ? `${(viewers/1000).toFixed(1)}k` : viewers}</span>
               <div style={{ flex:1 }}/>
               <button onClick={()=>setShowTip(true)} style={{
                 background:GOLD, border:"none", color:"#000",
                 fontWeight:800, fontSize:13, padding:"9px 24px",
                 borderRadius:24, cursor:"pointer", fontFamily:FONT,
               }}>Send Private Tip</button>
+            </div>
+
+            {/* Goal bar — now BELOW the video / bottom controls, matching reference */}
+            <div style={{
+              position:"relative", zIndex:2,
+              background:"#0d0d0d", borderTop:`1px solid ${BORDER}`,
+              display:"flex", alignItems:"center", padding:"8px 12px", gap:8,
+              flexWrap:"wrap",
+            }}>
+              <div style={{ display:"flex", alignItems:"center", gap:5, flexShrink:0 }}>
+                <svg width="16" height="16" viewBox="0 0 22 22" fill={GREEN}><path d="M11 1C5.477 1 1 5.477 1 11a10 10 0 0020 0c0-1.16-.21-2.31-.61-3.39l-1.6 1.6c.14.59.21 1.19.21 1.79a8 8 0 11-8-8c.6 0 1.2.07 1.79.21L14.4 1.6C13.31 1.21 12.16 1 11 1zm7 0l-4 4v1.5l-2.55 2.55C11.3 9 11.15 9 11 9a2 2 0 102 2c0-.15 0-.3-.05-.45L15.5 8H17l4-4h-3V1zm-7 4a6 6 0 106 6h-2a4 4 0 11-4-4V5z"/></svg>
+                <span style={{ fontSize:12, color:GREEN, fontWeight:700 }}>Goal:</span>
+                <span style={{ fontSize:12, color:GOLD, fontWeight:700 }}>{goalCurrent} tk</span>
+                <span style={{ fontSize:12, color:TEXT }}>{goalText}</span>
+              </div>
+              <div style={{ flex:1, height:4, background:"#333", borderRadius:4, overflow:"hidden", maxWidth:160, minWidth:60 }}>
+                <div style={{ width:`${goalPct}%`, height:"100%", background:GREEN, borderRadius:4, transition:"width .5s" }}/>
+              </div>
+              <span style={{ fontSize:11, color:MUTED, flexShrink:0 }}>{goalPct}%</span>
+              <div style={{ flex:1 }}/>
+              <div style={{ fontSize:10, color:MUTED, textAlign:"right", flexShrink:0 }}>
+                <div>King of the room:</div>
+                <div style={{ color:GOLD, fontSize:11, fontWeight:700 }}>👑 Deleted Account</div>
+              </div>
+              <button style={{ background:"none", border:"none", color:MUTED, cursor:"pointer", fontSize:14, marginLeft:4 }}>∧</button>
+            </div>
+
+            {/* Topic strip */}
+            <div style={{ position:"relative", zIndex:2, padding:"5px 12px", background:"#0d0d0d", borderTop:`1px solid ${BORDER}` }}>
+              <span style={{ fontSize:12, color:"rgba(255,255,255,0.6)" }}>New Model, Stream Virgin 💋 35 degrees of HOT!</span>
             </div>
           </div>
 
@@ -730,7 +863,7 @@ export default function WatchPage({ username }) {
                 <span style={{ color:MUTED, fontSize:12, paddingTop:4 }}>Interests:</span>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:5, paddingTop:3 }}>
                   {["Action","Adventure","Bars","Beach","Cafes, Restaurants","Coffee","Comedy","Concerts","Documentary","Drama","Gin","Meditation","Picnics","Seafood","Shopping"].map(i=>(
-                    <Tag key={i} label={i}/>
+                    <Tag key={i} label={i} emoji={INTEREST_EMOJI[i]}/>
                   ))}
                 </div>
               </div>
@@ -741,7 +874,7 @@ export default function WatchPage({ username }) {
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12 }}>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2 }}>
-                    <svg width="18" height="18" viewBox="0 0 35 34" fill={GOLD}><path fillRule="evenodd" clipRule="evenodd" d="M1.63 17.39C1.63 10.76 7.03 5.38 13.67 5.38S25.71 10.76 25.71 17.39c0 6.23-4.77 11.36-10.85 11.96v-8.2l5.16-5.17c.31-.32.09-.86-.36-.86H7.65c-.45 0-.68.54-.4.86l5.16 5.17v8.2C6.39 28.74 1.63 23.62 1.63 17.39z" fill={GOLD}/></svg>
+                    <OrangeHeartIcon size={18}/>
                     <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>My Private Shows</span>
                   </div>
                   <span style={{ fontSize:12, color:GOLD, fontWeight:600 }}>from {privatePrice} tk/min</span>
@@ -827,13 +960,11 @@ export default function WatchPage({ username }) {
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
               {PANELS.map((p, i) => (
                 <div key={i} style={{ background:CARD, borderRadius:8, overflow:"hidden", cursor:"pointer" }}>
-                  {p.hasImg && (
-                    <div style={{ width:"100%", aspectRatio:"4/3", background:"#2a2a2a", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <span style={{ color:SUBTLE, fontSize:28 }}>📷</span>
-                    </div>
+                  {p.thumb && (
+                    <div style={{ width:"100%", aspectRatio:"4/3", background:p.thumb }}/>
                   )}
                   <div style={{ padding:"10px 12px" }}>
-                    <p style={{ color:TEXT, fontSize:12, fontWeight:p.hasImg?400:600, margin:0, lineHeight:1.5, whiteSpace:"pre-line" }}>{p.title}</p>
+                    <p style={{ color:TEXT, fontSize:12, fontWeight:p.thumb?400:600, margin:0, lineHeight:1.5, whiteSpace:"pre-line" }}>{p.title}</p>
                     {p.body && <p style={{ color:MUTED, fontSize:11, margin:"7px 0 0", lineHeight:1.7, whiteSpace:"pre-line" }}>{p.body}</p>}
                   </div>
                 </div>
@@ -881,18 +1012,11 @@ export default function WatchPage({ username }) {
                   <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>Videos</span>
                   <span style={{ color:MUTED, fontSize:12 }}>1</span>
                 </div>
-                <a href="#" style={{ background:"transparent", border:`1px solid ${BORDER}`, color:MUTED, fontSize:11, cursor:"pointer", padding:"3px 10px", borderRadius:20, fontFamily:FONT, textDecoration:"none", display:"flex", alignItems:"center", gap:2 }}>
-                  See all <svg width="8" height="12" viewBox="0 0 8 13" fill={MUTED}><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
+                <a href="#" style={{ background:"#2a2a2a", border:"none", color:"#ccc", fontSize:11, cursor:"pointer", padding:"4px 12px", borderRadius:20, fontFamily:FONT, textDecoration:"none", display:"flex", alignItems:"center", gap:3 }}>
+                  See All <svg width="8" height="12" viewBox="0 0 8 13" fill="#ccc"><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
                 </a>
               </div>
-              <div style={{ borderRadius:8, overflow:"hidden", position:"relative", aspectRatio:"16/9", background:"#222", marginBottom:8, cursor:"pointer" }}>
-                <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  <div style={{ width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.15)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <span style={{ color:"#fff", fontSize:16, marginLeft:3 }}>▶</span>
-                  </div>
-                </div>
-                <span style={{ position:"absolute", bottom:5, right:6, background:"rgba(0,0,0,0.75)", color:"#fff", fontSize:10, padding:"2px 5px", borderRadius:3 }}>00:14</span>
-              </div>
+              <PlayThumb thumb="linear-gradient(160deg,#9a8a6a 0%,#5a4a3a 45%,#2a2a2a 100%)" duration="00:14"/>
               <div style={{ fontSize:12, color:"#ccc", marginBottom:4 }}>I celebrate Me !</div>
               <div style={{ display:"flex", alignItems:"center", gap:3 }}>
                 <HeartIcon size={13}/>
@@ -907,8 +1031,8 @@ export default function WatchPage({ username }) {
                   <span style={{ fontSize:14, fontWeight:700, color:TEXT }}>Albums</span>
                   <span style={{ color:MUTED, fontSize:12 }}>11</span>
                 </div>
-                <a href="#" style={{ background:"transparent", border:`1px solid ${BORDER}`, color:MUTED, fontSize:11, padding:"3px 10px", borderRadius:20, fontFamily:FONT, textDecoration:"none", display:"flex", alignItems:"center", gap:2 }}>
-                  See all <svg width="8" height="12" viewBox="0 0 8 13" fill={MUTED}><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
+                <a href="#" style={{ background:"#2a2a2a", border:"none", color:"#ccc", fontSize:11, padding:"4px 12px", borderRadius:20, fontFamily:FONT, textDecoration:"none", display:"flex", alignItems:"center", gap:3 }}>
+                  See All <svg width="8" height="12" viewBox="0 0 8 13" fill="#ccc"><path d="M1 1.2a1 1 0 011.4 0L7 5.77A1 1 0 017 7.2l-4.6 4.6A1 1 0 111 10.36l3.87-3.89L1 2.6a1 1 0 010-1.4z"/></svg>
                 </a>
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:7 }}>
@@ -917,17 +1041,13 @@ export default function WatchPage({ username }) {
                     <div style={{
                       borderRadius:6, overflow:"hidden",
                       position:"relative", aspectRatio:"4/3",
-                      background:album.free ? "#2a2a2a" : "#1a1a1a",
+                      background:album.free ? album.thumb : "#1a1a1a",
                       display:"flex", alignItems:"center", justifyContent:"center", marginBottom:5,
                     }}>
-                      {album.free ? (
-                        <span style={{ fontSize:22, opacity:0.3 }}>{album.img || "📷"}</span>
-                      ) : (
+                      {!album.free && (
                         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, padding:6 }}>
-                          <div style={{ display:"flex", gap:2, marginBottom:2 }}>
-                            <DiamondIcon size={11}/>
-                          </div>
-                          <span style={{ color:MUTED, fontSize:9, textAlign:"center" }}>Join Fan Club</span>
+                          <LockedAlbumIcons size={13}/>
+                          <span style={{ color:MUTED, fontSize:9, textAlign:"center", marginTop:2 }}>Join Fan Club</span>
                           <span style={{ color:SUBTLE, fontSize:8 }}>or</span>
                           <div style={{ display:"flex", alignItems:"center", gap:2 }}>
                             <span style={{ fontSize:9 }}>🪙</span>
@@ -935,7 +1055,7 @@ export default function WatchPage({ username }) {
                           </div>
                         </div>
                       )}
-                      <span style={{ position:"absolute", bottom:3, right:4, color:"rgba(255,255,255,0.3)", fontSize:9, fontWeight:600 }}>{album.count}</span>
+                      <span style={{ position:"absolute", bottom:3, right:4, color:"rgba(255,255,255,0.5)", fontSize:9, fontWeight:600, textShadow:"0 1px 2px rgba(0,0,0,0.6)" }}>{album.count}</span>
                     </div>
                     <div style={{ fontSize:10, color:"#ccc", fontWeight:500, marginBottom:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{album.label}</div>
                     <div style={{ display:"flex", alignItems:"center", gap:2 }}>
@@ -1212,4 +1332,4 @@ function ModelGrid({ title, models, page, setPage, onModel, showDots }) {
       </div>
     </div>
   );
-} 
+}
