@@ -227,6 +227,20 @@ function ConfidentCurvesBanner() {
   const LINE_COLOR  = "#1a1a1a";
   const LINE_W      = 1.5;
 
+  const bannerRef = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = bannerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const lineStyle = (overrides) => ({
     position: "absolute",
     background: LINE_COLOR,
@@ -236,7 +250,16 @@ function ConfidentCurvesBanner() {
   });
 
   return (
-    <div style={{ position: "relative", width: "100%", height: BANNER_H, background: "#faf8f5", overflow: "hidden", margin: "12px 0 24px" }}>
+    <div ref={bannerRef} style={{ width: "100%", overflow: "hidden", margin: "12px 0 24px" }}>
+    <div
+      style={{
+        position: "relative", width: "100%", height: BANNER_H, background: "#faf8f5",
+        overflow: "hidden",
+        transform: visible ? "translateX(0)" : "translateX(100%)",
+        opacity: visible ? 1 : 0,
+        transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease",
+      }}
+    >
 
       <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
         <path d="M100,100 C250,-20 620,30 780,190 C940,350 1080,110 1240,195 C1400,280 1390,490 1210,545 C1030,600 700,575 490,510 C280,445 -50,450 100,100Z" fill="#e8ddd0" opacity="0.5" />
@@ -288,6 +311,7 @@ function ConfidentCurvesBanner() {
       >
         SHOP NOW
       </button>
+    </div>
     </div>
   );
 }
