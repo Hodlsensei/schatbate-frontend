@@ -106,7 +106,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           align-items: center;
         }
         .gender-tab.active {
-          border-bottom-color: #D4622A;
+          border-bottom-color: #FCA311;
         }
       `}</style>
 
@@ -178,7 +178,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
           {isMobile ? (
             <>
               {showSearch ? (
-                <div style={{ flex: 1, display: "flex", alignItems: "center", background: "#C4571F",
+                <div style={{ flex: 1, display: "flex", alignItems: "center", background: "",
                   borderRadius: 20, height: 32, marginLeft: 8, overflow: "hidden" }}>
                   <div style={{ padding: "0 6px 0 10px", display: "flex", alignItems: "center" }}>
                     <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -236,11 +236,11 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                   </svg>
                 </div>
                 <div
-                  style={{ display: "flex", alignItems: "center", gap: 5, background: "#D4622A",
+                  style={{ display: "flex", alignItems: "center", gap: 5, background: "#FCA311",
                     borderRadius: 20, padding: "0 10px 0 9px", height: 28, margin: "0 5px",
                     cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", transition: "background .15s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#C4571F"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#D4622A"}
+                  onMouseEnter={e => e.currentTarget.style.background = "#FCA311"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#FCA311"}
                 >
                   <span className="magic-star">
                     <svg width={11} height={11} viewBox="0 0 24 24" fill="#fff">
@@ -263,7 +263,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{
                   width: isMobile ? 26 : 30, height: isMobile ? 26 : 30,
-                  borderRadius: "50%", background: "linear-gradient(135deg,#D4622A,#8e24aa)",
+                  borderRadius: "50%", background: "linear-gradient(135deg,#FCA311,#8e24aa)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: isMobile ? 10 : 12, fontWeight: 700, color: "#fff", flexShrink: 0,
                 }}>
@@ -280,12 +280,12 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
               <>
                 {!isMobile && (
                   <button onClick={openRegister} style={{
-                    background: "#D4622A", border: "none", color: "#fff", fontSize: 12,
+                    background: "#FCA311", border: "none", color: "#fff", fontSize: 12,
                     padding: "6px 16px", borderRadius: 20, cursor: "pointer", fontFamily: FONT,
                     whiteSpace: "nowrap", fontWeight: 700, transition: "background .15s",
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#C4571F"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#D4622A"}>
+                  onMouseEnter={e => e.currentTarget.style.background = "#FCA311"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#FCA311"}>
                     Create Free Account
                   </button>
                 )}
@@ -317,7 +317,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
                   onClick={() => setCategory(key)}
                   className={`gender-tab${active ? " active" : ""}`}
                   style={{
-                    color: active ? "#D4622A" : "#555",
+                    color: active ? "#FCA311" : "#555",
                     fontSize: isMobile ? 13 : 14,
                     fontWeight: active ? 700 : 500,
                   }}

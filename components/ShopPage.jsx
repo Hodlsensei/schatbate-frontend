@@ -59,6 +59,141 @@ const bras = [
   { id: 8, name: "LOSHA TEENS PACK OF 4 SEAMLESS TRAINING BRAS - VPINK/SKIN/WHITE/BPINK", price: "Rs.4,400.00", badge: "New" },
 ];
 
+// ─── Nav dropdown data ─────────────────────────────────────────────────────────
+
+const BANNER_SLIDES = [
+  "FREE SHIPPING ON ALL ORDERS above $10",
+  "BUY 2 GET 3RD FREE on selected items",
+  "NEW ARRIVALS — Shop the latest collection now",
+];
+
+const NAV_ITEMS = [
+  { label: "Offers ✳", dropdown: ["Clearance", "Buy 2 Get 3rd Free"] },
+  { label: "New Arrivals", dropdown: ["Bras", "Panties", "Nails", "Maternity"] },
+  { label: "Shop", dropdown: [] },
+  { label: "Accessories", dropdown: ["Nails", "Menstrual Cups", "Nipple Covers", "Rabbit Bras", "Bra Storage", "Breast Tapes"] },
+  { label: "By Type", dropdown: ["Plus Sizes", "Push-Up", "Double Layered Cups", "Sports Bras", "Front Open Bras", "Nursing Bras", "Bra Sets", "Wired Bras", "Wirefree Bras", "Wired Non-Padded", "Bralettes"] },
+  { label: "Maternity", dropdown: ["Nursing Bra", "Nursing Pad", "Nursing Shirt"] },
+  { label: "E-Gift Card", dropdown: [] },
+];
+
+// ─── Shop Header ──────────────────────────────────────────────────────────────
+
+function ShopHeader() {
+  const [openMenu, setOpenMenu] = useState(null);
+  const [bannerIdx, setBannerIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setBannerIdx(i => (i + 1) % BANNER_SLIDES.length);
+        setFade(true);
+      }, 400);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handle = (e) => {
+      if (headerRef.current && !headerRef.current.contains(e.target)) setOpenMenu(null);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, []);
+
+  return (
+    <div ref={headerRef} style={{ fontFamily: SANS, background: "#fff", position: "relative", zIndex: 100 }}>
+
+      {/* Sliding top banner */}
+      <div style={{ background: "#f2b8c6", textAlign: "center", padding: "11px 16px", fontSize: 13, letterSpacing: "0.08em", color: "#111", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, minHeight: 40 }}>
+        <button onClick={() => setBannerIdx(i => (i - 1 + BANNER_SLIDES.length) % BANNER_SLIDES.length)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#111", padding: 0 }}>‹</button>
+        <div style={{ opacity: fade ? 1 : 0, transition: "opacity 0.4s ease", minWidth: 360, textAlign: "center", fontWeight: 500 }}>
+          {BANNER_SLIDES[bannerIdx]}
+        </div>
+        <button onClick={() => setBannerIdx(i => (i + 1) % BANNER_SLIDES.length)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#111", padding: 0 }}>›</button>
+      </div>
+
+      {/* Social icons row */}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "6px 40px", gap: 14, borderBottom: "1px solid #eee" }}>
+        {[
+          { name: "instagram", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="#111" stroke="none"/></svg> },
+          { name: "facebook", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="#111"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg> },
+          { name: "youtube", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="#111"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#fff"/></svg> },
+          { name: "snapchat", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="#111"><path d="M12 2C8.5 2 6 4.5 6 8v1.5c-.5.2-1.5.5-2 1 0 .5.2 1 .5 1.3-.3.8-1 2.2-2.5 2.7 0 .5.3 1 1 1.2.3.1.6.1.8.2.2.4.1.9.5 1.1.5.2 1.2-.1 2-.1.6 0 1.3.3 2.2.8.5.3 1 .5 2 .5s1.5-.2 2-.5c.9-.5 1.6-.8 2.2-.8.8 0 1.5.3 2 .1.4-.2.3-.7.5-1.1.2-.1.5-.1.8-.2.7-.2 1-.7 1-1.2-1.5-.5-2.2-1.9-2.5-2.7.3-.3.5-.8.5-1.3-.5-.5-1.5-.8-2-1V8c0-3.5-2.5-6-6-6z"/></svg> },
+        ].map(({ name, svg }) => (
+          <span key={name} style={{ cursor: "pointer", display: "flex", alignItems: "center", opacity: 0.8 }}>{svg}</span>
+        ))}
+      </div>
+
+      {/* Main nav — no logo, centered links */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 40px", borderBottom: "1px solid #eee" }}>
+
+        {/* Nav links centered */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 36, flex: 1 }}>
+          {NAV_ITEMS.map((item, i) => {
+            const hasDropdown = item.dropdown.length > 0;
+            const isOpen = openMenu === i;
+            return (
+              <div key={item.label} style={{ position: "relative" }}
+                onMouseEnter={() => hasDropdown && setOpenMenu(i)}
+                onMouseLeave={() => setOpenMenu(null)}
+              >
+                <span style={{
+                  fontSize: 15, cursor: "pointer",
+                  color: isOpen ? "#FCA311" : "#111",
+                  letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: 4,
+                  whiteSpace: "nowrap", transition: "color 0.2s", fontFamily: SANS, fontWeight: 500,
+                  borderBottom: isOpen ? "2px solid #111" : "2px solid transparent", paddingBottom: 2,
+                }}>
+                  {item.label}
+                  {hasDropdown && (
+                    <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  )}
+                </span>
+                {hasDropdown && isOpen && (
+                  <div style={{
+                    position: "absolute", top: "calc(100% + 12px)", left: 0,
+                    background: "#fff", border: "1px solid #eee", borderRadius: 4,
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)", minWidth: 210, zIndex: 200, padding: "8px 0",
+                  }}>
+                    {item.dropdown.map((subItem) => (
+                      <div key={subItem}
+                        style={{ padding: "11px 22px", fontSize: 14, color: "#111", cursor: "pointer", fontFamily: SANS, transition: "color 0.15s", whiteSpace: "nowrap" }}
+                        onMouseEnter={e => e.currentTarget.style.color = "#FCA311"}
+                        onMouseLeave={e => e.currentTarget.style.color = "#111"}
+                      >{subItem}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Right icons */}
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ cursor: "pointer" }}>
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ cursor: "pointer" }}>
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ cursor: "pointer" }}>
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Shared Components ────────────────────────────────────────────────────────
 
 function Badge({ text, corner = "left" }) {
@@ -75,7 +210,6 @@ function Badge({ text, corner = "left" }) {
   );
 }
 
-// Grid card — fills column width, used in 4-col sections
 function GridCard({ product, imgHeight = 360 }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -104,7 +238,6 @@ function GridCard({ product, imgHeight = 360 }) {
   );
 }
 
-// Scroll card — fixed width, used in horizontal scroll sections
 function ProductCard({ product, imgHeight = 240 }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -179,15 +312,11 @@ function HeroBannerCarousel() {
 
   return (
     <div style={{ position: "relative", width: "100%", height: 700, background: s.bg, display: "flex", overflow: "hidden", transition: "background 0.5s ease" }}>
-
-      {/* Model column */}
       <div style={{ flex: "0 0 260px", background: s.modelBg, display: "flex", alignItems: "flex-end", justifyContent: "center", transition: "background 0.5s ease" }}>
         <div style={{ width: 230, height: 520, background: s.modelColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: s.modelText, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: SANS }}>
           Model
         </div>
       </div>
-
-      {/* Content */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "48px 64px", gap: 14 }}>
         <p style={{ color: s.subColor, fontSize: 16, fontFamily: SERIF, letterSpacing: "0.05em", margin: 0 }}>{s.sub}</p>
         <p style={{ color: "#fff", fontSize: 52, fontFamily: SERIF, fontWeight: 400, lineHeight: 1.1, margin: 0 }}>{s.title}</p>
@@ -202,13 +331,11 @@ function HeroBannerCarousel() {
           ))}
         </div>
       </div>
-
       {[{ id: "prev", label: "‹", target: cur - 1, side: "left" }, { id: "next", label: "›", target: cur + 1, side: "right" }].map(({ id, label, target, side }) => (
         <button key={id} onClick={() => navigate(target)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", [side]: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>
           {label}
         </button>
       ))}
-
       <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8, zIndex: 10 }}>
         {bannerSlides.map((_, i) => (
           <button key={i} onClick={() => navigate(i)} style={{ width: 8, height: 8, borderRadius: "50%", border: "none", cursor: "pointer", background: i === cur ? "#fff" : "rgba(255,255,255,0.45)", transition: "background 0.3s" }} />
@@ -251,53 +378,29 @@ function ConfidentCurvesBanner() {
 
   return (
     <div ref={bannerRef} style={{ width: "100%", overflow: "hidden", margin: "12px 0 24px" }}>
-    <div
-      style={{
+      <div style={{
         position: "relative", width: "100%", height: BANNER_H, background: "#faf8f5",
         overflow: "hidden",
         transform: visible ? "translateX(0)" : "translateX(100%)",
         opacity: visible ? 1 : 0,
         transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease",
-      }}
-    >
-
-      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
-        <path d="M100,100 C250,-20 620,30 780,190 C940,350 1080,110 1240,195 C1400,280 1390,490 1210,545 C1030,600 700,575 490,510 C280,445 -50,450 100,100Z" fill="#e8ddd0" opacity="0.5" />
-      </svg>
-
-      <div style={lineStyle({ top: RECT_TOP, left: RECT_LEFT, right: "48%", height: LINE_W })} />
-      <div style={lineStyle({ bottom: RECT_BOTTOM, left: RECT_LEFT, right: "48%", height: LINE_W })} />
-      <div style={lineStyle({ top: RECT_TOP, left: RECT_LEFT, width: LINE_W, bottom: RECT_BOTTOM })} />
-
-      <div style={{
-        position: "absolute",
-        top: "50%",
-        left: TEXT_LEFT,
-        transform: "translateY(-50%)",
-        lineHeight: 1,
-        zIndex: 3,
       }}>
-        <div style={{ fontFamily: SERIF, fontSize: 50, fontWeight: 400, letterSpacing: "0.18em", color: "#111", paddingLeft: C_WIDTH, marginBottom: 0, background: "#faf8f5" }}>
-          Confident
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
+          <path d="M100,100 C250,-20 620,30 780,190 C940,350 1080,110 1240,195 C1400,280 1390,490 1210,545 C1030,600 700,575 490,510 C280,445 -50,450 100,100Z" fill="#e8ddd0" opacity="0.5" />
+        </svg>
+        <div style={lineStyle({ top: RECT_TOP, left: RECT_LEFT, right: "48%", height: LINE_W })} />
+        <div style={lineStyle({ bottom: RECT_BOTTOM, left: RECT_LEFT, right: "48%", height: LINE_W })} />
+        <div style={lineStyle({ top: RECT_TOP, left: RECT_LEFT, width: LINE_W, bottom: RECT_BOTTOM })} />
+        <div style={{ position: "absolute", top: "50%", left: TEXT_LEFT, transform: "translateY(-50%)", lineHeight: 1, zIndex: 3 }}>
+          <div style={{ fontFamily: SERIF, fontSize: 50, fontWeight: 400, letterSpacing: "0.18em", color: "#111", paddingLeft: C_WIDTH, marginBottom: 0, background: "#faf8f5" }}>
+            Confident
+          </div>
+          <div style={{ fontFamily: SERIF, fontSize: 138, fontStyle: "italic", fontWeight: 700, color: "#111", lineHeight: 0.95, background: "#faf8f5" }}>
+            Curves
+          </div>
         </div>
-        <div style={{ fontFamily: SERIF, fontSize: 138, fontStyle: "italic", fontWeight: 700, color: "#111", lineHeight: 0.95, background: "#faf8f5" }}>
-          Curves
-        </div>
-      </div>
-
-      <img
-        src="/images/images.jpg"
-        alt="Model"
-        style={{
-          position: "absolute", top: 0, right: 0,
-          width: "50%", height: "100%",
-          objectFit: "cover", objectPosition: "top center",
-          display: "block", zIndex: 1,
-        }}
-      />
-
-      <button
-        style={{
+        <img src="/images/images.jpg" alt="Model" style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block", zIndex: 1 }} />
+        <button style={{
           position: "absolute",
           bottom: RECT_BOTTOM - 21,
           left: `calc(${RECT_LEFT}px + (100% - 48% - ${RECT_LEFT}px) / 2)`,
@@ -307,11 +410,10 @@ function ConfidentCurvesBanner() {
           padding: "13px 52px", fontSize: 11, fontWeight: 700,
           letterSpacing: "0.2em", cursor: "pointer", fontFamily: SANS,
           whiteSpace: "nowrap",
-        }}
-      >
-        SHOP NOW
-      </button>
-    </div>
+        }}>
+          SHOP NOW
+        </button>
+      </div>
     </div>
   );
 }
@@ -324,9 +426,10 @@ export default function ShopPage() {
   return (
     <div style={{ fontFamily: SANS, background: "#fff", color: "#111" }}>
 
+      <ShopHeader />
+
       <HeroBannerCarousel />
 
-      {/* Curvey Collection heading */}
       <div style={{ padding: "48px 40px 32px" }}>
         <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontStyle: "normal", fontWeight: 400, fontSize: 43, lineHeight: "43px", color: "rgb(0, 0, 0)", margin: 0 }}>Curvey Collection</h2>
       </div>
@@ -341,32 +444,15 @@ export default function ShopPage() {
       <div style={{ ...section, background: "#fafafa" }}>
         <SectionHeader title="Gym Wear" align="center" font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
-
           <div style={{ flex: "1 1 60%", position: "relative", background: "#1a1a1a", height: 680, overflow: "hidden" }}>
-            <img
-              src="/images/images.jpg"
-              alt="Gym Wear"
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85 }}
-            />
-            <p style={{
-              position: "absolute", top: "12%", left: 0, right: 0,
-              fontFamily: SANS,
-              fontWeight: 800,
-              fontSize: 56,
-              lineHeight: "56px",
-              color: "#fff",
-              margin: 0,
-              textTransform: "uppercase",
-              textAlign: "center",
-              letterSpacing: "0.01em",
-            }}>
+            <img src="/images/images.jpg" alt="Gym Wear" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85 }} />
+            <p style={{ position: "absolute", top: "12%", left: 0, right: 0, fontFamily: SANS, fontWeight: 800, fontSize: 56, lineHeight: "56px", color: "#fff", margin: 0, textTransform: "uppercase", textAlign: "center", letterSpacing: "0.01em" }}>
               GYM WEAR
             </p>
             {[[18, 78], [38, 68], [72, 68], [55, 82]].map(([l, t], i) => (
               <button key={i} style={{ position: "absolute", top: `${t}%`, left: `${l}%`, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.85)", border: "2px solid #fff", cursor: "pointer", color: "#fff", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" }}>🛍</button>
             ))}
           </div>
-
           {gymWearProducts[0] && (
             <div style={{ flex: "0 0 320px", position: "sticky", top: "calc(50vh - 170px)", background: "#fff" }}>
               {gymWearProducts[0].badge && (
@@ -374,11 +460,7 @@ export default function ShopPage() {
                   {gymWearProducts[0].badge}
                 </span>
               )}
-              <img
-                src="/images/images.jpg"
-                alt={gymWearProducts[0].name}
-                style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }}
-              />
+              <img src="/images/images.jpg" alt={gymWearProducts[0].name} style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }} />
               <div style={{ padding: "16px 4px 0" }}>
                 <p style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase", lineHeight: 1.4, margin: "0 0 6px" }}>{gymWearProducts[0].name}</p>
                 <p style={{ fontSize: 13, color: "#444", margin: 0 }}>{gymWearProducts[0].price}</p>
@@ -386,10 +468,9 @@ export default function ShopPage() {
             </div>
           )}
         </div>
-
       </div>
 
-      {/* ── Top Picks ── 4-col full-width grid */}
+      {/* Top Picks */}
       <div style={section}>
         <SectionHeader title="Top Picks" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
@@ -397,7 +478,7 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* ── Panties Pack ── 4-col full-width grid */}
+      {/* Panties Pack */}
       <div style={{ ...section, background: "#fafafa" }}>
         <SectionHeader title="Panties Pack" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
@@ -405,7 +486,7 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* ── Bras ── 4-col grid, 2 rows, VIEW ALL below */}
+      {/* Bras */}
       <div style={section}>
         <SectionHeader title="Bras" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>

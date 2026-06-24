@@ -8,7 +8,7 @@ const FONT        = 'Inter, "Helvetica Neue", Roboto, Arial, Helvetica, sans-ser
 const BG          = "#EEEEF0";
 const HOVER       = "#E3E4E6";
 const ACTIVE_BG   = "#fdf0ea";
-const ACTIVE_CLR  = "#D4622A";
+const ACTIVE_CLR  = "#FCA311";
 const MUTED       = "#999";
 const TEXT        = "#374151";
 
@@ -79,7 +79,6 @@ const NAV = [
   { label: "Gallery",           href: "/gallery",     icon: "gallery"   },
   { label: "Recommended",       href: "/recommended", icon: "recommend" },
   { label: "My Favorites",      href: "/favorites",   icon: "favorites" },
-  { label: "Shop",              href: "/shop",        icon: "shop"      },
   { label: "Best for Privates", href: "/privates",    icon: "privates"  },
   { label: "Watch History",     href: "/history",     icon: "history"   },
 ];
