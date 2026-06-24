@@ -141,7 +141,7 @@ export default function Topbar({ liveCount, onMenuToggle, sidebarCollapsed }) {
             </button>
 
             <div onClick={() => router.push("/")} style={{ display: "flex", alignItems: "center", flexShrink: 0, cursor: "pointer" }}>
-              <img src="/stripchatbate-rd.png" alt="Stripchatbate"
+              <img src="/images/logo.jpg" alt="Stripchatbate"
                 style={{ height: isMobile ? 24 : 30, objectFit: "contain" }} />
             </div>
 

@@ -1,8 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS  = "'Helvetica Neue', Arial, sans-serif";
 
@@ -10,7 +8,11 @@ const TEXT_LEFT = 60;
 const C_WIDTH   = 76;
 const RECT_LEFT = TEXT_LEFT + C_WIDTH;
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+/* ── Image URLs per section ── */
+const IMG_TOP_PICKS = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjUY030pYOstd7tPmGMs5N7MLcpz0trpG5VgR1ZLEIUQ&s=10";
+const IMG_PANTIES   = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtmbZycrXLP2BdHTmrp4FqD6XKA0W39yNi5FJOyhK_HA&s=10";
+const IMG_BRAS      = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Dv4WAW2mXeGF1MzTXBtEfzakC4QIcdC-GVDmsoUqoQ&s=10";
+const IMG_DEFAULT   = "/images/images.jpg";
 
 const bannerSlides = [
   { bg: "#8b1a1a", modelBg: "#7a1515", modelColor: "#c4a882", modelText: "#8b6a4a", sub: "New & Improved Waist Watcher", subColor: "#e8c0b8", title: "Grab yours at", offerBg: "#f5c800", offerText: "#111", offer: "Flat 25% OFF", filmBg: "#111", thumbBg: "#c4a882", thumbColor: "#8b6a4a" },
@@ -59,8 +61,6 @@ const bras = [
   { id: 8, name: "LOSHA TEENS PACK OF 4 SEAMLESS TRAINING BRAS - VPINK/SKIN/WHITE/BPINK", price: "Rs.4,400.00", badge: "New" },
 ];
 
-// ─── Nav dropdown data ─────────────────────────────────────────────────────────
-
 const BANNER_SLIDES = [
   "FREE SHIPPING ON ALL ORDERS above $10",
   "BUY 2 GET 3RD FREE on selected items",
@@ -76,8 +76,6 @@ const NAV_ITEMS = [
   { label: "Maternity", dropdown: ["Nursing Bra", "Nursing Pad", "Nursing Shirt"] },
   { label: "E-Gift Card", dropdown: [] },
 ];
-
-// ─── Shop Header ──────────────────────────────────────────────────────────────
 
 function ShopHeader() {
   const [openMenu, setOpenMenu] = useState(null);
@@ -106,8 +104,6 @@ function ShopHeader() {
 
   return (
     <div ref={headerRef} style={{ fontFamily: SANS, background: "#fff", position: "relative", zIndex: 100 }}>
-
-      {/* Sliding top banner */}
       <div style={{ background: "#f2b8c6", textAlign: "center", padding: "11px 16px", fontSize: 13, letterSpacing: "0.08em", color: "#111", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, minHeight: 40 }}>
         <button onClick={() => setBannerIdx(i => (i - 1 + BANNER_SLIDES.length) % BANNER_SLIDES.length)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#111", padding: 0 }}>‹</button>
         <div style={{ opacity: fade ? 1 : 0, transition: "opacity 0.4s ease", minWidth: 360, textAlign: "center", fontWeight: 500 }}>
@@ -116,22 +112,17 @@ function ShopHeader() {
         <button onClick={() => setBannerIdx(i => (i + 1) % BANNER_SLIDES.length)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#111", padding: 0 }}>›</button>
       </div>
 
-      {/* Social icons row */}
       <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "6px 40px", gap: 14, borderBottom: "1px solid #eee" }}>
         {[
           { name: "instagram", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="#111" stroke="none"/></svg> },
           { name: "facebook", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="#111"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg> },
           { name: "youtube", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="#111"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#fff"/></svg> },
-          { name: "snapchat", svg: <svg width={18} height={18} viewBox="0 0 24 24" fill="#111"><path d="M12 2C8.5 2 6 4.5 6 8v1.5c-.5.2-1.5.5-2 1 0 .5.2 1 .5 1.3-.3.8-1 2.2-2.5 2.7 0 .5.3 1 1 1.2.3.1.6.1.8.2.2.4.1.9.5 1.1.5.2 1.2-.1 2-.1.6 0 1.3.3 2.2.8.5.3 1 .5 2 .5s1.5-.2 2-.5c.9-.5 1.6-.8 2.2-.8.8 0 1.5.3 2 .1.4-.2.3-.7.5-1.1.2-.1.5-.1.8-.2.7-.2 1-.7 1-1.2-1.5-.5-2.2-1.9-2.5-2.7.3-.3.5-.8.5-1.3-.5-.5-1.5-.8-2-1V8c0-3.5-2.5-6-6-6z"/></svg> },
         ].map(({ name, svg }) => (
           <span key={name} style={{ cursor: "pointer", display: "flex", alignItems: "center", opacity: 0.8 }}>{svg}</span>
         ))}
       </div>
 
-      {/* Main nav — no logo, centered links */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 40px", borderBottom: "1px solid #eee" }}>
-
-        {/* Nav links centered */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 36, flex: 1 }}>
           {NAV_ITEMS.map((item, i) => {
             const hasDropdown = item.dropdown.length > 0;
@@ -174,8 +165,6 @@ function ShopHeader() {
             );
           })}
         </div>
-
-        {/* Right icons */}
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ cursor: "pointer" }}>
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -194,8 +183,6 @@ function ShopHeader() {
   );
 }
 
-// ─── Shared Components ────────────────────────────────────────────────────────
-
 function Badge({ text, corner = "left" }) {
   if (!text) return null;
   return (
@@ -210,7 +197,8 @@ function Badge({ text, corner = "left" }) {
   );
 }
 
-function GridCard({ product, imgHeight = 360 }) {
+/* imgSrc prop added — each section passes its own image */
+function GridCard({ product, imgHeight = 360, imgSrc = IMG_DEFAULT }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -221,7 +209,7 @@ function GridCard({ product, imgHeight = 360 }) {
       <div style={{ position: "relative", overflow: "hidden", background: "#f5f0eb" }}>
         <Badge text={product.badge} corner="right" />
         <img
-          src="/images/images.jpg"
+          src={imgSrc}
           alt={product.name}
           style={{
             width: "100%", height: imgHeight, objectFit: "cover", display: "block",
@@ -238,7 +226,7 @@ function GridCard({ product, imgHeight = 360 }) {
   );
 }
 
-function ProductCard({ product, imgHeight = 240 }) {
+function ProductCard({ product, imgHeight = 240, imgSrc = IMG_DEFAULT }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -249,7 +237,7 @@ function ProductCard({ product, imgHeight = 240 }) {
       <div style={{ position: "relative", overflow: "hidden", background: "#f5f0eb", borderRadius: 2 }}>
         <Badge text={product.badge} corner="right" />
         <img
-          src="/images/images.jpg"
+          src={imgSrc}
           alt={product.name}
           style={{
             width: "100%", height: imgHeight, objectFit: "cover", display: "block",
@@ -286,8 +274,6 @@ function SectionHeader({ title, showViewAll, align = "left", font = SANS, fontSi
     </div>
   );
 }
-
-// ─── Hero Banner Carousel ─────────────────────────────────────────────────────
 
 function HeroBannerCarousel() {
   const [cur, setCur] = useState(0);
@@ -345,8 +331,6 @@ function HeroBannerCarousel() {
   );
 }
 
-// ─── Confident Curves Banner ──────────────────────────────────────────────────
-
 function ConfidentCurvesBanner() {
   const BANNER_H    = 600;
   const RECT_TOP    = 30;
@@ -399,7 +383,7 @@ function ConfidentCurvesBanner() {
             Curves
           </div>
         </div>
-        <img src="/images/images.jpg" alt="Model" style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block", zIndex: 1 }} />
+        <img src={IMG_DEFAULT} alt="Model" style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block", zIndex: 1 }} />
         <button style={{
           position: "absolute",
           bottom: RECT_BOTTOM - 21,
@@ -418,8 +402,6 @@ function ConfidentCurvesBanner() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 const section = { padding: "32px 40px" };
 
 export default function ShopPage() {
@@ -437,7 +419,7 @@ export default function ShopPage() {
       <ConfidentCurvesBanner />
 
       <div style={{ padding: "0 40px 48px" }}>
-        <HScroll>{curveyProducts.map(p => <ProductCard key={p.id} product={p} />)}</HScroll>
+        <HScroll>{curveyProducts.map(p => <ProductCard key={p.id} product={p} imgSrc={IMG_DEFAULT} />)}</HScroll>
       </div>
 
       {/* Gym Wear */}
@@ -445,7 +427,7 @@ export default function ShopPage() {
         <SectionHeader title="Gym Wear" align="center" font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
           <div style={{ flex: "1 1 60%", position: "relative", background: "#1a1a1a", height: 680, overflow: "hidden" }}>
-            <img src="/images/images.jpg" alt="Gym Wear" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85 }} />
+            <img src={IMG_DEFAULT} alt="Gym Wear" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85 }} />
             <p style={{ position: "absolute", top: "12%", left: 0, right: 0, fontFamily: SANS, fontWeight: 800, fontSize: 56, lineHeight: "56px", color: "#fff", margin: 0, textTransform: "uppercase", textAlign: "center", letterSpacing: "0.01em" }}>
               GYM WEAR
             </p>
@@ -460,7 +442,7 @@ export default function ShopPage() {
                   {gymWearProducts[0].badge}
                 </span>
               )}
-              <img src="/images/images.jpg" alt={gymWearProducts[0].name} style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }} />
+              <img src={IMG_DEFAULT} alt={gymWearProducts[0].name} style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }} />
               <div style={{ padding: "16px 4px 0" }}>
                 <p style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase", lineHeight: 1.4, margin: "0 0 6px" }}>{gymWearProducts[0].name}</p>
                 <p style={{ fontSize: 13, color: "#444", margin: 0 }}>{gymWearProducts[0].price}</p>
@@ -470,27 +452,27 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Top Picks */}
+      {/* Top Picks — IMG_TOP_PICKS */}
       <div style={section}>
         <SectionHeader title="Top Picks" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {topPicks.map(p => <GridCard key={p.id} product={p} imgHeight={380} />)}
+          {topPicks.map(p => <GridCard key={p.id} product={p} imgHeight={380} imgSrc={IMG_TOP_PICKS} />)}
         </div>
       </div>
 
-      {/* Panties Pack */}
+      {/* Panties Pack — IMG_PANTIES */}
       <div style={{ ...section, background: "#fafafa" }}>
         <SectionHeader title="Panties Pack" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {pantiesPack.map(p => <GridCard key={p.id} product={p} imgHeight={380} />)}
+          {pantiesPack.map(p => <GridCard key={p.id} product={p} imgHeight={380} imgSrc={IMG_PANTIES} />)}
         </div>
       </div>
 
-      {/* Bras */}
+      {/* Bras — IMG_BRAS */}
       <div style={section}>
         <SectionHeader title="Bras" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {bras.map(p => <GridCard key={p.id} product={p} imgHeight={340} />)}
+          {bras.map(p => <GridCard key={p.id} product={p} imgHeight={340} imgSrc={IMG_BRAS} />)}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <button style={{ background: "#111", color: "#fff", border: "none", padding: "14px 48px", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", cursor: "pointer", fontFamily: SANS }}>
