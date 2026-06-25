@@ -5,6 +5,16 @@ const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS  = "'Helvetica Neue', Arial, sans-serif";
 
 const TEXT_LEFT = 60;
+
+/* ── Hero carousel images ── */
+const HERO_IMAGES = [
+  "/images/1782381692754~2.png",
+  "/images/1782381804387~2.png",
+  "/images/1782381933994~2.png",
+  "/images/1782382065047~2.png",
+  "/images/1782382306328~2.png",
+  "/images/Curve.png",
+];
 const C_WIDTH   = 76;
 const RECT_LEFT = TEXT_LEFT + C_WIDTH;
 
@@ -280,7 +290,7 @@ function HeroBannerCarousel() {
   const timerRef = useRef(null);
 
   const startTimer = () => {
-    timerRef.current = setInterval(() => setCur(c => (c + 1) % bannerSlides.length), 7000);
+    timerRef.current = setInterval(() => setCur(c => (c + 1) % HERO_IMAGES.length), 7000);
   };
 
   useEffect(() => {
@@ -290,40 +300,21 @@ function HeroBannerCarousel() {
 
   const navigate = (n) => {
     clearInterval(timerRef.current);
-    setCur((n + bannerSlides.length) % bannerSlides.length);
+    setCur((n + HERO_IMAGES.length) % HERO_IMAGES.length);
     startTimer();
   };
 
-  const s = bannerSlides[cur];
-
   return (
-    <div style={{ position: "relative", width: "100%", height: 700, background: s.bg, display: "flex", overflow: "hidden", transition: "background 0.5s ease" }}>
-      <div style={{ flex: "0 0 260px", background: s.modelBg, display: "flex", alignItems: "flex-end", justifyContent: "center", transition: "background 0.5s ease" }}>
-        <div style={{ width: 230, height: 520, background: s.modelColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: s.modelText, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: SANS }}>
-          Model
-        </div>
-      </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "48px 64px", gap: 14 }}>
-        <p style={{ color: s.subColor, fontSize: 16, fontFamily: SERIF, letterSpacing: "0.05em", margin: 0 }}>{s.sub}</p>
-        <p style={{ color: "#fff", fontSize: 52, fontFamily: SERIF, fontWeight: 400, lineHeight: 1.1, margin: 0 }}>{s.title}</p>
-        <div style={{ background: s.offerBg, padding: "14px 32px", width: "fit-content" }}>
-          <span style={{ fontSize: 44, fontWeight: 900, color: s.offerText, letterSpacing: "-0.02em", fontFamily: SANS }}>{s.offer}</span>
-        </div>
-        <div style={{ display: "inline-flex", background: s.filmBg, padding: 8, gap: 6, width: "fit-content" }}>
-          {[0, 1].map(i => (
-            <div key={i} style={{ width: 100, height: 80, background: s.thumbBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: s.thumbColor, textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: SANS }}>
-              Product
-            </div>
-          ))}
-        </div>
-      </div>
-      {[{ id: "prev", label: "‹", target: cur - 1, side: "left" }, { id: "next", label: "›", target: cur + 1, side: "right" }].map(({ id, label, target, side }) => (
-        <button key={id} onClick={() => navigate(target)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", [side]: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>
-          {label}
-        </button>
-      ))}
-      <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8, zIndex: 10 }}>
-        {bannerSlides.map((_, i) => (
+    <div style={{ position: "relative", width: "100%", height: 700, overflow: "hidden" }}>
+      <img
+        src={HERO_IMAGES[cur]}
+        alt={`Slide ${cur + 1}`}
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", transition: "opacity 0.4s ease" }}
+      />
+      <button onClick={() => navigate(cur - 1)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", left: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>‹</button>
+      <button onClick={() => navigate(cur + 1)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>›</button>
+      <div style={{ position: "absolute", bottom: 12, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8, zIndex: 10 }}>
+        {HERO_IMAGES.map((_, i) => (
           <button key={i} onClick={() => navigate(i)} style={{ width: 8, height: 8, borderRadius: "50%", border: "none", cursor: "pointer", background: i === cur ? "#fff" : "rgba(255,255,255,0.45)", transition: "background 0.3s" }} />
         ))}
       </div>
@@ -383,7 +374,7 @@ function ConfidentCurvesBanner() {
             Curves
           </div>
         </div>
-        <img src={IMG_DEFAULT} alt="Model" style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block", zIndex: 1 }} />
+        <img src={IMG_DEFAULT} alt="Model" style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", zIndex: 1 }} />
         <button style={{
           position: "absolute",
           bottom: RECT_BOTTOM - 21,
