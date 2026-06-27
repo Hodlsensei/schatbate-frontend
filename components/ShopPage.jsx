@@ -23,14 +23,8 @@ const IMG_TOP_PICKS = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjU
 const IMG_PANTIES   = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtmbZycrXLP2BdHTmrp4FqD6XKA0W39yNi5FJOyhK_HA&s=10";
 const IMG_BRAS      = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Dv4WAW2mXeGF1MzTXBtEfzakC4QIcdC-GVDmsoUqoQ&s=10";
 const IMG_DEFAULT   = "/images/images.jpg";
-
-const bannerSlides = [
-  { bg: "#8b1a1a", modelBg: "#7a1515", modelColor: "#c4a882", modelText: "#8b6a4a", sub: "New & Improved Waist Watcher", subColor: "#e8c0b8", title: "Grab yours at", offerBg: "#f5c800", offerText: "#111", offer: "Flat 25% OFF", filmBg: "#111", thumbBg: "#c4a882", thumbColor: "#8b6a4a" },
-  { bg: "#1a3a4a", modelBg: "#142e3a", modelColor: "#7a9eaa", modelText: "#2a5060", sub: "New Gym Wear Collection", subColor: "#a8d0dc", title: "Train in style", offerBg: "#fff", offerText: "#1a3a4a", offer: "Up to 30% OFF", filmBg: "#0d2530", thumbBg: "#7a9eaa", thumbColor: "#2a5060" },
-  { bg: "#2d1a3a", modelBg: "#24142e", modelColor: "#9e7ab0", modelText: "#4a2060", sub: "Curvey Collection", subColor: "#d4b8e8", title: "Confident Curves", offerBg: "#d4b8e8", offerText: "#2d1a3a", offer: "Buy 2 Get 1 Free", filmBg: "#1a0d25", thumbBg: "#9e7ab0", thumbColor: "#4a2060" },
-  { bg: "#1a3a1a", modelBg: "#142e14", modelColor: "#7aaa7a", modelText: "#2a5a2a", sub: "Top Picks — Season Sale", subColor: "#a8dca8", title: "Best of the best", offerBg: "#a8dca8", offerText: "#1a3a1a", offer: "Flat 20% OFF", filmBg: "#0d250d", thumbBg: "#7aaa7a", thumbColor: "#2a5a2a" },
-  { bg: "#3a2a1a", modelBg: "#2e2014", modelColor: "#c4a060", modelText: "#6a4a20", sub: "Panties Pack — Limited Offer", subColor: "#e8d0a8", title: "Stock up & save", offerBg: "#e8a020", offerText: "#1a0d00", offer: "Pack of 5 — Rs.3,500", filmBg: "#1a1008", thumbBg: "#c4a060", thumbColor: "#6a4a20" },
-];
+const IMG_GYM_WEAR  = "/images/1782381933994~2.png";
+const IMG_CURVY     = "/images/Curve-rem.png";
 
 const curveyProducts = [
   { id: 1, name: "LEONISA Stretch Cotton Posture Correcter Wireless Bra - Black", price: "Rs.6,500.00", badge: "New" },
@@ -207,7 +201,6 @@ function Badge({ text, corner = "left" }) {
   );
 }
 
-/* imgSrc prop added — each section passes its own image */
 function GridCard({ product, imgHeight = 360, imgSrc = IMG_DEFAULT }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -305,11 +298,11 @@ function HeroBannerCarousel() {
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: 700, overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: 700, overflow: "hidden", background: "#1a1a1a" }}>
       <img
         src={HERO_IMAGES[cur]}
         alt={`Slide ${cur + 1}`}
-        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", transition: "opacity 0.4s ease" }}
+        style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", display: "block", transition: "opacity 0.4s ease" }}
       />
       <button onClick={() => navigate(cur - 1)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", left: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>‹</button>
       <button onClick={() => navigate(cur + 1)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>›</button>
@@ -323,12 +316,6 @@ function HeroBannerCarousel() {
 }
 
 function ConfidentCurvesBanner() {
-  const BANNER_H    = 600;
-  const RECT_TOP    = 30;
-  const RECT_BOTTOM = 30;
-  const LINE_COLOR  = "#1a1a1a";
-  const LINE_W      = 1.5;
-
   const bannerRef = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -343,51 +330,111 @@ function ConfidentCurvesBanner() {
     return () => observer.disconnect();
   }, []);
 
-  const lineStyle = (overrides) => ({
-    position: "absolute",
-    background: LINE_COLOR,
-    pointerEvents: "none",
-    zIndex: 2,
-    ...overrides,
-  });
-
   return (
     <div ref={bannerRef} style={{ width: "100%", overflow: "hidden", margin: "12px 0 24px" }}>
       <div style={{
-        position: "relative", width: "100%", height: BANNER_H, background: "#faf8f5",
-        overflow: "hidden",
+        position: "relative",
+        width: "100%",
+        height: 600,
+        background: "#faf8f5",
+        display: "flex",
         transform: visible ? "translateX(0)" : "translateX(100%)",
         opacity: visible ? 1 : 0,
         transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease",
       }}>
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
+
+        {/* SVG blob background */}
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
           <path d="M100,100 C250,-20 620,30 780,190 C940,350 1080,110 1240,195 C1400,280 1390,490 1210,545 C1030,600 700,575 490,510 C280,445 -50,450 100,100Z" fill="#e8ddd0" opacity="0.5" />
         </svg>
-        <div style={lineStyle({ top: RECT_TOP, left: RECT_LEFT, right: "48%", height: LINE_W })} />
-        <div style={lineStyle({ bottom: RECT_BOTTOM, left: RECT_LEFT, right: "48%", height: LINE_W })} />
-        <div style={lineStyle({ top: RECT_TOP, left: RECT_LEFT, width: LINE_W, bottom: RECT_BOTTOM })} />
-        <div style={{ position: "absolute", top: "50%", left: TEXT_LEFT, transform: "translateY(-50%)", lineHeight: 1, zIndex: 3 }}>
-          <div style={{ fontFamily: SERIF, fontSize: 50, fontWeight: 400, letterSpacing: "0.18em", color: "#111", paddingLeft: C_WIDTH, marginBottom: 0, background: "#faf8f5" }}>
+
+        {/* Rectangle outline over left half */}
+        <div style={{
+          position: "absolute",
+          top: 30,
+          left: TEXT_LEFT,
+          width: "calc(50% - 60px)",
+          bottom: 30,
+          border: "1.5px solid #1a1a1a",
+          pointerEvents: "none",
+          zIndex: 2,
+        }} />
+
+        {/* Left: Text */}
+        <div style={{
+          flex: "0 0 50%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          paddingLeft: TEXT_LEFT + C_WIDTH,
+          position: "relative",
+          zIndex: 3,
+        }}>
+          <div style={{
+            fontFamily: SERIF,
+            fontSize: 50,
+            fontWeight: 400,
+            letterSpacing: "0.18em",
+            color: "#111",
+            background: "#faf8f5",
+            display: "inline-block",
+            paddingRight: 12,
+          }}>
             Confident
           </div>
-          <div style={{ fontFamily: SERIF, fontSize: 138, fontStyle: "italic", fontWeight: 700, color: "#111", lineHeight: 0.95, background: "#faf8f5" }}>
+          <div style={{
+            fontFamily: SERIF,
+            fontSize: 138,
+            fontStyle: "italic",
+            fontWeight: 700,
+            color: "#111",
+            lineHeight: 0.95,
+            background: "#faf8f5",
+            display: "inline-block",
+            paddingRight: 12,
+          }}>
             Curves
           </div>
+          <button style={{
+            marginTop: 40,
+            alignSelf: "flex-start",
+            background: "#111",
+            color: "#fff",
+            border: "none",
+            padding: "13px 52px",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.2em",
+            cursor: "pointer",
+            fontFamily: SANS,
+            whiteSpace: "nowrap",
+          }}>
+            SHOP NOW
+          </button>
         </div>
-        <img src={IMG_DEFAULT} alt="Model" style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", zIndex: 1 }} />
-        <button style={{
-          position: "absolute",
-          bottom: RECT_BOTTOM - 21,
-          left: `calc(${RECT_LEFT}px + (100% - 48% - ${RECT_LEFT}px) / 2)`,
-          transform: "translateX(-50%)",
-          zIndex: 4,
-          background: "#111", color: "#fff", border: "none",
-          padding: "13px 52px", fontSize: 11, fontWeight: 700,
-          letterSpacing: "0.2em", cursor: "pointer", fontFamily: SANS,
-          whiteSpace: "nowrap",
+
+        {/* Right: Model image pulled left to close the gap */}
+        <div style={{
+          flex: "0 0 50%",
+          position: "relative",
+          zIndex: 1,
+          overflow: "hidden",
         }}>
-          SHOP NOW
-        </button>
+          <img
+            src={IMG_CURVY}
+            alt="Curvy model"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "-15%",
+              height: "100%",
+              width: "130%",
+              objectFit: "contain",
+              objectPosition: "top left",
+            }}
+          />
+        </div>
+
       </div>
     </div>
   );
@@ -418,7 +465,7 @@ export default function ShopPage() {
         <SectionHeader title="Gym Wear" align="center" font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
           <div style={{ flex: "1 1 60%", position: "relative", background: "#1a1a1a", height: 680, overflow: "hidden" }}>
-            <img src={IMG_DEFAULT} alt="Gym Wear" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85 }} />
+            <img src={IMG_GYM_WEAR} alt="Gym Wear" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.85 }} />
             <p style={{ position: "absolute", top: "12%", left: 0, right: 0, fontFamily: SANS, fontWeight: 800, fontSize: 56, lineHeight: "56px", color: "#fff", margin: 0, textTransform: "uppercase", textAlign: "center", letterSpacing: "0.01em" }}>
               GYM WEAR
             </p>
@@ -443,7 +490,7 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Top Picks — IMG_TOP_PICKS */}
+      {/* Top Picks */}
       <div style={section}>
         <SectionHeader title="Top Picks" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
@@ -451,7 +498,7 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Panties Pack — IMG_PANTIES */}
+      {/* Panties Pack */}
       <div style={{ ...section, background: "#fafafa" }}>
         <SectionHeader title="Panties Pack" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
@@ -459,7 +506,7 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Bras — IMG_BRAS */}
+      {/* Bras */}
       <div style={section}>
         <SectionHeader title="Bras" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
