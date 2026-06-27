@@ -1,12 +1,13 @@
 "use client";
 import ShopPage from "./ShopPage";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import StreamPlayer from "./StreamPlayer";
 import LiveChat from "./LiveChat";
 import TipModal from "./TipModal";
 import PrivateShowModal from "./PrivateShowModal";
 import BuyTokensModal from "./BuyTokensModal";
+import { CartProvider } from "./CartContext";
 
 const FONT = "'DM Sans', 'Helvetica Neue', Helvetica, sans-serif";
 const COLORS = ["#c0392b","#8e24aa","#1e88e5","#00acc1","#43a047","#fb8c00"];
@@ -201,11 +202,26 @@ function PlayThumb({ thumb, duration }) {
 
 const NAVBAR_H = 48;
 
-export default function WatchPage({ username }) {
+function WatchPageInner({ username }) {
   const router = useRouter();
   const scrollRef = useRef(null);
 
-  const [viewers, setViewers] = useState(Math.floor(Math.random()*8000)+2000);
+  // Deterministic seed from username so server-rendered HTML and the
+  // client's first render produce the SAME number — this is what was
+  // causing the hydration mismatch (Math.random() ran once on the server
+  // and again on the client with a different result). Random drift now
+  // only happens after mount, inside the setInterval effect below, which
+  // never runs during SSR so it can't desync.
+  const initialViewers = useMemo(() => {
+    if (!username) return 2000;
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = (hash * 31 + username.charCodeAt(i)) >>> 0;
+    }
+    return 2000 + (hash % 8000);
+  }, [username]);
+
+  const [viewers, setViewers] = useState(initialViewers);
   const [showTip, setShowTip] = useState(false);
   const [showPrivate, setShowPrivate] = useState(false);
   const [showBuyTokens, setShowBuyTokens] = useState(false);
@@ -302,7 +318,7 @@ export default function WatchPage({ username }) {
       <div ref={scrollRef} style={{ flex:1, overflowY:"auto", overflowX:"hidden", scrollbarWidth:"thin", scrollbarColor:"#333 transparent" }}>
 
         {/* ══ SHOP TAB — full page, no stream above it ══ */}
-        {isShop && <ShopPage />}
+        {isShop && <ShopPage modelId={username} />}
 
         {/* ══ STREAM + EVERYTHING ELSE — hidden when Shop is active ══ */}
         {!isShop && (
@@ -705,6 +721,14 @@ export default function WatchPage({ username }) {
       {showBuyTokens && <BuyTokensModal onClose={()=>setShowBuyTokens(false)} username={username} avatarColor={color}/>}
       {showTip && <TipModal username={username} tokens={tokens} onClose={()=>setShowTip(false)} onBuyTokens={openBuyTokens} onTip={amount=>{setTokens(t=>Math.max(0,t-amount));setShowTip(false);}}/>}
     </div>
+  );
+}
+
+export default function WatchPage({ username }) {
+  return (
+    <CartProvider>
+      <WatchPageInner username={username} />
+    </CartProvider>
   );
 }
 

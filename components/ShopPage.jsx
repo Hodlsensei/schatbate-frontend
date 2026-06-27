@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useCart } from "./CartContext";
+import ProductDetailModal from "./ProductDetailModal";
+import CartDrawer from "./CartDrawer";
+import CheckoutPage from "./CheckoutPage";
 
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS  = "'Helvetica Neue', Arial, sans-serif";
 
-const TEXT_LEFT = 60;
-
-/* ── Hero carousel images ── */
 const HERO_IMAGES = [
   "/images/1782381692754~2.png",
   "/images/1782381804387~2.png",
@@ -15,10 +16,7 @@ const HERO_IMAGES = [
   "/images/1782382306328~2.png",
   "/images/Curve.png",
 ];
-const C_WIDTH   = 76;
-const RECT_LEFT = TEXT_LEFT + C_WIDTH;
 
-/* ── Image URLs per section ── */
 const IMG_TOP_PICKS = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjUY030pYOstd7tPmGMs5N7MLcpz0trpG5VgR1ZLEIUQ&s=10";
 const IMG_PANTIES   = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtmbZycrXLP2BdHTmrp4FqD6XKA0W39yNi5FJOyhK_HA&s=10";
 const IMG_BRAS      = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Dv4WAW2mXeGF1MzTXBtEfzakC4QIcdC-GVDmsoUqoQ&s=10";
@@ -81,7 +79,7 @@ const NAV_ITEMS = [
   { label: "E-Gift Card", dropdown: [] },
 ];
 
-function ShopHeader() {
+function ShopHeader({ cartCount, onCartClick }) {
   const [openMenu, setOpenMenu] = useState(null);
   const [bannerIdx, setBannerIdx] = useState(0);
   const [fade, setFade] = useState(true);
@@ -176,11 +174,24 @@ function ShopHeader() {
           <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ cursor: "pointer" }}>
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ cursor: "pointer" }}>
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 01-8 0"/>
-          </svg>
+          <button
+            onClick={onCartClick}
+            style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex" }}
+            aria-label="Open cart"
+          >
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            {cartCount > 0 && (
+              <span style={{
+                position: "absolute", top: -8, right: -8, background: "#e53935", color: "#fff",
+                fontSize: 10, fontWeight: 700, borderRadius: "50%", width: 18, height: 18,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>{cartCount}</span>
+            )}
+          </button>
         </div>
       </div>
     </div>
@@ -201,12 +212,13 @@ function Badge({ text, corner = "left" }) {
   );
 }
 
-function GridCard({ product, imgHeight = 360, imgSrc = IMG_DEFAULT }) {
+function GridCard({ product, imgHeight = 360, imgSrc = IMG_DEFAULT, onSelect }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => onSelect({ ...product, image: imgSrc })}
       style={{ cursor: "pointer", width: "100%" }}
     >
       <div style={{ position: "relative", overflow: "hidden", background: "#f5f0eb" }}>
@@ -229,12 +241,13 @@ function GridCard({ product, imgHeight = 360, imgSrc = IMG_DEFAULT }) {
   );
 }
 
-function ProductCard({ product, imgHeight = 240, imgSrc = IMG_DEFAULT }) {
+function ProductCard({ product, imgHeight = 240, imgSrc = IMG_DEFAULT, onSelect }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => onSelect({ ...product, image: imgSrc })}
       style={{ cursor: "pointer", minWidth: 240, maxWidth: 240 }}
     >
       <div style={{ position: "relative", overflow: "hidden", background: "#f5f0eb", borderRadius: 2 }}>
@@ -330,137 +343,187 @@ function ConfidentCurvesBanner() {
     return () => observer.disconnect();
   }, []);
 
+  const BOX_LEFT   = "2%";
+  const BOX_RIGHT  = "72%";
+  const LINE       = 1.5;
+
   return (
-    <div ref={bannerRef} style={{ width: "100%", overflow: "hidden", margin: "12px 0 24px" }}>
+    <div ref={bannerRef} style={{ width: "100%", margin: "12px 0 0" }}>
+
       <div style={{
         position: "relative",
         width: "100%",
-        height: 600,
-        background: "#faf8f5",
-        display: "flex",
-        transform: visible ? "translateX(0)" : "translateX(100%)",
+        height: 560,
+        background: "#ffffff",
+        overflow: "hidden",
         opacity: visible ? 1 : 0,
-        transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease",
+        transform: visible ? "translateX(0)" : "translateX(50px)",
+        transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease",
       }}>
 
-        {/* SVG blob background */}
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice">
-          <path d="M100,100 C250,-20 620,30 780,190 C940,350 1080,110 1240,195 C1400,280 1390,490 1210,545 C1030,600 700,575 490,510 C280,445 -50,450 100,100Z" fill="#e8ddd0" opacity="0.5" />
+        <svg
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none" }}
+          viewBox="0 0 1400 560"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <path
+            d="
+              M 60,80
+              C 180,-30 500,10 680,150
+              C 820,260 860,60  980,100
+              C 1100,140 1060,340 920,400
+              C 780,460 460,440 280,390
+              C 100,340 -80,220 60,80 Z
+            "
+            fill="#ede5dc"
+            opacity="0.7"
+          />
         </svg>
 
-        {/* Rectangle outline over left half */}
+        {/* TOP horizontal */}
         <div style={{
-          position: "absolute",
-          top: 30,
-          left: TEXT_LEFT,
-          width: "calc(50% - 60px)",
-          bottom: 30,
-          border: "1.5px solid #1a1a1a",
-          pointerEvents: "none",
-          zIndex: 2,
+          position: "absolute", top: 60, left: "calc(2% + 89px)",
+          width: BOX_RIGHT, height: LINE, background: "#111", zIndex: 3,
         }} />
 
-        {/* Left: Text */}
+        {/* LEFT vertical — TOP segment */}
         <div style={{
-          flex: "0 0 50%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          paddingLeft: TEXT_LEFT + C_WIDTH,
-          position: "relative",
-          zIndex: 3,
+          position: "absolute", top: 60, left: "calc(2% + 89px)",
+          width: LINE, height: 118, background: "#111", zIndex: 3,
+        }} />
+
+        {/* LEFT vertical — BOTTOM segment */}
+        <div style={{
+          position: "absolute", bottom: 60, left: "calc(2% + 89px)",
+          width: LINE, height: "20%", background: "#111", zIndex: 3,
+        }} />
+
+        {/* BOTTOM horizontal */}
+        <div style={{
+          position: "absolute", bottom: 60, left: "calc(2% + 89px)",
+          width: BOX_RIGHT, height: LINE, background: "#111", zIndex: 3,
+        }} />
+
+        {/* Text */}
+        <div style={{
+          position: "absolute", top: "50%", left: BOX_LEFT,
+          transform: "translateY(-46%)", paddingLeft: 44, zIndex: 4, pointerEvents: "none",
         }}>
           <div style={{
-            fontFamily: SERIF,
-            fontSize: 50,
-            fontWeight: 400,
-            letterSpacing: "0.18em",
-            color: "#111",
-            background: "#faf8f5",
-            display: "inline-block",
-            paddingRight: 12,
+            fontFamily: SERIF, fontSize: 68, fontWeight: 400, letterSpacing: "0.12em",
+            color: "#111", lineHeight: 1, marginBottom: -18, paddingLeft: 148,
+            position: "relative", zIndex: 5,
           }}>
             Confident
           </div>
+
           <div style={{
-            fontFamily: SERIF,
-            fontSize: 138,
-            fontStyle: "italic",
-            fontWeight: 700,
-            color: "#111",
-            lineHeight: 0.95,
-            background: "#faf8f5",
-            display: "inline-block",
-            paddingRight: 12,
+            fontFamily: SERIF, fontSize: 150, fontStyle: "italic", fontWeight: 800,
+            color: "#111", lineHeight: 0.85, whiteSpace: "nowrap", letterSpacing: "-0.01em",
           }}>
             Curves
           </div>
-          <button style={{
-            marginTop: 40,
-            alignSelf: "flex-start",
-            background: "#111",
-            color: "#fff",
-            border: "none",
-            padding: "13px 52px",
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: "0.2em",
-            cursor: "pointer",
-            fontFamily: SANS,
-            whiteSpace: "nowrap",
-          }}>
-            SHOP NOW
-          </button>
         </div>
 
-        {/* Right: Model image pulled left to close the gap */}
-        <div style={{
-          flex: "0 0 50%",
-          position: "relative",
-          zIndex: 1,
-          overflow: "hidden",
-        }}>
-          <img
-            src={IMG_CURVY}
-            alt="Curvy model"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: "-15%",
-              height: "100%",
-              width: "130%",
-              objectFit: "contain",
-              objectPosition: "top left",
-            }}
-          />
-        </div>
+        <img
+          src={IMG_CURVY}
+          alt="Curvy model"
+          style={{
+            position: "absolute", top: 0, right: 0, height: "100%", width: "auto",
+            objectFit: "contain", objectPosition: "top right", zIndex: 5,
+          }}
+        />
 
       </div>
+
+      <div style={{
+        background: "#ffffff", display: "flex", justifyContent: "center",
+        paddingTop: 28, paddingBottom: 52,
+      }}>
+        <button
+          style={{
+            background: "#111", color: "#fff", border: "none", padding: "14px 72px",
+            fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", cursor: "pointer",
+            fontFamily: SANS, transition: "background 0.2s",
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = "#333"}
+          onMouseLeave={e => e.currentTarget.style.background = "#111"}
+        >
+          SHOP NOW
+        </button>
+      </div>
+
     </div>
   );
 }
 
 const section = { padding: "32px 40px" };
 
-export default function ShopPage() {
+/**
+ * ShopPage — per-model storefront.
+ *
+ * Props:
+ *   modelId   — unique id of the model whose store this is (required for cart scoping)
+ *   modelName — display name, currently unused but kept for future header use
+ */
+export default function ShopPage({ modelId = "default-model" }) {
+  const { getCartCount } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+  const { getCartForModel, clearCart } = useCart();
+
+  const handleCheckout = () => {
+    setCartOpen(false);
+    setCheckoutOpen(true);
+  };
+
+  const handleOrderPlaced = () => {
+    clearCart(modelId);
+    setCheckoutOpen(false);
+  };
+
+  if (checkoutOpen) {
+    const cartItems = getCartForModel(modelId).map(item => ({
+      name: item.name,
+      price: item.price,
+      currency: item.currency,
+      qty: item.qty,
+      selectedSize: item.selectedSize,
+      image: item.image,
+    }));
+    return (
+      <CheckoutPage
+        orderItems={cartItems.length > 0 ? cartItems : undefined}
+        onBack={handleOrderPlaced}
+      />
+    );
+  }
+
   return (
     <div style={{ fontFamily: SANS, background: "#fff", color: "#111" }}>
 
-      <ShopHeader />
+      <ShopHeader cartCount={getCartCount(modelId)} onCartClick={() => setCartOpen(true)} />
 
       <HeroBannerCarousel />
 
       <div style={{ padding: "48px 40px 32px" }}>
-        <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontStyle: "normal", fontWeight: 400, fontSize: 43, lineHeight: "43px", color: "rgb(0, 0, 0)", margin: 0 }}>Curvey Collection</h2>
+        <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontStyle: "normal", fontWeight: 400, fontSize: 43, lineHeight: "43px", color: "rgb(0,0,0)", margin: 0 }}>
+          Curvey Collection
+        </h2>
       </div>
 
       <ConfidentCurvesBanner />
 
       <div style={{ padding: "0 40px 48px" }}>
-        <HScroll>{curveyProducts.map(p => <ProductCard key={p.id} product={p} imgSrc={IMG_DEFAULT} />)}</HScroll>
+        <HScroll>
+          {curveyProducts.map(p => (
+            <ProductCard key={p.id} product={p} imgSrc={IMG_DEFAULT} onSelect={setSelectedProduct} />
+          ))}
+        </HScroll>
       </div>
 
-      {/* Gym Wear */}
       <div style={{ ...section, background: "#fafafa" }}>
         <SectionHeader title="Gym Wear" align="center" font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
@@ -469,12 +532,23 @@ export default function ShopPage() {
             <p style={{ position: "absolute", top: "12%", left: 0, right: 0, fontFamily: SANS, fontWeight: 800, fontSize: 56, lineHeight: "56px", color: "#fff", margin: 0, textTransform: "uppercase", textAlign: "center", letterSpacing: "0.01em" }}>
               GYM WEAR
             </p>
-            {[[18, 78], [38, 68], [72, 68], [55, 82]].map(([l, t], i) => (
-              <button key={i} style={{ position: "absolute", top: `${t}%`, left: `${l}%`, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.85)", border: "2px solid #fff", cursor: "pointer", color: "#fff", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" }}>🛍</button>
-            ))}
+            {gymWearProducts.slice(0, 4).map((p, i) => {
+              const positions = [[18, 78], [38, 68], [72, 68], [55, 82]];
+              const [l, t] = positions[i] || [50, 50];
+              return (
+                <button
+                  key={i}
+                  onClick={() => setSelectedProduct({ ...p, image: IMG_DEFAULT })}
+                  style={{ position: "absolute", top: `${t}%`, left: `${l}%`, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.85)", border: "2px solid #fff", cursor: "pointer", color: "#fff", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" }}
+                >🛍</button>
+              );
+            })}
           </div>
           {gymWearProducts[0] && (
-            <div style={{ flex: "0 0 320px", position: "sticky", top: "calc(50vh - 170px)", background: "#fff" }}>
+            <div
+              onClick={() => setSelectedProduct({ ...gymWearProducts[0], image: IMG_DEFAULT })}
+              style={{ flex: "0 0 320px", position: "sticky", top: "calc(50vh - 170px)", background: "#fff", cursor: "pointer" }}
+            >
               {gymWearProducts[0].badge && (
                 <span style={{ position: "absolute", top: 16, right: 16, zIndex: 2, background: "#111", color: "#fff", fontSize: 11, fontWeight: 600, padding: "5px 10px", borderRadius: 2 }}>
                   {gymWearProducts[0].badge}
@@ -490,27 +564,30 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Top Picks */}
       <div style={section}>
         <SectionHeader title="Top Picks" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {topPicks.map(p => <GridCard key={p.id} product={p} imgHeight={380} imgSrc={IMG_TOP_PICKS} />)}
+          {topPicks.map(p => (
+            <GridCard key={p.id} product={p} imgHeight={380} imgSrc={IMG_TOP_PICKS} onSelect={setSelectedProduct} />
+          ))}
         </div>
       </div>
 
-      {/* Panties Pack */}
       <div style={{ ...section, background: "#fafafa" }}>
         <SectionHeader title="Panties Pack" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {pantiesPack.map(p => <GridCard key={p.id} product={p} imgHeight={380} imgSrc={IMG_PANTIES} />)}
+          {pantiesPack.map(p => (
+            <GridCard key={p.id} product={p} imgHeight={380} imgSrc={IMG_PANTIES} onSelect={setSelectedProduct} />
+          ))}
         </div>
       </div>
 
-      {/* Bras */}
       <div style={section}>
         <SectionHeader title="Bras" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {bras.map(p => <GridCard key={p.id} product={p} imgHeight={340} imgSrc={IMG_BRAS} />)}
+          {bras.map(p => (
+            <GridCard key={p.id} product={p} imgHeight={340} imgSrc={IMG_BRAS} onSelect={setSelectedProduct} />
+          ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <button style={{ background: "#111", color: "#fff", border: "none", padding: "14px 48px", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", cursor: "pointer", fontFamily: SANS }}>
@@ -518,6 +595,21 @@ export default function ShopPage() {
           </button>
         </div>
       </div>
+
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          modelId={modelId}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+
+      <CartDrawer
+        modelId={modelId}
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        onCheckout={handleCheckout}
+      />
 
     </div>
   );
