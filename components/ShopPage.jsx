@@ -8,13 +8,10 @@ import CheckoutPage from "./CheckoutPage";
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS  = "'Helvetica Neue', Arial, sans-serif";
 
-const HERO_IMAGES = [
-  "/images/1782381692754~2.png",
-  "/images/1782381804387~2.png",
-  "/images/1782381933994~2.png",
-  "/images/1782382065047~2.png",
-  "/images/1782382306328~2.png",
-  "/images/Curve.png",
+const HERO_SLIDES = [
+  { img: "/images/image (54).jpg" },
+  { img: "/images/image (57).jpg" },
+  { img: "/images/image (60).jpg" },
 ];
 
 const IMG_TOP_PICKS = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjUY030pYOstd7tPmGMs5N7MLcpz0trpG5VgR1ZLEIUQ&s=10";
@@ -296,7 +293,7 @@ function HeroBannerCarousel() {
   const timerRef = useRef(null);
 
   const startTimer = () => {
-    timerRef.current = setInterval(() => setCur(c => (c + 1) % HERO_IMAGES.length), 7000);
+    timerRef.current = setInterval(() => setCur(c => (c + 1) % HERO_SLIDES.length), 7000);
   };
 
   useEffect(() => {
@@ -306,21 +303,22 @@ function HeroBannerCarousel() {
 
   const navigate = (n) => {
     clearInterval(timerRef.current);
-    setCur((n + HERO_IMAGES.length) % HERO_IMAGES.length);
+    setCur((n + HERO_SLIDES.length) % HERO_SLIDES.length);
     startTimer();
   };
 
   return (
     <div style={{ position: "relative", width: "100%", height: 700, overflow: "hidden", background: "#1a1a1a" }}>
       <img
-        src={HERO_IMAGES[cur]}
+        key={cur}
+        src={HERO_SLIDES[cur].img}
         alt={`Slide ${cur + 1}`}
-        style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", display: "block", transition: "opacity 0.4s ease" }}
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
       />
       <button onClick={() => navigate(cur - 1)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", left: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>‹</button>
       <button onClick={() => navigate(cur + 1)} style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.35)", border: "none", color: "#fff", fontSize: 20, cursor: "pointer", zIndex: 10 }}>›</button>
       <div style={{ position: "absolute", bottom: 12, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8, zIndex: 10 }}>
-        {HERO_IMAGES.map((_, i) => (
+        {HERO_SLIDES.map((_, i) => (
           <button key={i} onClick={() => navigate(i)} style={{ width: 8, height: 8, borderRadius: "50%", border: "none", cursor: "pointer", background: i === cur ? "#fff" : "rgba(255,255,255,0.45)", transition: "background 0.3s" }} />
         ))}
       </div>
@@ -343,136 +341,60 @@ function ConfidentCurvesBanner() {
     return () => observer.disconnect();
   }, []);
 
-  const BOX_LEFT   = "2%";
-  const BOX_RIGHT  = "72%";
-  const LINE       = 1.5;
+  const BOX_LEFT  = "2%";
+  const BOX_RIGHT = "72%";
+  const LINE      = 1.5;
 
   return (
     <div ref={bannerRef} style={{ width: "100%", margin: "12px 0 0" }}>
-
       <div style={{
-        position: "relative",
-        width: "100%",
-        height: 560,
-        background: "#ffffff",
-        overflow: "hidden",
+        position: "relative", width: "100%", height: 560,
+        background: "#ffffff", overflow: "hidden",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateX(0)" : "translateX(50px)",
         transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease",
       }}>
-
-        <svg
-          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none" }}
-          viewBox="0 0 1400 560"
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <path
-            d="
-              M 60,80
-              C 180,-30 500,10 680,150
-              C 820,260 860,60  980,100
-              C 1100,140 1060,340 920,400
-              C 780,460 460,440 280,390
-              C 100,340 -80,220 60,80 Z
-            "
-            fill="#ede5dc"
-            opacity="0.7"
-          />
+        <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none" }} viewBox="0 0 1400 560" preserveAspectRatio="xMidYMid slice">
+          <path d="M 60,80 C 180,-30 500,10 680,150 C 820,260 860,60 980,100 C 1100,140 1060,340 920,400 C 780,460 460,440 280,390 C 100,340 -80,220 60,80 Z" fill="#ede5dc" opacity="0.7" />
         </svg>
 
-        {/* TOP horizontal */}
-        <div style={{
-          position: "absolute", top: 60, left: "calc(2% + 89px)",
-          width: BOX_RIGHT, height: LINE, background: "#111", zIndex: 3,
-        }} />
+        <div style={{ position: "absolute", top: 60, left: "calc(2% + 89px)", width: BOX_RIGHT, height: LINE, background: "#111", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 60, left: "calc(2% + 89px)", width: LINE, height: 118, background: "#111", zIndex: 3 }} />
+        <div style={{ position: "absolute", bottom: 60, left: "calc(2% + 89px)", width: LINE, height: "20%", background: "#111", zIndex: 3 }} />
+        <div style={{ position: "absolute", bottom: 60, left: "calc(2% + 89px)", width: BOX_RIGHT, height: LINE, background: "#111", zIndex: 3 }} />
 
-        {/* LEFT vertical — TOP segment */}
-        <div style={{
-          position: "absolute", top: 60, left: "calc(2% + 89px)",
-          width: LINE, height: 118, background: "#111", zIndex: 3,
-        }} />
-
-        {/* LEFT vertical — BOTTOM segment */}
-        <div style={{
-          position: "absolute", bottom: 60, left: "calc(2% + 89px)",
-          width: LINE, height: "20%", background: "#111", zIndex: 3,
-        }} />
-
-        {/* BOTTOM horizontal */}
-        <div style={{
-          position: "absolute", bottom: 60, left: "calc(2% + 89px)",
-          width: BOX_RIGHT, height: LINE, background: "#111", zIndex: 3,
-        }} />
-
-        {/* Text */}
-        <div style={{
-          position: "absolute", top: "50%", left: BOX_LEFT,
-          transform: "translateY(-46%)", paddingLeft: 44, zIndex: 4, pointerEvents: "none",
-        }}>
-          <div style={{
-            fontFamily: SERIF, fontSize: 68, fontWeight: 400, letterSpacing: "0.12em",
-            color: "#111", lineHeight: 1, marginBottom: -18, paddingLeft: 148,
-            position: "relative", zIndex: 5,
-          }}>
+        <div style={{ position: "absolute", top: "50%", left: BOX_LEFT, transform: "translateY(-46%)", paddingLeft: 44, zIndex: 4, pointerEvents: "none" }}>
+          <div style={{ fontFamily: SERIF, fontSize: 68, fontWeight: 400, letterSpacing: "0.12em", color: "#111", lineHeight: 1, marginBottom: -18, paddingLeft: 148, position: "relative", zIndex: 5 }}>
             Confident
           </div>
-
-          <div style={{
-            fontFamily: SERIF, fontSize: 150, fontStyle: "italic", fontWeight: 800,
-            color: "#111", lineHeight: 0.85, whiteSpace: "nowrap", letterSpacing: "-0.01em",
-          }}>
+          <div style={{ fontFamily: SERIF, fontSize: 150, fontStyle: "italic", fontWeight: 800, color: "#111", lineHeight: 0.85, whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>
             Curves
           </div>
         </div>
 
-        <img
-          src={IMG_CURVY}
-          alt="Curvy model"
-          style={{
-            position: "absolute", top: 0, right: 0, height: "100%", width: "auto",
-            objectFit: "contain", objectPosition: "top right", zIndex: 5,
-          }}
-        />
-
+        <img src={IMG_CURVY} alt="Curvy model" style={{ position: "absolute", top: 0, right: 0, height: "100%", width: "auto", objectFit: "contain", objectPosition: "top right", zIndex: 5 }} />
       </div>
 
-      <div style={{
-        background: "#ffffff", display: "flex", justifyContent: "center",
-        paddingTop: 28, paddingBottom: 52,
-      }}>
+      <div style={{ background: "#ffffff", display: "flex", justifyContent: "center", paddingTop: 28, paddingBottom: 52 }}>
         <button
-          style={{
-            background: "#111", color: "#fff", border: "none", padding: "14px 72px",
-            fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", cursor: "pointer",
-            fontFamily: SANS, transition: "background 0.2s",
-          }}
+          style={{ background: "#111", color: "#fff", border: "none", padding: "14px 72px", fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", cursor: "pointer", fontFamily: SANS, transition: "background 0.2s" }}
           onMouseEnter={e => e.currentTarget.style.background = "#333"}
           onMouseLeave={e => e.currentTarget.style.background = "#111"}
         >
           SHOP NOW
         </button>
       </div>
-
     </div>
   );
 }
 
 const section = { padding: "32px 40px" };
 
-/**
- * ShopPage — per-model storefront.
- *
- * Props:
- *   modelId   — unique id of the model whose store this is (required for cart scoping)
- *   modelName — display name, currently unused but kept for future header use
- */
 export default function ShopPage({ modelId = "default-model" }) {
-  const { getCartCount } = useCart();
+  const { getCartCount, getCartForModel, clearCart } = useCart();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-
-  const { getCartForModel, clearCart } = useCart();
 
   const handleCheckout = () => {
     setCartOpen(false);
@@ -573,7 +495,7 @@ export default function ShopPage({ modelId = "default-model" }) {
         </div>
       </div>
 
-      <div style={{ ...section, background: "#fafafa" }}>
+      <div style={{ ...section, background: "#fafafa", paddingBottom: 100 }}>
         <SectionHeader title="Panties Pack" showViewAll font="'Bricolage Grotesque', sans-serif" fontSize={40} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
           {pantiesPack.map(p => (
