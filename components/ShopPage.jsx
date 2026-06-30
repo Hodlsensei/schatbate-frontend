@@ -25,42 +25,42 @@ const IMG_GYM_WEAR  = "/images/1782381933994~2.png";
 const IMG_CURVY     = "/images/Curve-rem.png";
 
 const curveyProducts = [
-  { id: 1, name: "LEONISA Stretch Cotton Posture Correcter Wireless Bra - Black", price: "Rs.6,500.00", badge: "New" },
-  { id: 2, name: "Losha Curvy Lightly Padded Strapless Wired Bra - BLACK", price: "Rs.17,500.00", badge: "Buy 2 Get 1 Free" },
-  { id: 3, name: "Leonisa Unlined Wireless Posture Corrector Bra - SKIN", price: "Rs.6,500.00", badge: "New" },
-  { id: 4, name: "Losha Curvy Lightly Padded Strapless Wired Bra - SKIN", price: "Rs.6,500.00", badge: "Buy 2 Get 1 Free" },
-  { id: 5, name: "Losha Curvy All Over Lace Cup Double Layered Wired Bra", price: "Rs.5,400.00", badge: "Buy 2 Get 1 Free" },
+  { id: 1, name: "LEONISA Stretch Cotton Posture Correcter Wireless Bra - Black", price: "$300", badge: "New" },
+  { id: 2, name: "Losha Curvy Lightly Padded Strapless Wired Bra - BLACK", price: "$175", badge: "Buy 2 Get 1 Free" },
+  { id: 3, name: "Leonisa Unlined Wireless Posture Corrector Bra - SKIN", price: "$65", badge: "New" },
+  { id: 4, name: "Losha Curvy Lightly Padded Strapless Wired Bra - SKIN", price: "$65", badge: "Buy 2 Get 1 Free" },
+  { id: 5, name: "Losha Curvy All Over Lace Cup Double Layered Wired Bra", price: "$54", badge: "Buy 2 Get 1 Free" },
 ];
 
 const gymWearProducts = [
-  { id: 1, name: "PREMIUM QUALITY FRONT CLOSURE PADDED HIGH IMPACT SPORTS BRA WITH ADJUSTABLE WAIST BAND-RUST", price: "Rs.8,900.00", badge: "Restocked" },
-  { id: 2, name: "HIGH IMPACT ZIP-FRONT SPORTS BRA - BLACK", price: "Rs.8,900.00", badge: "" },
-  { id: 3, name: "CROSSBACK COMPRESSION SPORTS BRA - GREEN", price: "Rs.7,500.00", badge: "" },
+  { id: 1, name: "PREMIUM QUALITY FRONT CLOSURE PADDED HIGH IMPACT SPORTS BRA WITH ADJUSTABLE WAIST BAND-RUST", price: "$890", badge: "Restocked" },
+  { id: 2, name: "HIGH IMPACT ZIP-FRONT SPORTS BRA - BLACK", price: "$890", badge: "" },
+  { id: 3, name: "CROSSBACK COMPRESSION SPORTS BRA - GREEN", price: "$750", badge: "" },
 ];
 
 const topPicks = [
-  { id: 1, name: "LOSHA COTTON DOUBLE LAYERED MID HIGH PANEL NON WIRED PRINTED BRA - CANDY FLORAL PRINT", price: "Rs.3,200.00", badge: "Buy 2 Get 1 Free" },
-  { id: 2, name: "SUPPER SOFT SIDE SUPPORT COTTON BRA WITH HIDDEN NIPPLE COVER - BLACK", price: "Rs.2,890.00", badge: "" },
-  { id: 3, name: "COTTON DOUBLE LAYERED NON WIRED PRINTED BRA - BABY ROSE PRINT", price: "Rs.3,200.00", badge: "Buy 2 Get 1 Free" },
-  { id: 4, name: "COTTON DOUBLE LAYERED NON WIRED PRINTED BRA - SALMON", price: "Rs.3,200.00", badge: "Buy 2 Get 1 Free" },
+  { id: 1, name: "LOSHA COTTON DOUBLE LAYERED MID HIGH PANEL NON WIRED PRINTED BRA - CANDY FLORAL PRINT", price: "$320", badge: "Buy 2 Get 1 Free" },
+  { id: 2, name: "SUPPER SOFT SIDE SUPPORT COTTON BRA WITH HIDDEN NIPPLE COVER - BLACK", price: "$290", badge: "" },
+  { id: 3, name: "COTTON DOUBLE LAYERED NON WIRED PRINTED BRA - BABY ROSE PRINT", price: "$320", badge: "Buy 2 Get 1 Free" },
+  { id: 4, name: "COTTON DOUBLE LAYERED NON WIRED PRINTED BRA - SALMON", price: "$320", badge: "Buy 2 Get 1 Free" },
 ];
 
 const pantiesPack = [
-  { id: 1, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - POLKA DOTS", price: "Rs.3,500.00", badge: "" },
-  { id: 2, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - RED HEARTS", price: "Rs.3,500.00", badge: "" },
-  { id: 3, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - GREEN ARMY", price: "Rs.3,500.00", badge: "Buy 2 Get 1 Free" },
-  { id: 4, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - FOOTBALL", price: "Rs.3,500.00", badge: "" },
+  { id: 1, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - POLKA DOTS", price: "$350", badge: "" },
+  { id: 2, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - RED HEARTS", price: "$350", badge: "" },
+  { id: 3, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - GREEN ARMY", price: "$350", badge: "Buy 2 Get 1 Free" },
+  { id: 4, name: "PACK OF 5 SUPER SOFT COTTON STRETCH PRINTED BIKINI BRIEFS - FOOTBALL", price: "$350", badge: "" },
 ];
 
 const bras = [
-  { id: 1, name: "PREMIUM QUALITY FRONT CLOSURE PADDED HIGH IMPACT SPORTS BRA WITH ADJUSTABLE WAIST BAND-Olive", price: "Rs.8,900.00", badge: "New" },
-  { id: 2, name: "LOSHA WIRED LACE BRA - BRN", price: "Rs.5,100.00", badge: "New" },
-  { id: 3, name: "LOSHA WAIST SHAPING BRA - BRN", price: "Rs.6,000.00", badge: "New" },
-  { id: 4, name: "LOSHA FRONT CLOSURE BRA - BRN", price: "Rs.5,500.00", badge: "New" },
-  { id: 5, name: "LOSHA GIRL PACK OF 3 NON WIRED LIGHTLY PADDED BRAS - LBLUE/WHITE/LAVENDER", price: "Rs.4,950.00", badge: "New" },
-  { id: 6, name: "LOSHA TEENS PACK OF 4 SEAMLESS TRAINING BRAS - BPINK/WHITE/MINT/GREY", price: "Rs.4,400.00", badge: "New" },
-  { id: 7, name: "LOSHA GIRL PACK OF 3 WIRED LIGHTLY PADDED BRAS - VPINK/SKIN/BPINK/WHITE", price: "Rs.4,950.00", badge: "New" },
-  { id: 8, name: "LOSHA TEENS PACK OF 4 SEAMLESS TRAINING BRAS - VPINK/SKIN/WHITE/BPINK", price: "Rs.4,400.00", badge: "New" },
+  { id: 1, name: "PREMIUM QUALITY FRONT CLOSURE PADDED HIGH IMPACT SPORTS BRA WITH ADJUSTABLE WAIST BAND-Olive", price: "$890", badge: "New" },
+  { id: 2, name: "LOSHA WIRED LACE BRA - BRN", price: "$510", badge: "New" },
+  { id: 3, name: "LOSHA WAIST SHAPING BRA - BRN", price: "$600", badge: "New" },
+  { id: 4, name: "LOSHA FRONT CLOSURE BRA - BRN", price: "$550", badge: "New" },
+  { id: 5, name: "LOSHA GIRL PACK OF 3 NON WIRED LIGHTLY PADDED BRAS - LBLUE/WHITE/LAVENDER", price: "$495", badge: "New" },
+  { id: 6, name: "LOSHA TEENS PACK OF 4 SEAMLESS TRAINING BRAS - BPINK/WHITE/MINT/GREY", price: "$440", badge: "New" },
+  { id: 7, name: "LOSHA GIRL PACK OF 3 WIRED LIGHTLY PADDED BRAS - VPINK/SKIN/BPINK/WHITE", price: "$495", badge: "New" },
+  { id: 8, name: "LOSHA TEENS PACK OF 4 SEAMLESS TRAINING BRAS - VPINK/SKIN/WHITE/BPINK", price: "$440", badge: "New" },
 ];
 
 const BANNER_SLIDES = [

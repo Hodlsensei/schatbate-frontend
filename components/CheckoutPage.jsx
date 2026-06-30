@@ -47,7 +47,7 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
         <p style={{ color: "#888", fontSize: 14, maxWidth: 320, margin: 0, lineHeight: 1.6 }}>Thank you for your purchase. You'll receive a confirmation email shortly.</p>
         <button
           onClick={() => onBack ? onBack() : router.push("/shop")}
-          style={{ background: "#e53935", color: "#fff", border: "none", borderRadius: 8, padding: "13px 32px", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, letterSpacing: 0.5, fontFamily: "inherit" }}
+          style={{ background: "#FCA311", color: "#fff", border: "none", borderRadius: 8, padding: "13px 32px", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, letterSpacing: 0.5, fontFamily: "inherit" }}
         >
           Continue Shopping
         </button>
@@ -87,7 +87,7 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
       }}>
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ fontSize: isMobile ? 24 : 32, fontWeight: 900, letterSpacing: 6, color: "#1a1a1a", margin: "0 0 4px" }}>CHECKOUT</h1>
-          <div style={{ width: 40, height: 2, background: "#e53935", borderRadius: 2 }} />
+          <div style={{ width: 40, height: 2, background: "#FCA311", borderRadius: 2 }} />
         </div>
 
         {/* Billing Details */}
@@ -97,12 +97,12 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
             <div>
               <label style={labelStyle}>First Name</label>
               <input name="firstName" value={form.firstName} onChange={handleChange} style={inputStyle} placeholder="John"
-                onFocus={e => e.target.style.borderColor="#e53935"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
+                onFocus={e => e.target.style.borderColor="#FCA311"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
             </div>
             <div>
               <label style={labelStyle}>Last Name</label>
               <input name="lastName" value={form.lastName} onChange={handleChange} style={inputStyle} placeholder="Doe"
-                onFocus={e => e.target.style.borderColor="#e53935"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
+                onFocus={e => e.target.style.borderColor="#FCA311"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
             </div>
           </div>
           <div style={{ marginBottom: 12 }}>
@@ -113,19 +113,19 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
           <div style={{ marginBottom: 12 }}>
             <label style={labelStyle}>Street Address</label>
             <input name="address" value={form.address} onChange={handleChange} style={inputStyle} placeholder="123 Main Street"
-              onFocus={e => e.target.style.borderColor="#e53935"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
+              onFocus={e => e.target.style.borderColor="#FCA311"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
               <label style={labelStyle}>City</label>
               <input name="city" value={form.city} onChange={handleChange} style={inputStyle} placeholder="London"
-                onFocus={e => e.target.style.borderColor="#e53935"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
+                onFocus={e => e.target.style.borderColor="#FCA311"} onBlur={e => e.target.style.borderColor="#e0e0e0"}/>
             </div>
             <div>
               <label style={labelStyle}>Country</label>
               <select name="country" value={form.country} onChange={handleChange}
                 style={{ ...inputStyle, cursor: "pointer", color: form.country ? "#1a1a1a" : "#aaa" }}
-                onFocus={e => e.target.style.borderColor="#e53935"} onBlur={e => e.target.style.borderColor="#e0e0e0"}
+                onFocus={e => e.target.style.borderColor="#FCA311"} onBlur={e => e.target.style.borderColor="#e0e0e0"}
               >
                 <option value="">Select</option>
                 {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -140,14 +140,14 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {[{ id: "credit", label: "Credit Card", icon: "💳" }, { id: "paypal", label: "PayPal", icon: "🅿️" }].map((method) => (
               <div key={method.id} onClick={() => setPaymentMethod(method.id)} style={{
-                border: `1px solid ${paymentMethod === method.id ? "#e53935" : "#e0e0e0"}`,
+                border: `1px solid ${paymentMethod === method.id ? "#FCA311" : "#e0e0e0"}`,
                 borderRadius: 10, padding: "14px 16px", cursor: "pointer",
                 background: paymentMethod === method.id ? "rgba(229,57,53,0.04)" : "#f9f9f9",
                 display: "flex", alignItems: "center", gap: 10, transition: "all 0.2s",
               }}>
                 <div style={{
                   width: 18, height: 18, borderRadius: "50%",
-                  border: `2px solid ${paymentMethod === method.id ? "#e53935" : "#d0d0d0"}`,
+                  border: `2px solid ${paymentMethod === method.id ? "#FCA311" : "#d0d0d0"}`,
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 }}>
                   {paymentMethod === method.id && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#e53935" }} />}
@@ -161,13 +161,13 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
         </div>
 
         <button onClick={handleSubmit} style={{
-          background: "#e53935", color: "#fff", border: "none", borderRadius: 10,
+          background: "#FCA311", color: "#fff", border: "none", borderRadius: 10,
           padding: "16px", fontSize: 15, fontWeight: 800, cursor: "pointer",
           letterSpacing: 1, width: "100%", fontFamily: "inherit",
           boxShadow: "0 4px 16px rgba(229,57,53,0.25)",
         }}
-          onMouseEnter={e => e.currentTarget.style.background="#c62828"}
-          onMouseLeave={e => e.currentTarget.style.background="#e53935"}
+          onMouseEnter={e => e.currentTarget.style.background="#FCA311"}
+          onMouseLeave={e => e.currentTarget.style.background="#FCA311"}
         >PLACE ORDER</button>
 
         <button
@@ -217,7 +217,7 @@ export default function CheckoutPage({ orderItems = ORDER_ITEMS, onBack }) {
           <div style={{ height: 1, background: "#e8e8e8", margin: "16px 0" }} />
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 18, fontWeight: 800, color: "#1a1a1a" }}>
             <span>Total</span>
-            <span style={{ color: "#e53935" }}>{total.toLocaleString()}{currency}</span>
+            <span style={{ color: "#FCA311" }}>{total.toLocaleString()}{currency}</span>
           </div>
         </div>
 
