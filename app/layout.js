@@ -1,5 +1,6 @@
 import "./globals.css";
 import { CategoryProvider } from "../components/CategoryContext";
+import { CartProvider } from "../components/CartContext";
 import RootLayoutClient from "../components/RootLayoutClient";
 
 export const metadata = {
@@ -19,9 +20,11 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning style={{ margin: 0, padding: 0 }}>
         <CategoryProvider>
-          <RootLayoutClient>
-            {children}
-          </RootLayoutClient>
+          <CartProvider>
+            <RootLayoutClient>
+              {children}
+            </RootLayoutClient>
+          </CartProvider>
         </CategoryProvider>
       </body>
     </html>
